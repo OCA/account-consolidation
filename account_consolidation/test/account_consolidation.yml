@@ -1,0 +1,99 @@
+#-
+#  In order to test the consolidation, I use the wizard to check if the periods are the same on the Holding and its Subsidiaries
+#-
+#  !record {model: res.company, id: company_subsidiary_a}:
+#    company_id: base.main_company
+#    name: "Subsidiary A"
+#
+#-
+#  In order to test the consolidation, I need a Holding company with 2 subsidiaries, I create the second one
+#-
+#  !record {model: res.company, id: company_subsidiary_b}:
+#    company_id: base.main_company
+#    name: "Subsidiary B"
+
+#-
+#  I create a period for the opening entries for the new fiscalyear
+#-
+#  !record {model: account.period, id: account_period_jan11}:
+#    company_id: base.main_company
+#    date_start: !eval "'%s-01-01'% (datetime.now().year+1)"
+#    date_stop: !eval "'%s-01-01'% (datetime.now().year+1)"
+#    fiscalyear_id: account_fiscalyear_fiscalyear0
+#    name: !eval "'OP %s' %(datetime.now().year+1)"
+#    special: 1
+#
+#-
+#  I made modification in journal so it can move entries
+#-
+#  !record {model: account.journal, id: account.close_journal}:
+#    name: End of Year
+#    code: NEW
+#    type: situation
+#    analytic_journal_id: sit
+#    sequence_id: sequence_journal
+#    default_debit_account_id: cash
+#    default_credit_account_id: cash
+#    company_id: base.main_company
+#    view_id: account_journal_bank_view
+#    centralisation: 1
+#-
+#  I called the Generate Fiscalyear Opening Entries wizard
+#-
+#  !record {model: account.fiscalyear.close, id: account_fiscalyear_close_0}:
+#    fy2_id: account_fiscalyear_fiscalyear0
+#    fy_id: account.data_fiscalyear
+#    journal_id: account.close_journal
+#    period_id: account_period_jan11
+#    report_name: End of Fiscal Year Entry
+#-
+#  I clicked on create Button
+#
+#-
+#  !python {model: account.fiscalyear.close}: |
+#    self.data_save(cr, uid, [ref("account_fiscalyear_close_0")], {"lang": 'en_US',
+#      "active_model": "ir.ui.menu", "active_ids": [ref("account.menu_wizard_fy_close")],
+#      "tz": False, "active_id": ref("account.menu_wizard_fy_close"), })
+#
+#-
+#  I check the opening entries By using "Entries by Line wizard"
+#-
+#  !record {model: account.move.journal, id: account_move_journal_0}:
+#   {}
+#-
+#  I clicked on Open Journal Button to check the entries
+#
+#-
+#  !python {model: account.move.journal}: |
+#    self.action_open_window(cr, uid, [ref("account_move_journal_0")], {"lang": 'en_US',
+#      "active_model": "ir.ui.menu", "active_ids": [ref("account.menu_action_move_journal_line_form")],
+#      "tz": False, "active_id": ref("account.menu_action_move_journal_line_form"),
+#      })
+
+#-
+#  In order to test Cancel Opening Entries I cancelled the opening entries created for "Fiscal Year 2011"
+#-
+#  !record {model: account.open.closed.fiscalyear, id: account_open_closed_fiscalyear_1}:
+#    fyear_id: account.data_fiscalyear
+#-
+#  I clicked on Open button
+#-
+#  !python {model: account.open.closed.fiscalyear}: |
+#    self.remove_entries(cr, uid, [ref("account_open_closed_fiscalyear_1")], {"lang":
+#      'en_US', "active_model": "ir.ui.menu", "active_ids": [ref("account.menu_wizard_open_closed_fy")],
+#      "tz": False, "active_id": ref("account.menu_wizard_open_closed_fy"), })
+#-
+#  I check the opening entries By using "Entries by Line wizard"
+#-
+#  !record {model: account.move.journal, id: account_move_journal_2}:
+#    journal_id: account.sales_journal
+#    period_id: account_period_jan11
+#
+#-
+#  I checked the Opening entries are cancelled successfully
+#-
+#  !python {model: account.move.journal}: |
+#    self.action_open_window(cr, uid, [ref("account_move_journal_2")], {"lang": 'en_US',
+#      "active_model": "ir.ui.menu", "active_ids": [ref("account.menu_action_move_journal_line_form")],
+#      "tz": False, "active_id": ref("account.menu_action_move_journal_line_form"),
+#      })

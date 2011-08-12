@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+		<record id="view_consolidation_consolidate_form" model="ir.ui.view">
+            <field name="name">account.consolidation.consolidate.form</field>
+            <field name="model">account.consolidation.consolidate</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+			<form string="Consolidation: Consolidate">
+			    <group col="4" colspan="6">
+                    <field name="company_id" on_change="on_change_company_id(company_id)" invisible="True"/>
+                    <field name="from_period_id" on_change="on_change_from_period_id(from_period_id, to_period_id)" domain="[('company_id', '=', company_id)]"/>
+                    <field name="to_period_id" domain="[('company_id', '=', company_id)]"/>
+                    <field name="journal_id" domain="[('company_id', '=', company_id)]"/>
+                    <field name="target_move"/>
+                    <separator string="Holding Chart of Accounts" colspan="4"/>
+                    <field name="holding_chart_account_id" domain="[('company_id', '=', company_id), ('parent_id', '=', False)]"/>
+
+                    <separator string="Consolidation Difference Accounts" colspan="4"/>
+                    <field name="gain_account_id" domain="[('type','&lt;&gt;','view'), ('id', 'child_of', [holding_chart_account_id])]"/>
+                    <field name="loss_account_id" domain="[('type','&lt;&gt;','view'), ('id', 'child_of', [holding_chart_account_id])]"/>
+                    <field name="subsidiary_chart_ids" widget="one2many_list" nolabel="1" colspan="4" required="True"/>
+				</group>
+				<separator colspan="4"/>
+			    <group col="2" colspan="4">
+            		<button special="cancel" string="Cancel" icon='gtk-cancel'/>
+                    <button name="run_consolidation" string="Consolidate" colspan="1" type="object" icon="gtk-execute"/>
+				</group>
+			</form>
+            </field>
+        </record>
+
+        <record id="action_consolidation_consolidate" model="ir.actions.act_window">
+            <field name="name">Consolidation: Consolidate</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.consolidation.consolidate</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+	</data>
+</openerp>

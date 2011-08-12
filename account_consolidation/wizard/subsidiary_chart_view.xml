@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+		<record id="view_subsidiary_chart_form" model="ir.ui.view">
+            <field name="name">account.consolidation.subsidiary_chart.form</field>
+            <field name="model">account.consolidation.subsidiary_chart</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+			<form string="Subsidiaries Chart of Accounts">
+                <field name="company_id" on_change="on_change_company_id(company_id)" domain="[('parent_id', '=', parent.company_id)]"/>
+                <field name="chart_account_id" domain="[('company_id', '=', company_id), ('parent_id', '=', False)]"/>
+			</form>
+            </field>
+        </record>
+
+		<record id="view_subsidiary_chart_tree" model="ir.ui.view">
+            <field name="name">account.consolidation.subsidiary_chart.tree</field>
+            <field name="model">account.consolidation.subsidiary_chart</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+			<tree string="Subsidiaries Chart of Accounts" editable="bottom">
+                <field name="company_id" on_change="on_change_company_id(company_id)" domain="[('parent_id', '=', parent.company_id)]"/>
+                <field name="chart_account_id" domain="[('company_id', '=', company_id), ('parent_id', '=', False)]"/>
+			</tree>
+            </field>
+        </record>
+
+	</data>
+</openerp>
