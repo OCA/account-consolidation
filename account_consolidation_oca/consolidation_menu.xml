@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+         <menuitem
+                name="Consolidation"
+                parent="account.menu_finance_periodical_processing"
+                id="menu_consolidation"/>
+
+         <menuitem
+                name="Consolidation: Checks"
+                parent="menu_consolidation"
+                action="action_consolidation_checks"
+                id="menu_consolidation_checks"/>
+
+         <menuitem
+                name="Consolidation: Consolidate"
+                parent="menu_consolidation"
+                action="action_consolidation_consolidate"
+                id="menu_consolidation_consolidate"/>
+
+     </data>
+ </openerp>
