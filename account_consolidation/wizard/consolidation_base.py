@@ -60,18 +60,6 @@ class account_consolidation_base(osv.osv_memory):
         'company_id': _default_company,
     }
 
-    def _check_sort_periods(self, cr, uid, ids, context=None):
-        obj = self.browse(cr, uid, ids[0], context=context)
-        if obj.from_period_id.id == obj.to_period_id.id:
-            return True
-        if obj.to_period_id.date_start < obj.from_period_id.date_stop:
-            return False
-        return True
-
-    _constraints = [
-        (_check_sort_periods, '"To Period" must be greater or equal than "From Period".', ['from_period_id', 'to_period_id']),
-    ]
-
     def on_change_company_id(self, cr, uid, ids, company_id, context=None):
         comp_chart_obj = self.pool.get('account.consolidation.subsidiary_chart')
         company_obj = self.pool.get('res.company')
@@ -173,16 +161,31 @@ class account_consolidation_base(osv.osv_memory):
 
         return errors_by_company
 
-    def _accounts_data(self, cr, uid, ids, chart_account_id, context=None):
+    def _chart_accounts_data(self, cr, uid, ids, chart_account_id, context=None):
+        context = context or {}
         account_obj = self.pool.get('account.account')
         res = {}
         account_ids = account_obj.\
         _get_children_and_consol(cr, uid, chart_account_id, context=context)
         accounts = account_obj.browse(cr, uid, account_ids, context)
         for account in accounts:
-            res[account.code] = {'parent': account.parent_id.code,
-                                 'level': account.level,
-                                 'active': account.active}
+            holding = context.get('holding_coa', False)
+            if holding and account.type == 'view':
+                continue
+                
+            res[account.code] = {}
+            if holding:
+                res[account.code].update({'browse': account})
+
+            if context.get('validate', False):
+                # for all (virtual) chart of accounts, when called from the check wizard
+                res[account.code].update({
+                    'validate': {  # values to validate holding vs subsidiaries
+                        'parent': account.parent_id.code,
+                        'level': account.level,
+                        'active': account.active}
+                })
+
         return res
 
     def check_subsidiary_chart(self, cr, uid, ids, holding_chart_account_id, subsidiary_chart_account_id, context=None):
@@ -191,10 +194,12 @@ class account_consolidation_base(osv.osv_memory):
             All the accounts of the Virtual CoA must exist in the Holding CoA.
             The Holding's CoA may hold accounts which do not exist in the Subsidiary's Virtual CoA.
         """
+        context = context or {}
         misconfigured_accounts = {}
-
-        holding_accounts = self._accounts_data(cr, uid, ids, holding_chart_account_id, context=context)
-        subsidiary_accounts = self._accounts_data(cr, uid, ids, subsidiary_chart_account_id, context=context)
+        check_ctx = context.copy()
+        check_ctx.update({'validate': True})
+        holding_accounts = self._chart_accounts_data(cr, uid, ids, holding_chart_account_id, context=check_ctx)
+        subsidiary_accounts = self._chart_accounts_data(cr, uid, ids, subsidiary_chart_account_id, context=check_ctx)
         # accounts which are configured on the subsidiary VCoA but not on the holding CoA
         spare_accounts = [code for code in subsidiary_accounts
                           if code not in holding_accounts]
@@ -205,8 +210,8 @@ class account_consolidation_base(osv.osv_memory):
                 pass  # if you want to get the list of accounts existing on the holding
                       # but not on the subsidiary you will get it here
             else:
-                for field, value in values.iteritems():
-                    if subsidiary_accounts[code].get(field, False) != value:
+                for field, value in values['validate'].iteritems():
+                    if subsidiary_accounts[code]['validate'].get(field, False) != value:
                         misconfigured_accounts[code] = {field: value}
 
         return spare_accounts, misconfigured_accounts
@@ -242,7 +247,6 @@ class account_consolidation_base(osv.osv_memory):
 
         # inherit to add the next steps of the reconciliation
 
-        # TODO: confirmation view ?
         return {'type': 'ir.actions.act_window_close'}
 
 

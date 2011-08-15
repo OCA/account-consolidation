@@ -8,9 +8,13 @@
             <field name="inherit_id" ref="account.view_account_form"/>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <field name="currency_mode" position="after">
-                    <field name="consolidation_rate_type"/>
-                </field>
+                <xpath expr="/form/notebook/page[@string='General Information']/group[2]" position="after">
+                    <group col="2" colspan="2">
+                        <separator string="Consolidation" colspan="2"/>
+                        <field name="consolidation_rate_type"/>
+                        <field name="consolidation_mode"/>
+                    </group>
+                </xpath>
             </field>
         </record>
         
@@ -24,6 +28,7 @@
                     <group col="2" colspan="2">
                         <separator string="Consolidation" colspan="4"/>
                         <field name="consolidation_rate_type"/>
+                        <field name="consolidation_mode"/>
                     </group>
                 </separator>
             </field>
