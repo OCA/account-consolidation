@@ -92,12 +92,9 @@ class account_consolidation_consolidate(osv.osv_memory):
         move = move_obj.browse(cr, uid, move_id, context=context)
         holding_account = account_obj.browse(cr, uid, holding_account_id, context=context)
 
-        # [0] because only one account per company for one code is permitted
-        # if no subsidiary account has been found, it means that the checks have not been runned
-        # or the code of the checks is defective
         subsidiary_account_id = account_obj.search(cr, uid, [('code', '=', holding_account.code),
                                                              ('company_id', '=', subsidiary_id)],
-                                                   context=context)[0]
+                                                   context=context)
 
         if not subsidiary_account_id:
             return []  # an account may exist on the holding and not in the subsidiaries, nothing to do
@@ -110,7 +107,8 @@ class account_consolidation_consolidate(osv.osv_memory):
             'state': state,
             'periods': subs_period_ids,
         })
-        subs_account = account_obj.browse(cr, uid, subsidiary_account_id, context=browse_ctx)
+        # subsidiary_account_id[0] because only one account per company for one code is permitted
+        subs_account = account_obj.browse(cr, uid, subsidiary_account_id[0], context=browse_ctx)
 
         vals = {
             'name': _("Consolidation line in %s mode") % (consolidation_mode,),
@@ -163,10 +161,12 @@ class account_consolidation_consolidate(osv.osv_memory):
 
         data_ctx = context.copy()
         data_ctx.update({'holding_coa': True})
-        holding_accounts_data = self._chart_accounts_data(cr, uid, ids, subsidiary_chart.chart_account_id.id, context=data_ctx)
-        holding_accounts = [values['browse'] for key, values in holding_accounts_data.iteritems()]
+        holding_accounts_data = self._chart_accounts_data(cr, uid, ids, form.holding_chart_account_id.id, context=data_ctx)
+        subs_accounts_codes = self._chart_accounts_data(cr, uid, ids, subsidiary_chart.chart_account_id.id, context=context)
+        holding_accounts = [values for key, values in holding_accounts_data.iteritems() if key in subs_accounts_codes]
 
         # split accounts in ytd and periods modes
+        # a move per type will be created
         consolidation_modes = {'ytd': [], 'period': []}
         for account in holding_accounts:
             cm = self._consolidation_mode(cr, uid, ids, account, context=context)
@@ -180,6 +180,7 @@ class account_consolidation_consolidate(osv.osv_memory):
             'company_id': form.company_id.id,
             'consol_company_id': subs_company.id,
         }
+
         for consolidation_mode, accounts in consolidation_modes.iteritems():
             if not accounts:
                 continue
@@ -247,7 +248,7 @@ class account_consolidation_consolidate(osv.osv_memory):
 
         move_ids = []
         for subsidiary_chart in form.subsidiary_chart_ids:
-            move_ids = self.consolidate_subsidiary(cr, uid, ids, subsidiary_chart.id, context=context)
+            move_ids.extend(self.consolidate_subsidiary(cr, uid, ids, subsidiary_chart.id, context=context))
 
         context.update({'move_ids': move_ids})
         model_data_ids = mod_obj.search(cr, uid, [('model', '=', 'ir.ui.view'),

@@ -8,13 +8,19 @@
             <field name="inherit_id" ref="account.view_account_form"/>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <xpath expr="/form/notebook/page[@string='General Information']/group[2]" position="after">
-                    <group col="2" colspan="2">
-                        <separator string="Consolidation" colspan="2"/>
-                        <field name="consolidation_rate_type"/>
-                        <field name="consolidation_mode"/>
-                    </group>
-                </xpath>
+                <data>
+                    <xpath expr="/form/notebook/page[@string='General Information']/group[2]" position="after">
+                        <group col="2" colspan="2">
+                            <separator string="Consolidation" colspan="2"/>
+                            <field name="consolidation_rate_type"/>
+                            <field name="consolidation_mode"/>
+                        </group>
+                    </xpath>
+
+                    <field name="child_consol_ids" position="attributes">
+                        <attribute name="attrs" >{'readonly':[('type','not in',('consolidation','group_consol'))]}</attribute>
+                    </field>
+                </data>
             </field>
         </record>
         

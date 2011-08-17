@@ -46,7 +46,7 @@ class account_account(osv.osv):
                                                  'Consolidation Mode'),
     }
 
-
+    
 class account_account_type(osv.osv):
     _inherit = 'account.account.type'
 

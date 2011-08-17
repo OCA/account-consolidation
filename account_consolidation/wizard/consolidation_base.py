@@ -142,8 +142,7 @@ class account_consolidation_base(osv.osv_memory):
         return errors
 
     def check_all_periods(self, cr, uid, ids, context=None):
-        wizard_id = ids[0]
-        form = self.browse(cr, uid, wizard_id, context=context)
+        form = self.browse(cr, uid, ids[0], context=context)
         fy_to_check = [form.from_period_id.fiscalyear_id.id,
                        form.to_period_id.fiscalyear_id.id]
         fy_to_check = list(set(fy_to_check))  # unify the ids not to check them twice
@@ -167,24 +166,24 @@ class account_consolidation_base(osv.osv_memory):
         res = {}
         account_ids = account_obj.\
         _get_children_and_consol(cr, uid, chart_account_id, context=context)
-        accounts = account_obj.browse(cr, uid, account_ids, context)
-        for account in accounts:
+
+        # do not consolidate chart root
+        account_ids.remove(chart_account_id)
+        
+        for account in account_obj.browse(cr, uid, account_ids, context):
             holding = context.get('holding_coa', False)
+
+            # do not consolidate to view accounts
             if holding and account.type == 'view':
                 continue
-                
-            res[account.code] = {}
-            if holding:
-                res[account.code].update({'browse': account})
 
-            if context.get('validate', False):
-                # for all (virtual) chart of accounts, when called from the check wizard
-                res[account.code].update({
-                    'validate': {  # values to validate holding vs subsidiaries
-                        'parent': account.parent_id.code,
-                        'level': account.level,
-                        'active': account.active}
-                })
+            # only consolidate the consolidation accounts
+            if not holding and account.type != 'consolidation':
+                continue
+
+            res[account.code] = {}
+            # we'll need the browse object during the "consolidate wizard" for the holding
+            res[account.code] = holding and account or True
 
         return res
 
@@ -195,30 +194,19 @@ class account_consolidation_base(osv.osv_memory):
             The Holding's CoA may hold accounts which do not exist in the Subsidiary's Virtual CoA.
         """
         context = context or {}
-        misconfigured_accounts = {}
-        check_ctx = context.copy()
-        check_ctx.update({'validate': True})
-        holding_accounts = self._chart_accounts_data(cr, uid, ids, holding_chart_account_id, context=check_ctx)
-        subsidiary_accounts = self._chart_accounts_data(cr, uid, ids, subsidiary_chart_account_id, context=check_ctx)
+        holding_ctx = context.copy()
+        holding_ctx.update({'holding_coa': True})
+        holding_accounts = self._chart_accounts_data(cr, uid, ids, holding_chart_account_id, context=holding_ctx)
+        subsidiary_accounts = self._chart_accounts_data(cr, uid, ids, subsidiary_chart_account_id, context=context)
         # accounts which are configured on the subsidiary VCoA but not on the holding CoA
-        spare_accounts = [code for code in subsidiary_accounts
+        spare_accounts = [code for code
+                          in subsidiary_accounts
                           if code not in holding_accounts]
 
-        # misconfigured accounts
-        for code, values in holding_accounts.iteritems():
-            if not subsidiary_accounts.get(code, False):
-                pass  # if you want to get the list of accounts existing on the holding
-                      # but not on the subsidiary you will get it here
-            else:
-                for field, value in values['validate'].iteritems():
-                    if subsidiary_accounts[code]['validate'].get(field, False) != value:
-                        misconfigured_accounts[code] = {field: value}
-
-        return spare_accounts, misconfigured_accounts
+        return spare_accounts
 
     def check_account_charts(self, cr, uid, ids, context=None):
-        wizard_id = ids[0]
-        form = self.browse(cr, uid, wizard_id, context=context)
+        form = self.browse(cr, uid, ids[0], context=context)
 
         invalid_items_per_company = {}
         for subsidiary_chart in form.subsidiary_chart_ids:
@@ -237,6 +225,12 @@ class account_consolidation_base(osv.osv_memory):
             Proceed with all checks before launch any consolidation step
             This is a base method intended to be inherited with the next consolidation steps
         """
+        form = self.browse(cr, uid, ids[0], context=context)
+
+        company_ids = [subs_chart.company_id.id for subs_chart in form.subsidiary_chart_ids]
+        if len(set(company_ids)) != len(form.subsidiary_chart_ids):
+            raise osv.except_osv(_('Error'),
+                                 _('You cannot select the same company twice!'))
 
         if self.check_all_periods(cr, uid, ids, context=context):
             raise osv.except_osv(_('Error'),
