@@ -46,7 +46,9 @@ class account_account(osv.osv):
                                                  'Consolidation Mode'),
     }
 
-    
+account_account()
+
+
 class account_account_type(osv.osv):
     _inherit = 'account.account.type'
 
@@ -65,6 +67,8 @@ class account_account_type(osv.osv):
         'consolidation_mode': 'period',
     }
 
+account_account_type()
+
 
 class account_move(osv.osv):
     _inherit = 'account.move'
@@ -74,3 +78,5 @@ class account_move(osv.osv):
         'account_journal_reversal': fields.boolean('To be reversed'),
         'consol_company_id': fields.many2one('res.company', 'Is a consolidation from company'),
     }
+
+account_move()

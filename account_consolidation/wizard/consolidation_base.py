@@ -52,8 +52,8 @@ class account_consolidation_base(osv.osv_memory):
                                                  'Chart of Accounts',
                                                  required=True,
                                                  domain=[('parent_id', '=', False)]),
-        'subsidiary_chart_ids': fields.one2many('account.consolidation.subsidiary_chart',
-                                             'wizard_id', 'Companies', required=True),
+        'subsidiary_ids': fields.many2many('res.company', 'account_conso_comp_rel', 'id', 'id',
+                                           'Subsidiaries', required=True)
     }
 
     _defaults = {
@@ -61,7 +61,18 @@ class account_consolidation_base(osv.osv_memory):
     }
 
     def on_change_company_id(self, cr, uid, ids, company_id, context=None):
-        comp_chart_obj = self.pool.get('account.consolidation.subsidiary_chart')
+        """
+        On change of the company, set the chart of account and the subsidiaries
+
+        @param self: The object pointer
+        @param cr: the current row, from the database cursor,
+        @param uid: the current user’s ID for security checks,
+        @param ids: List of the wizard IDs (commonly the first element is the current ID)
+        @param company_id: ID of the selected company
+        @param context: A standard dictionary for contextual values
+
+        @return: dict of values to change
+        """
         company_obj = self.pool.get('res.company')
 
         result = {}
@@ -69,20 +80,24 @@ class account_consolidation_base(osv.osv_memory):
         if company.consolidation_chart_account_id:
             result['main_chart_account_id'] = company.consolidation_chart_account_id.id
 
-        # FIXME : wizard id error... (code to fill in the child companies in the wizard)
-        #missing wizard_id in comp_chart_obj, but ids input parameter is an empty list...
-#        result['subsidiary_chart_ids'] = []
-#        for child in company.child_ids:
-#            child_comp_chart = {'company_id': child.id}
-#            child_comp_chart.update(comp_chart_obj.\
-#            on_change_company_id(cr, uid, ids, child.id, context=context)['value'])
-#            result['subsidiary_chart_ids'].append(
-#                comp_chart_obj.create(cr, uid, child_comp_chart, context=context)
-#            )
+        result['subsidiary_ids'] = [child.id for child in company.child_ids]
 
         return {'value': result}
 
     def on_change_from_period_id(self, cr, uid, ids, from_period_id, to_period_id, context=None):
+        """
+        On change of the From period, set the To period to the same period if it is empty
+
+        @param self: The object pointer
+        @param cr: the current row, from the database cursor,
+        @param uid: the current user’s ID for security checks,
+        @param ids: List of the wizard IDs (commonly the first element is the current ID)
+        @param from_period_id: ID of the selected from period id
+        @param to_period_id: ID of the current from period id
+        @param context: A standard dictionary for contextual values
+
+        @return: dict of values to change
+        """
         result = {}
         if not to_period_id:
             result['to_period_id'] = from_period_id
@@ -90,13 +105,24 @@ class account_consolidation_base(osv.osv_memory):
 
     def check_subsidiary_periods(self, cr, uid, ids, holding_company_id, subs_company_id, fyear_ids, context=None):
         """
-            Check Subsidiary company periods vs Holding company periods
-            Return a list of errors
+        Check Subsidiary company periods vs Holding company periods and returns a list of errors
+        All the periods defined within the group must be the same (same beginning and ending dates)
+
+        @param self: The object pointer
+        @param cr: the current row, from the database cursor,
+        @param uid: the current user’s ID for security checks,
+        @param ids: List of the wizard IDs (commonly the first element is the current ID)
+        @param holding_company_id: ID of the holding company
+        @param subs_company_id: ID of the subsidiary company to check
+        @param fyear_ids: List of IDs of the fiscal years to compare
+        @param context: A standard dictionary for contextual values
+
+        @return: dict of list with errors for each company {company_id: ['error 1', 'error2']}
         """
         company_obj = self.pool.get('res.company')
         period_obj = self.pool.get('account.period')
         fy_obj = self.pool.get('account.fiscalyear')
-        
+
         # contains errors
         errors = []
         for fyear_id in fy_obj.browse(cr, uid, fyear_ids, context=context):
@@ -142,25 +168,51 @@ class account_consolidation_base(osv.osv_memory):
         return errors
 
     def check_all_periods(self, cr, uid, ids, context=None):
+        """
+        Call the period check on each period of all subsidiaries
+        Returns the errors by subsidiary
+
+        @param self: The object pointer
+        @param cr: the current row, from the database cursor,
+        @param uid: the current user’s ID for security checks,
+        @param ids: List of the wizard IDs (commonly the first element is the current ID)
+        @param context: A standard dictionary for contextual values
+
+        @return: dict of list with errors for each company {company_id: ['error 1', 'error2']}
+        """
         form = self.browse(cr, uid, ids[0], context=context)
         fy_to_check = [form.from_period_id.fiscalyear_id.id,
                        form.to_period_id.fiscalyear_id.id]
         fy_to_check = list(set(fy_to_check))  # unify the ids not to check them twice
 
         errors_by_company = {}
-        for subsidiary_chart in form.subsidiary_chart_ids:
-            errors  = \
+        for subsidiary in form.subsidiary_ids:
+            errors = \
                 self.check_subsidiary_periods(cr, uid, ids,
                                               form.company_id.id,
-                                              subsidiary_chart.company_id.id,
+                                              subsidiary.id,
                                               fy_to_check,
                                               context=context)
             if errors:
-                errors_by_company[subsidiary_chart.company_id.id] = errors
+                errors_by_company[subsidiary.id] = errors
 
         return errors_by_company
 
     def _chart_accounts_data(self, cr, uid, ids, chart_account_id, context=None):
+        """
+        Returns the list of accounts to use for the consolidation for the holding
+        or the subsidiaries. Keys of the returned dict are the account codes and
+        if the context is holding_coa, dict values are the browse instances of the accounts
+
+        @param self: The object pointer
+        @param cr: the current row, from the database cursor,
+        @param uid: the current user’s ID for security checks,
+        @param ids: List of the wizard IDs (commonly the first element is the current ID)
+        @chart_account_id: ID of the "Chart" Account for which we want the account codes
+        @param context: A standard dictionary for contextual values
+
+        @return: dict with {account codes: browse instances}
+        """
         context = context or {}
         account_obj = self.pool.get('account.account')
         res = {}
@@ -169,7 +221,7 @@ class account_consolidation_base(osv.osv_memory):
 
         # do not consolidate chart root
         account_ids.remove(chart_account_id)
-        
+
         for account in account_obj.browse(cr, uid, account_ids, context):
             holding = context.get('holding_coa', False)
 
@@ -189,9 +241,19 @@ class account_consolidation_base(osv.osv_memory):
 
     def check_subsidiary_chart(self, cr, uid, ids, holding_chart_account_id, subsidiary_chart_account_id, context=None):
         """
-            Check a Holding Chart of Accounts vs a Subsidiary Virtual Chart of Accounts
-            All the accounts of the Virtual CoA must exist in the Holding CoA.
-            The Holding's CoA may hold accounts which do not exist in the Subsidiary's Virtual CoA.
+        Check a Holding Chart of Accounts vs a Subsidiary Virtual Chart of Accounts
+        All the accounts of the Virtual CoA must exist in the Holding CoA.
+        The Holding's CoA may hold accounts which do not exist in the Subsidiary's Virtual CoA.
+
+        @param self: The object pointer
+        @param cr: the current row, from the database cursor,
+        @param uid: the current user’s ID for security checks,
+        @param ids: List of the wizard IDs (commonly the first element is the current ID)
+        @param holding_chart_account_id: ID of the "Chart" Account of the holding company
+        @param subsidiary_chart_account_id: ID of the "Chart" Account of the subsidiary company to check
+        @param context: A standard dictionary for contextual values
+
+        @return: List of accounts existing on subsidiary but no on holding COA
         """
         context = context or {}
         holding_ctx = context.copy()
@@ -206,31 +268,43 @@ class account_consolidation_base(osv.osv_memory):
         return spare_accounts
 
     def check_account_charts(self, cr, uid, ids, context=None):
+        """
+        Check the chart of accounts of the holding vs each virtual chart of accounts of the subsidiaries
+
+        @param self: The object pointer
+        @param cr: the current row, from the database cursor,
+        @param uid: the current user’s ID for security checks,
+        @param ids: List of the wizard IDs (commonly the first element is the current ID)
+        @param context: A standard dictionary for contextual values
+        """
         form = self.browse(cr, uid, ids[0], context=context)
 
         invalid_items_per_company = {}
-        for subsidiary_chart in form.subsidiary_chart_ids:
+        for subsidiary in form.subsidiary_ids:
+            if not subsidiary.consolidation_chart_account_id:
+                raise osv.except_osv(_('Error'), _('No chart of accounts for company %s') % (subsidiary,))
+
             invalid_items = \
             self.check_subsidiary_chart(cr, uid, ids,
                                         form.holding_chart_account_id.id,
-                                        subsidiary_chart.chart_account_id.id,
+                                        subsidiary.company_id.consolidation_chart_account_id.id,
                                         context=context)
             if any(invalid_items):
-                invalid_items_per_company[subsidiary_chart.company_id.id] = invalid_items
+                invalid_items_per_company[subsidiary.id] = invalid_items
 
         return invalid_items_per_company
 
     def run_consolidation(self, cr, uid, ids, context=None):
         """
-            Proceed with all checks before launch any consolidation step
-            This is a base method intended to be inherited with the next consolidation steps
-        """
-        form = self.browse(cr, uid, ids[0], context=context)
+        Proceed with all checks before launch any consolidation step
+        This is a base method intended to be inherited with the next consolidation steps
 
-        company_ids = [subs_chart.company_id.id for subs_chart in form.subsidiary_chart_ids]
-        if len(set(company_ids)) != len(form.subsidiary_chart_ids):
-            raise osv.except_osv(_('Error'),
-                                 _('You cannot select the same company twice!'))
+        @param self: The object pointer
+        @param cr: the current row, from the database cursor,
+        @param uid: the current user’s ID for security checks,
+        @param ids: List of the wizard IDs (commonly the first element is the current ID)
+        @param context: A standard dictionary for contextual values
+        """
 
         if self.check_all_periods(cr, uid, ids, context=context):
             raise osv.except_osv(_('Error'),

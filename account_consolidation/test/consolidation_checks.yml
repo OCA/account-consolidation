@@ -1,0 +1,34 @@
+-
+  In order to test the consolidation checks, I use the wizard to check if the periods are the same on the Holding and its Subsidiaries
+-
+  !record {model: account.consolidation.check, id: conso_check_period_0}:
+    from_period_id: account.period_1
+    to_period_id: account.period_1
+    holding_chart_account_id: account.chart0
+    subsidiary_ids:
+      - subsidiary_a
+      - subsidiary_b
+-
+  I click on Check Periods Button to check the periods
+-
+  !python {model: account.consolidation.check}: |
+    self.check_all_periods(cr, uid, [ref("conso_check_period_0")], {"lang": 'en_US',
+      "active_model": "ir.ui.menu", "active_ids": [ref("account_consolidation.menu_consolidation_checks")],
+      "tz": False, "active_id": ref("account_consolidation.menu_consolidation_checks"), })
+
+-
+  In order to test the consolidation checks, I use the wizard to check if the virtual charts and chart are correct between subsidiaries and holding
+-
+  !record {model: account.consolidation.check, id: conso_check_chart_0}:
+    from_period_id: account.period_1
+    to_period_id: account.period_1
+    holding_chart_account_id: account.chart0
+-
+  I click on Check Charts Button to check the chart of accounts
+-
+  !python {model: account.consolidation.check}: |
+    self.check_account_charts(cr, uid, [ref("conso_check_chart_0")], {"lang": 'en_US',
+      "active_model": "ir.ui.menu", "active_ids": [ref("account_consolidation.menu_consolidation_checks")],
+      "tz": False, "active_id": ref("account_consolidation.menu_consolidation_checks"), })
+
+# TODO : failed checks

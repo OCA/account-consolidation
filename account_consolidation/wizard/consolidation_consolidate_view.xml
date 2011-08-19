@@ -20,7 +20,13 @@
                     <separator string="Consolidation Difference Accounts" colspan="4"/>
                     <field name="gain_account_id" domain="[('type','&lt;&gt;','view'), ('id', 'child_of', [holding_chart_account_id])]"/>
                     <field name="loss_account_id" domain="[('type','&lt;&gt;','view'), ('id', 'child_of', [holding_chart_account_id])]"/>
-                    <field name="subsidiary_chart_ids" widget="one2many_list" nolabel="1" colspan="4" required="True"/>
+                    <separator string="Subsidiaries to Consolidate" colspan="4"/>
+                    <field name="subsidiary_ids" colspan="4" nolabel="1" required="True">
+                        <tree>
+                            <field name="name"/>
+                            <field name="consolidation_chart_account_id"/>
+                        </tree>
+                    </field>
 				</group>
 				<separator colspan="4"/>
 			    <group col="2" colspan="4">

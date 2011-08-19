@@ -37,6 +37,8 @@ class res_company(osv.osv):
 
     _columns = {
         'consolidation_chart_account_id': fields.many2one('account.account',
-                                            'Default Chart of Accounts for Consolidation',
+                                            'Chart of Accounts for Consolidation',
                                             domain=[('parent_id', '=', False)]),
     }
+
+res_company()

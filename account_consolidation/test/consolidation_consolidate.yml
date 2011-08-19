@@ -1,0 +1,43 @@
+-
+  In order to test the consolidation, I set the Virtual COA on subsidiary A
+-
+  !record {model: res.company, id: subsidiary_a}:
+    consolidation_chart_account_id: virtual_chart_subsidiary_a
+
+-
+  In order to test the consolidation, I set the Virtual COA on subsidiary B
+-
+  !record {model: res.company, id: subsidiary_b}:
+    consolidation_chart_account_id: virtual_chart_subsidiary_b
+
+-
+  In order to test the consolidation, I use the wizard to consolidate a period
+-
+  !record {model: account.consolidation.consolidate, id: consolidate_0}:
+    from_period_id: account.period_1
+    to_period_id: account.period_1
+    journal_id: account.miscellaneous_journal
+    target_move: posted
+    holding_chart_account_id: account.chart0
+    gain_account_id: account.income_fx_income
+    loss_account_id: account.income_fx_expense
+    subsidiary_ids:
+      - subsidiary_a
+      - subsidiary_b
+-
+  I click on Consolidate Button to run the consolidation
+-
+  !python {model: account.consolidation.consolidate}: |
+    self.run_consolidation(cr, uid, [ref("consolidate_0")], {"lang": 'en_US',
+      "active_model": "ir.ui.menu", "active_ids": [ref("account_consolidation.menu_consolidation_consolidate")],
+      "tz": False, "active_id": ref("account_consolidation.menu_consolidation_consolidate"), })
+
+#-
+#  After consolidation, I check the credit of the Expense Consolidation Account
+#-
+#  !assert {model: account.account, id: chart0_conso_expense, string: "The credit of the VAE account on holding is 1499.82"}:
+
+#-
+#  After consolidation, I check the debit of the Income Consolidation Account
+#-
+#  !assert {model: account.account, id: chart0_conso_income, string: "The debit of the VAI account on holding is 1499.82"}:

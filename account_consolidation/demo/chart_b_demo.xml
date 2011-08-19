@@ -329,5 +329,9 @@
             <field name="child_consol_ids" eval="[(6,0,[income_view_b])]"/>
         </record>
 
+        <record id="subsidiary_b" model="res.company">
+            <field name="consolidation_chart_account_id" ref="virtual_chart_subsidiary_b"/>
+        </record>
+
     </data>
 </openerp>

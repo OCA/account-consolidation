@@ -331,5 +331,10 @@
         </record>
 
 
+        <!-- Set Virtual Chart of Accounts on Subsidiaries -->
+        <record id="subsidiary_a" model="res.company">
+            <field name="consolidation_chart_account_id" ref="virtual_chart_subsidiary_a"/>
+        </record>
+
     </data>
 </openerp>

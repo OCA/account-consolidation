@@ -37,6 +37,16 @@ class account_consolidation_base(osv.osv_memory):
     _description = 'Consolidation Checks. Model used for views'
 
     def check_account_charts(self, cr, uid, ids, context=None):
+        """
+        Action launched with the button on the view.
+        Check the account charts and display a report of the errors
+
+        @param self: The object pointer
+        @param cr: the current row, from the database cursor,
+        @param uid: the current user’s ID for security checks,
+        @param ids: List of the wizard IDs (commonly the first element is the current ID)
+        @param context: A standard dictionary for contextual values
+        """
         invalid_items_per_company = \
         super(account_consolidation_base, self).check_account_charts(cr, uid, ids, context=context)
         if invalid_items_per_company:
@@ -47,6 +57,16 @@ class account_consolidation_base(osv.osv_memory):
         return True
 
     def check_all_periods(self, cr, uid, ids, context=None):
+        """
+        Action launched with the button on the view.
+        Check the periods and display a report of the errors
+
+        @param self: The object pointer
+        @param cr: the current row, from the database cursor,
+        @param uid: the current user’s ID for security checks,
+        @param ids: List of the wizard IDs (commonly the first element is the current ID)
+        @param context: A standard dictionary for contextual values
+        """
         errors_by_company = \
         super(account_consolidation_base, self).check_all_periods(cr, uid, ids, context=context)
         if errors_by_company:

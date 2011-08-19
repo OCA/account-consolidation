@@ -32,7 +32,7 @@
 
 {
      "name" : "Account Consolidation",
-     "version" : "1.0",
+     "version" : "0.0",
      "author" : "Camptocamp",
      "category" : "Generic Modules/Accounting",
      "description":
@@ -53,13 +53,14 @@ Account consolidation module. Coding in progress...
      "update_xml" : [
          'company_view.xml',
          'account_view.xml',
-         'wizard/subsidiary_chart_view.xml',
          'wizard/consolidation_check_view.xml',
          'wizard/consolidation_consolidate_view.xml',
          'consolidation_menu.xml',
      ],
     'test': [
-        #'test/account_consolidation.yml',
+        'test/test_data.yml',
+        'test/consolidation_checks.yml',
+        'test/consolidation_consolidate.yml',
             ],
      "active": False,
      "installable": True

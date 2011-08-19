@@ -1,0 +1,146 @@
+-
+  Creating a account.move record
+-
+  !record {model: account.move, id: account_move_0}:
+    company_id: subsidiary_b
+    date: '2011-01-02'
+    journal_id: account_journal_sale1
+    line_id:
+      - company_id: subsidiary_b
+        account_id: a_sale_b
+        amount_currency: 0.0
+        credit: 0.0
+        date: '2011-01-01'
+        debit: 1240.0
+        journal_id: account_journal_sale1
+        name: Entry 0
+        period_id: period_b_1
+        quantity: 0.0
+        state: valid
+        tax_amount: 0.0
+      - company_id: subsidiary_b
+        account_id: cog_b
+        amount_currency: 0.0
+        credit: 1240.0
+        date: '2011-01-01'
+        debit: 0.0
+        journal_id: account_journal_sale1
+        name: Entry 0
+        period_id: period_b_1
+        quantity: 0.0
+        state: valid
+        tax_amount: 0.0
+    name: /
+    period_id: period_b_1
+    state: posted
+
+
+-
+  Creating a account.move record
+-
+  !record {model: account.move, id: account_move_1}:
+    company_id: account_consolidation.subsidiary_a
+    date: '2011-01-20'
+    journal_id: account_journal_sale0
+    line_id:
+      - account_id: account_consolidation.a_sale_a
+        amount_currency: 0.0
+        company_id: account_consolidation.subsidiary_a
+        credit: 0.0
+        date: '2011-01-20'
+        debit: 40.0
+        journal_id: account_journal_sale0
+        name: Entry 1
+        period_id: account_consolidation.period_a_1
+        quantity: 0.0
+        state: valid
+        tax_amount: 0.0
+      - account_id: account_consolidation.cog_a
+        amount_currency: 0.0
+        company_id: account_consolidation.subsidiary_a
+        credit: 40.0
+        date: '2011-01-20'
+        debit: 0.0
+        journal_id: account_journal_sale0
+        name: Entry 1
+        period_id: account_consolidation.period_a_1
+        quantity: 0.0
+        state: valid
+        tax_amount: 0.0
+    name: /
+    period_id: account_consolidation.period_a_1
+    state: posted
+
+
+-
+  Creating a account.move record
+-
+  !record {model: account.move, id: account_move_2}:
+    company_id: account_consolidation.subsidiary_a
+    date: '2011-02-23'
+    journal_id: account_journal_sale0
+    line_id:
+      - account_id: account_consolidation.a_sale_a
+        amount_currency: 0.0
+        company_id: account_consolidation.subsidiary_a
+        credit: 0.0
+        date: '2011-02-01'
+        debit: 200.0
+        journal_id: account_journal_sale0
+        name: Entry 2
+        period_id: account_consolidation.period_a_2
+        quantity: 0.0
+        state: valid
+        tax_amount: 0.0
+      - account_id: account_consolidation.cog_a
+        amount_currency: 0.0
+        company_id: account_consolidation.subsidiary_a
+        credit: 200.0
+        date: '2011-02-01'
+        debit: 0.0
+        journal_id: account_journal_sale0
+        name: Entry 2
+        period_id: account_consolidation.period_a_2
+        quantity: 0.0
+        state: valid
+        tax_amount: 0.0
+    name: /
+    period_id: account_consolidation.period_a_2
+    state: posted
+
+
+-
+  Creating a account.move record
+-
+  !record {model: account.move, id: account_move_3}:
+    company_id: account_consolidation.subsidiary_a
+    date: '2011-01-15'
+    journal_id: account_journal_sale0
+    line_id:
+      - account_id: account_consolidation.cog_a
+        amount_currency: 0.0
+        company_id: account_consolidation.subsidiary_a
+        credit: 300.0
+        date: '2011-01-01'
+        debit: 0.0
+        journal_id: account_journal_sale0
+        name: Entry 3
+        period_id: account_consolidation.period_a_1
+        quantity: 0.0
+        state: valid
+        tax_amount: 0.0
+      - account_id: account_consolidation.a_sale_a
+        amount_currency: 0.0
+        company_id: account_consolidation.subsidiary_a
+        credit: 0.0
+        date: '2011-01-01'
+        debit: 300.0
+        journal_id: account_journal_sale0
+        name: Entry 3
+        period_id: account_consolidation.period_a_1
+        quantity: 0.0
+        state: valid
+        tax_amount: 0.0
+    name: /
+    period_id: account_consolidation.period_a_1
+    state: posted

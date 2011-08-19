@@ -13,7 +13,13 @@
                     <field name="from_period_id" on_change="on_change_from_period_id(from_period_id, to_period_id)" domain="[('company_id', '=', company_id)]"/>
                     <field name="to_period_id" domain="[('company_id', '=', company_id)]"/>
                     <field name="holding_chart_account_id" domain="[('company_id', '=', company_id), ('parent_id', '=', False)]"/>
-                    <field name="subsidiary_chart_ids" widget="one2many_list" nolabel="1" colspan="4" required="True"/>
+                    <separator string="Subsidiaries to Consolidate" colspan="4"/>
+                    <field name="subsidiary_ids" colspan="4" nolabel="1" required="True" domain="[('parent_id', '=', company_id)]">
+                        <tree>
+                            <field name="name"/>
+                            <field name="consolidation_chart_account_id"/>
+                        </tree>
+                    </field>
 				</group>
 				<separator colspan="4"/>
 			    <group col="3" colspan="4">
