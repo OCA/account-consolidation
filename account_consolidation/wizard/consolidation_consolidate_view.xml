@@ -10,6 +10,7 @@
 			<form string="Consolidation: Consolidate">
 			    <group col="4" colspan="6">
                     <field name="company_id" on_change="on_change_company_id(company_id)" invisible="True"/>
+                    <field name="fiscalyear_id" invisible="True"/>
                     <field name="from_period_id" on_change="on_change_from_period_id(from_period_id, to_period_id)" domain="[('company_id', '=', company_id)]"/>
                     <field name="to_period_id" domain="[('company_id', '=', company_id)]"/>
                     <field name="journal_id" domain="[('company_id', '=', company_id)]"/>
@@ -43,6 +44,7 @@
             <field name="res_model">account.consolidation.consolidate</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
+            <field name="help">Run the consolidation for the selected periods and subsidiaries.</field>
             <field name="target">new</field>
         </record>
 

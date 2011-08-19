@@ -37,6 +37,10 @@ class account_consolidation_consolidate(osv.osv_memory):
     _inherit = 'account.consolidation.base'
 
     _columns = {
+        'from_period_id': fields.many2one('account.period', 'Start Period', required=True,
+            help="Select the same period in 'from' and 'to' if you want to proceed with a single period."),
+        'to_period_id': fields.many2one('account.period', 'End Period', required=True,
+            help="The consolidation will be done at the very last date of the selected period."),
         'journal_id': fields.many2one('account.journal', 'Journal', required=True),
         'gain_account_id': fields.many2one('account.account', 'Gain Account', required=True,),
         'loss_account_id': fields.many2one('account.account', 'Loss Account', required=True,),
@@ -48,6 +52,40 @@ class account_consolidation_consolidate(osv.osv_memory):
     _defaults = {
         'target_move': 'posted'
     }
+
+    def _check_periods_fy(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        form = self.browse(cr, uid, ids[0], context=context)
+        if form.from_period_id.fiscalyear_id.id != form.to_period_id.fiscalyear_id.id:
+            return False
+        return True
+
+    _constraints = [
+        (_check_periods_fy, 'Start Period and End Period must be of the same Fiscal Year !', ['from_period_id', 'to_period_id']),
+    ]
+
+    def on_change_from_period_id(self, cr, uid, ids, from_period_id, to_period_id, context=None):
+        """
+        On change of the From period, set the To period to the same period if it is empty
+
+        @param self: The object pointer
+        @param cr: the current row, from the database cursor,
+        @param uid: the current user’s ID for security checks,
+        @param ids: List of the wizard IDs (commonly the first element is the current ID)
+        @param from_period_id: ID of the selected from period id
+        @param to_period_id: ID of the current from period id
+        @param context: A standard dictionary for contextual values
+
+        @return: dict of values to change
+        """
+        result = {}
+        if not to_period_id:
+            result['to_period_id'] = from_period_id
+
+        result['fiscalyear_id'] = self.pool.get('account.period').\
+        browse(cr, uid, from_period_id).fiscalyear_id.id
+        return {'value': result}
 
     def _currency_rate_type(self, cr, uid, ids, account, context=None):
         """

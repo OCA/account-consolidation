@@ -30,8 +30,10 @@
 
 from osv import osv
 
+from tools.translate import _
 
-class account_consolidation_base(osv.osv_memory):
+
+class account_consolidation_check(osv.osv_memory):
     _name = 'account.consolidation.check'
     _inherit = 'account.consolidation.base'
     _description = 'Consolidation Checks. Model used for views'
@@ -48,11 +50,23 @@ class account_consolidation_base(osv.osv_memory):
         @param context: A standard dictionary for contextual values
         """
         invalid_items_per_company = \
-        super(account_consolidation_base, self).check_account_charts(cr, uid, ids, context=context)
+        super(account_consolidation_check, self).check_account_charts(cr, uid, ids, context=context)
         if invalid_items_per_company:
-            raise osv.except_osv('Error',
-                                 'Invalid charts, TODO display a report %s'
-                                 % (invalid_items_per_company,))
+            err_lines = []
+            for company_id, account_codes in invalid_items_per_company.iteritems():
+                company_obj = self.pool.get('res.company')
+                company = company_obj.browse(cr, uid, company_id, context=context)
+                err_lines.append(_("%s :") % (company.name,))
+                [err_lines.append(_("Account with code %s does not exist on the Holding company.") % (account_code,))
+                                  for account_code
+                                  in account_codes]
+                err_lines.append('')
+
+            raise osv.except_osv(_('Invalid charts'),
+                                 '\n'.join(err_lines))
+
+        else:
+            raise osv.except_osv(_('Validation'), _('Chart of Accounts are OK.'))
         # open a confirmation view ?
         return True
 
@@ -68,11 +82,23 @@ class account_consolidation_base(osv.osv_memory):
         @param context: A standard dictionary for contextual values
         """
         errors_by_company = \
-        super(account_consolidation_base, self).check_all_periods(cr, uid, ids, context=context)
+        super(account_consolidation_check, self).check_all_periods(cr, uid, ids, context=context)
+
         if errors_by_company:
-            raise osv.except_osv('Error',
-                                 'Invalid periods, TODO display a report %s' % (errors_by_company,))
+            company_obj = self.pool.get('res.company')
+
+            err_lines = []
+            for company_id, errors in errors_by_company.iteritems():
+                company = company_obj.browse(cr, uid, company_id, context=context)
+                err_lines.append(_("%s :") % (company.name,))
+                [err_lines.append(error) for error in errors]
+                err_lines.append('')
+
+            raise osv.except_osv(_('Invalid periods'),
+                                 '\n'.join(err_lines))
+        else:
+            raise osv.except_osv(_('Validation'), _('Periods are OK.'))
         # open a confirmation view ?
         return True
 
-account_consolidation_base()
+account_consolidation_check()

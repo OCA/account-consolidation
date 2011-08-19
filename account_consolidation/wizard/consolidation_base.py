@@ -43,10 +43,8 @@ class account_consolidation_base(osv.osv_memory):
         return self.pool.get('res.company').search(cr, uid, [('parent_id', '=', False)])[0]
 
     _columns = {
-        'from_period_id': fields.many2one('account.period', 'Start Period', required=True,
-            help="Select the same period in 'from' and 'to' if you want to proceed with a single period."),
-        'to_period_id': fields.many2one('account.period', 'End Period', required=True,
-            help="The consolidation will be done at the very last date of the selected period."),
+        'fiscalyear_id': fields.many2one('account.fiscalyear', 'Fiscal Year', required=True,
+                                         help="The checks will be done on the periods of the selected fiscal year."),
         'company_id': fields.many2one('res.company', 'Company', required=True),
         'holding_chart_account_id': fields.many2one('account.account',
                                                  'Chart of Accounts',
@@ -84,26 +82,7 @@ class account_consolidation_base(osv.osv_memory):
 
         return {'value': result}
 
-    def on_change_from_period_id(self, cr, uid, ids, from_period_id, to_period_id, context=None):
-        """
-        On change of the From period, set the To period to the same period if it is empty
-
-        @param self: The object pointer
-        @param cr: the current row, from the database cursor,
-        @param uid: the current user’s ID for security checks,
-        @param ids: List of the wizard IDs (commonly the first element is the current ID)
-        @param from_period_id: ID of the selected from period id
-        @param to_period_id: ID of the current from period id
-        @param context: A standard dictionary for contextual values
-
-        @return: dict of values to change
-        """
-        result = {}
-        if not to_period_id:
-            result['to_period_id'] = from_period_id
-        return {'value': result}
-
-    def check_subsidiary_periods(self, cr, uid, ids, holding_company_id, subs_company_id, fyear_ids, context=None):
+    def check_subsidiary_periods(self, cr, uid, ids, holding_company_id, subs_company_id, fyear_id, context=None):
         """
         Check Subsidiary company periods vs Holding company periods and returns a list of errors
         All the periods defined within the group must be the same (same beginning and ending dates)
@@ -114,7 +93,7 @@ class account_consolidation_base(osv.osv_memory):
         @param ids: List of the wizard IDs (commonly the first element is the current ID)
         @param holding_company_id: ID of the holding company
         @param subs_company_id: ID of the subsidiary company to check
-        @param fyear_ids: List of IDs of the fiscal years to compare
+        @param fyear_id: ID of the fiscal years to compare
         @param context: A standard dictionary for contextual values
 
         @return: dict of list with errors for each company {company_id: ['error 1', 'error2']}
@@ -123,47 +102,53 @@ class account_consolidation_base(osv.osv_memory):
         period_obj = self.pool.get('account.period')
         fy_obj = self.pool.get('account.fiscalyear')
 
+        holding_fiscal_year = fy_obj.browse(cr, uid, fyear_id, context=context)
+
         # contains errors
         errors = []
-        for fyear_id in fy_obj.browse(cr, uid, fyear_ids, context=context):
-            # get holding fiscal year and periods
-            holding = company_obj.browse(cr, uid, holding_company_id, context=context)
-            subsidiary = company_obj.browse(cr, uid, subs_company_id, context=context)
 
-            holding_fiscal_year = fyear_id
-            holding_periods_ids = period_obj.search(cr, uid,
-                [('company_id', '=', holding.id),
-                 ('fiscalyear_id', '=', holding_fiscal_year.id)],
-                context=context)
-            holding_periods = period_obj.browse(cr, uid, holding_periods_ids, context=context)
+        # get holding fiscal year and periods
+        holding = company_obj.browse(cr, uid, holding_company_id, context=context)
+        subsidiary = company_obj.browse(cr, uid, subs_company_id, context=context)
 
-            # get subsidiary fiscal year and periods
-            subsidiary_fiscal_year = fy_obj.search(cr, uid,
-                [('company_id', '=', subsidiary.id),
-                 ('date_start', '=', holding_fiscal_year.date_start),
-                 ('date_stop', '=', holding_fiscal_year.date_stop),
-                ])
-            if not subsidiary_fiscal_year:
-                errors.append(_('The fiscal year of the subsidiary company %s does not exists from %s to %s')
-                % (subsidiary.name, holding_fiscal_year.date_start, holding_fiscal_year.date_stop))
+        holding_periods_ids = period_obj.search(cr, uid,
+            [('company_id', '=', holding.id),
+             ('fiscalyear_id', '=', holding_fiscal_year.id)],
+            context=context)
+        holding_periods = period_obj.browse(cr, uid, holding_periods_ids, context=context)
 
+        # get subsidiary fiscal year and periods
+        subsidiary_fiscal_year = fy_obj.search(cr, uid,
+            [('company_id', '=', subsidiary.id),
+             ('date_start', '=', holding_fiscal_year.date_start),
+             ('date_stop', '=', holding_fiscal_year.date_stop),
+            ])
+        if not subsidiary_fiscal_year:
+            errors.append(_('The fiscal year of the subsidiary company %s does not exists from %s to %s')
+            % (subsidiary.name, holding_fiscal_year.date_start, holding_fiscal_year.date_stop))
+        else:
             subsidiary_period_ids = period_obj.search(cr, uid,
                 [('company_id', '=', subsidiary.id),
                  ('fiscalyear_id', '=', subsidiary_fiscal_year[0])],  # 0 because there can be only 1 fiscal year on the same dates as the holding
                 context=context)
             subsidiary_periods = period_obj.browse(cr, uid, subsidiary_period_ids, context=context)
 
-            # check subsidiary periods vs holding periods
-            for holding_period in holding_periods:
+            # a holding fiscal year may have more periods than a subsidiary (a subsidiary created at the middle of the year for example)
+            # but the reverse situation is not allowed
+            if len(holding_periods) < len(subsidiary_periods):
+                errors.append(_('Holding company has less periods than the subsidiary company %s!') % (subsidiary.name,))
+
+            # check subsidiary periods dates vs holding periods for each period of the subsidiary
+            for subsidiary_period in subsidiary_periods:
                 period_exists = False
-                for subsidiary_period in subsidiary_periods:
+                for holding_period in holding_periods:
                     if subsidiary_period.date_start == holding_period.date_start \
                     and subsidiary_period.date_stop == holding_period.date_stop:
-                        period_exists = True
-                        break
+                            period_exists = True
+                            break
                 if not period_exists:
-                    errors.append(_('Period not found in subsidiary company %s from %s to %s')
-                    % (holding.name, holding_period.date_start, holding_period.date_stop))
+                    errors.append(_('Period from %s to %s not found in holding company %s')
+                    % (subsidiary_period.date_start, subsidiary_period.date_stop, holding.name))
 
         return errors
 
@@ -181,9 +166,6 @@ class account_consolidation_base(osv.osv_memory):
         @return: dict of list with errors for each company {company_id: ['error 1', 'error2']}
         """
         form = self.browse(cr, uid, ids[0], context=context)
-        fy_to_check = [form.from_period_id.fiscalyear_id.id,
-                       form.to_period_id.fiscalyear_id.id]
-        fy_to_check = list(set(fy_to_check))  # unify the ids not to check them twice
 
         errors_by_company = {}
         for subsidiary in form.subsidiary_ids:
@@ -191,7 +173,7 @@ class account_consolidation_base(osv.osv_memory):
                 self.check_subsidiary_periods(cr, uid, ids,
                                               form.company_id.id,
                                               subsidiary.id,
-                                              fy_to_check,
+                                              form.fiscalyear_id.id,
                                               context=context)
             if errors:
                 errors_by_company[subsidiary.id] = errors
@@ -264,7 +246,6 @@ class account_consolidation_base(osv.osv_memory):
         spare_accounts = [code for code
                           in subsidiary_accounts
                           if code not in holding_accounts]
-
         return spare_accounts
 
     def check_account_charts(self, cr, uid, ids, context=None):
@@ -287,7 +268,7 @@ class account_consolidation_base(osv.osv_memory):
             invalid_items = \
             self.check_subsidiary_chart(cr, uid, ids,
                                         form.holding_chart_account_id.id,
-                                        subsidiary.company_id.consolidation_chart_account_id.id,
+                                        subsidiary.consolidation_chart_account_id.id,
                                         context=context)
             if any(invalid_items):
                 invalid_items_per_company[subsidiary.id] = invalid_items

@@ -144,3 +144,171 @@
     name: /
     period_id: account_consolidation.period_a_1
     state: posted
+
+
+-
+  Creating a account.fiscalyear record with a missing period for january
+-
+  !record {model: account.fiscalyear, id: account_fiscalyear_fy0}:
+    code: FY2012
+    company_id: base.main_company
+    date_start: '2012-01-01'
+    date_stop: '2012-12-31'
+    name: FY2012
+    period_ids:
+      - code: 00/2012
+        company_id: base.main_company
+        date_start: '2012-01-01'
+        date_stop: '2012-01-01'
+        name: Opening Period
+        special: true
+      - code: 01/2012
+        company_id: base.main_company
+        date_start: '2012-01-01'
+        date_stop: '2012-01-31'
+        name: 01/2012
+      - code: 02/2012
+        company_id: base.main_company
+        date_start: '2012-02-01'
+        date_stop: '2012-02-29'
+        name: 02/2012
+      - code: 03/2012
+        company_id: base.main_company
+        date_start: '2012-03-01'
+        date_stop: '2012-03-31'
+        name: 03/2012
+      - code: 04/2012
+        company_id: base.main_company
+        date_start: '2012-04-01'
+        date_stop: '2012-04-30'
+        name: 04/2012
+      - code: 05/2012
+        company_id: base.main_company
+        date_start: '2012-05-01'
+        date_stop: '2012-05-31'
+        name: 05/2012
+      - code: 06/2012
+        company_id: base.main_company
+        date_start: '2012-06-01'
+        date_stop: '2012-06-30'
+        name: 06/2012
+      - code: 07/2012
+        company_id: base.main_company
+        date_start: '2012-07-01'
+        date_stop: '2012-07-31'
+        name: 07/2012
+      - code: 08/2012
+        company_id: base.main_company
+        date_start: '2012-08-01'
+        date_stop: '2012-08-31'
+        name: 08/2012
+      - code: 09/2012
+        company_id: base.main_company
+        date_start: '2012-09-01'
+        date_stop: '2012-09-30'
+        name: 09/2012
+      - code: 10/2012
+        company_id: base.main_company
+        date_start: '2012-10-01'
+        date_stop: '2012-10-31'
+        name: 10/2012
+      - code: 11/2012
+        company_id: base.main_company
+        date_start: '2012-11-01'
+        date_stop: '2012-11-30'
+        name: 11/2012
+      - code: 12/2012
+        company_id: base.main_company
+        date_start: '2012-12-01'
+        date_stop: '2012-12-31'
+        name: 12/2012
+
+
+-
+  Creating a account.fiscalyear record with a period in december but with different dates than the holding
+-
+  !record {model: account.fiscalyear, id: account_fiscalyear_fy1}:
+    code: FY2012
+    company_id: account_consolidation.subsidiary_b
+    date_start: '2012-01-01'
+    date_stop: '2012-12-31'
+    name: FY2012
+    period_ids:
+      - code: diff_dates
+        company_id: account_consolidation.subsidiary_b
+        date_start: '2012-12-15'
+        date_stop: '2012-12-31'
+        name: diff_dates
+
+
+-
+  Creating a account.fiscalyear record on subsidiary with a period for january (missing on holding)
+-
+  !record {model: account.fiscalyear, id: account_fiscalyear_fy2}:
+    code: FY2012
+    company_id: account_consolidation.subsidiary_a
+    date_start: '2012-01-01'
+    date_stop: '2012-12-31'
+    name: FY2012
+    period_ids:
+      - code: 00/2012
+        company_id: account_consolidation.subsidiary_a
+        date_start: '2012-01-01'
+        date_stop: '2012-01-01'
+        name: Opening Period
+        special: true
+      - code: 01/2012
+        company_id: account_consolidation.subsidiary_a
+        date_start: '2012-01-01'
+        date_stop: '2012-01-31'
+        name: 01/2012
+      - code: 02/2012
+        company_id: account_consolidation.subsidiary_a
+        date_start: '2012-02-01'
+        date_stop: '2012-02-29'
+        name: 02/2012
+      - code: 03/2012
+        company_id: account_consolidation.subsidiary_a
+        date_start: '2012-03-01'
+        date_stop: '2012-03-31'
+        name: 03/2012
+      - code: 04/2012
+        company_id: account_consolidation.subsidiary_a
+        date_start: '2012-04-01'
+        date_stop: '2012-04-30'
+        name: 04/2012
+      - code: 05/2012
+        company_id: account_consolidation.subsidiary_a
+        date_start: '2012-05-01'
+        date_stop: '2012-05-31'
+        name: 05/2012
+      - code: 06/2012
+        company_id: account_consolidation.subsidiary_a
+        date_start: '2012-06-01'
+        date_stop: '2012-06-30'
+        name: 06/2012
+      - code: 08/2012
+        company_id: account_consolidation.subsidiary_a
+        date_start: '2012-08-01'
+        date_stop: '2012-08-31'
+        name: 08/2012
+      - code: 09/2012
+        company_id: account_consolidation.subsidiary_a
+        date_start: '2012-09-01'
+        date_stop: '2012-09-30'
+        name: 09/2012
+      - code: 10/2012
+        company_id: account_consolidation.subsidiary_a
+        date_start: '2012-10-01'
+        date_stop: '2012-10-31'
+        name: 10/2012
+      - code: 11/2012
+        company_id: account_consolidation.subsidiary_a
+        date_start: '2012-11-01'
+        date_stop: '2012-11-30'
+        name: 11/2012
+      - code: 12/2012
+        company_id: account_consolidation.subsidiary_a
+        date_start: '2012-12-01'
+        date_stop: '2012-12-31'
+        name: 12/2012
