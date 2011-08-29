@@ -38,7 +38,7 @@ class account_consolidation_consolidate(osv.osv_memory):
 
     _columns = {
         'from_period_id': fields.many2one('account.period', 'Start Period', required=True,
-            help="Select the same period in 'from' and 'to' if you want to proceed with a single period."),
+            help="Select the same period in 'from' and 'to' if you want to proceed with a single period. Start Period is ignored for Year To Date accounts."),
         'to_period_id': fields.many2one('account.period', 'End Period', required=True,
             help="The consolidation will be done at the very last date of the selected period."),
         'journal_id': fields.many2one('account.journal', 'Journal', required=True),
@@ -81,11 +81,16 @@ class account_consolidation_consolidate(osv.osv_memory):
         @return: dict of values to change
         """
         result = {}
+        period_obj = self.pool.get('account.period')
+        from_period = period_obj.browse(cr, uid, from_period_id, context=context)
         if not to_period_id:
             result['to_period_id'] = from_period_id
+        else:
+            to_period = period_obj.browse(cr, uid, to_period_id, context=context)
+            if to_period.date_start < from_period.date_start:
+                result['to_period_id'] = from_period_id
 
-        result['fiscalyear_id'] = self.pool.get('account.period').\
-        browse(cr, uid, from_period_id).fiscalyear_id.id
+        result['fiscalyear_id'] = from_period.fiscalyear_id.id
         return {'value': result}
 
     def _currency_rate_type(self, cr, uid, ids, account, context=None):
@@ -101,7 +106,9 @@ class account_consolidation_consolidate(osv.osv_memory):
 
         @return: 'spot' or 'average'
         """
-        return account.consolidation_rate_type or account.user_type.consolidation_rate_type
+        return account.consolidation_rate_type_id and account.consolidation_rate_type_id \
+            or account.user_type.consolidation_rate_type_id and account.user_type.consolidation_rate_type_id.id \
+            or False
 
     def _consolidation_mode(self, cr, uid, ids, account, context=None):
         """
@@ -185,6 +192,7 @@ class account_consolidation_consolidate(osv.osv_memory):
         account_obj = self.pool.get('account.account')
         move_obj = self.pool.get('account.move')
         move_line_obj = self.pool.get('account.move.line')
+        currency_obj = self.pool.get('res.currency')
 
         move = move_obj.browse(cr, uid, move_id, context=context)
         holding_account = account_obj.browse(cr, uid, holding_account_id, context=context)
@@ -216,23 +224,22 @@ class account_consolidation_consolidate(osv.osv_memory):
         }
 
         if holding_account.company_currency_id.id != subs_account.company_currency_id.id:
-            # TODO use currency rate type spot or average, waiting for OpenERP implementation
-#            currency_rate_type = self._currency_rate_type(cr, uid, ids, holding_account, context=context)
+            currency_rate_type = self._currency_rate_type(cr, uid, ids, holding_account, context=context)
 
+            currency_value = currency_obj.compute(cr, uid,
+                                                  holding_account.company_currency_id.id,
+                                                  subs_account.company_currency_id.id,
+                                                  subs_account.balance,
+                                                  currency_rate_type_from=currency_rate_type,
+                                                  currency_rate_type_to=currency_rate_type,
+                                                  context=context)
             vals.update({
                 'currency_id': subs_account.company_currency_id.id,
                 'amount_currency': subs_account.balance,
+                'debit': currency_value > 0 and currency_value or 0.0,
+                'credit': currency_value < 0 and -currency_value or 0.0
             })
 
-            onchange_vals = move_line_obj.onchange_currency(
-                                            cr, uid, [],
-                                            vals['account_id'],
-                                            vals['amount_currency'],
-                                            vals['currency_id'],
-                                            vals['date'],
-                                            vals['journal_id'],
-                                            context=context)
-            vals.update(onchange_vals['value'])
         else:
             vals.update({
                 'debit': subs_account.debit,

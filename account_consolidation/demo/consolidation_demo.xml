@@ -182,7 +182,7 @@
             <field eval="time.strftime('%Y')+'-12-31'" name="date_stop"/>
             <field name="company_id" ref="subsidiary_a"/>
         </record>
-        
+
        <record id="period_b_1" model="account.period">
             <field eval="'01/'+time.strftime('%Y')" name="code"/>
             <field eval="'01/'+time.strftime('%Y')" name="name"/>

@@ -239,7 +239,7 @@
             <field name="user_type" ref="account.account_type_expense"/>
             <field name="reconcile" eval="False"/>
             <field name="parent_id" ref="gpf_a"/>
-            
+
             <field name="company_id" ref="subsidiary_a"/>
         </record>
 

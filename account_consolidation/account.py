@@ -35,11 +35,9 @@ class account_account(osv.osv):
     _inherit = 'account.account'
 
     _columns = {
-        # TODO check after the implementation of the currency rate type
-        'consolidation_rate_type': fields.selection([('', ''),
-                                                     ('spot', 'Spot'),
-                                                     ('average', 'Average')],
-                                                     'Consolidation Currency Rate Type'),
+        'consolidation_rate_type_id': fields.many2one('res.currency.rate.type',
+                                                      'Consolidation Currency Rate Type',
+                                                      help="Currency rate type used on this account for the consolidation, Leave empty to use the rate type of the account type."),
         'consolidation_mode':  fields.selection([('', ''),
                                                  ('ytd', 'YTD'),
                                                  ('period', 'Period Movements'),
@@ -54,17 +52,15 @@ class account_account_type(osv.osv):
     _inherit = 'account.account.type'
 
     _columns = {
-        # TODO check after the implementation of the currency rate type
-        'consolidation_rate_type': fields.selection([('spot', 'Spot'),
-                                                     ('average', 'Average')],
-                                                     'Consolidation Currency Rate Type'),
+        'consolidation_rate_type_id': fields.many2one('res.currency.rate.type',
+                                                      'Consolidation Currency Rate Type',
+                                                      help="Currency rate type used on this account type for the consolidation, Leave empty to use the 'spot' rate type."),
         'consolidation_mode':  fields.selection([('ytd', 'YTD'),
                                                  ('period', 'Period Movements'),],
                                                  'Consolidation Mode'),
     }
 
     _defaults = {
-        'consolidation_rate_type': 'spot',
         'consolidation_mode': 'ytd',
     }
 
