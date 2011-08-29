@@ -18,9 +18,9 @@
                     <separator string="Holding Chart of Accounts" colspan="4"/>
                     <field name="holding_chart_account_id" domain="[('company_id', '=', company_id), ('parent_id', '=', False)]"/>
 
-                    <separator string="Consolidation Difference Accounts" colspan="4"/>
-                    <field name="gain_account_id" domain="[('type','&lt;&gt;','view'), ('id', 'child_of', [holding_chart_account_id])]"/>
-                    <field name="loss_account_id" domain="[('type','&lt;&gt;','view'), ('id', 'child_of', [holding_chart_account_id])]"/>
+                    <!--<separator string="Consolidation Difference Accounts" colspan="4"/>-->
+                    <!--<field name="gain_account_id" domain="[('type','&lt;&gt;','view'), ('id', 'child_of', [holding_chart_account_id])]"/>-->
+                    <!--<field name="loss_account_id" domain="[('type','&lt;&gt;','view'), ('id', 'child_of', [holding_chart_account_id])]"/>-->
                     <separator string="Subsidiaries to Consolidate" colspan="4"/>
                     <field name="subsidiary_ids" colspan="4" nolabel="1" required="True">
                         <tree>

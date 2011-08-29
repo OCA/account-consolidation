@@ -41,8 +41,9 @@ class account_account(osv.osv):
                                                      ('average', 'Average')],
                                                      'Consolidation Currency Rate Type'),
         'consolidation_mode':  fields.selection([('', ''),
+                                                 ('ytd', 'YTD'),
                                                  ('period', 'Period Movements'),
-                                                 ('ytd', 'YTD'),],
+                                                 ],
                                                  'Consolidation Mode'),
     }
 
@@ -57,14 +58,14 @@ class account_account_type(osv.osv):
         'consolidation_rate_type': fields.selection([('spot', 'Spot'),
                                                      ('average', 'Average')],
                                                      'Consolidation Currency Rate Type'),
-        'consolidation_mode':  fields.selection([('period', 'Period Movements'),
-                                                 ('ytd', 'YTD'),],
+        'consolidation_mode':  fields.selection([('ytd', 'YTD'),
+                                                 ('period', 'Period Movements'),],
                                                  'Consolidation Mode'),
     }
 
     _defaults = {
         'consolidation_rate_type': 'spot',
-        'consolidation_mode': 'period',
+        'consolidation_mode': 'ytd',
     }
 
 account_account_type()
@@ -74,8 +75,6 @@ class account_move(osv.osv):
     _inherit = 'account.move'
 
     _columns = {
-        # TODO check after the implementation by openerp
-        'account_journal_reversal': fields.boolean('To be reversed'),
         'consol_company_id': fields.many2one('res.company', 'Is a consolidation from company'),
     }
 

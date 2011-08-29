@@ -42,8 +42,9 @@ class account_consolidation_consolidate(osv.osv_memory):
         'to_period_id': fields.many2one('account.period', 'End Period', required=True,
             help="The consolidation will be done at the very last date of the selected period."),
         'journal_id': fields.many2one('account.journal', 'Journal', required=True),
-        'gain_account_id': fields.many2one('account.account', 'Gain Account', required=True,),
-        'loss_account_id': fields.many2one('account.account', 'Loss Account', required=True,),
+        # not sure that we'll use them, actually using centralised counterpart journal
+#        'gain_account_id': fields.many2one('account.account', 'Gain Account', required=True,),
+#        'loss_account_id': fields.many2one('account.account', 'Loss Account', required=True,),
         'target_move': fields.selection([('posted', 'All Posted Entries'),
                                          ('all', 'All Entries'),
                                         ], 'Target Moves', required=True),
@@ -158,7 +159,6 @@ class account_consolidation_consolidate(osv.osv_memory):
         @return:
         """
 
-        # see account/account.py:1390 ?
         pass
 
     def consolidate_account(self, cr, uid, ids, consolidation_mode, holding_period_ids, state, move_id,

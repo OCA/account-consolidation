@@ -20,8 +20,8 @@
     journal_id: account.miscellaneous_journal
     target_move: posted
     holding_chart_account_id: account.chart0
-    gain_account_id: account.income_fx_income
-    loss_account_id: account.income_fx_expense
+#    gain_account_id: account.income_fx_income
+#    loss_account_id: account.income_fx_expense
     subsidiary_ids:
       - subsidiary_a
       - subsidiary_b

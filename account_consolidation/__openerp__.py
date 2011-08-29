@@ -38,6 +38,10 @@
      "description":
 """
 Account consolidation module. Coding in progress...
+
+Some explanations to do...
+
+ - Difference between debit/credit is balanced on the debit/credit default account of the journal?
 """,
      "website": "http://www.camptocamp.com",
      "depends" : [

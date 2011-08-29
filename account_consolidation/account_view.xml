@@ -40,18 +40,18 @@
             </field>
         </record>
 
-        <record id="view_move_consolidation_form" model="ir.ui.view">
-            <field name="name">account.move.consolidation.form</field>
-            <field name="model">account.move</field>
-            <field name="inherit_id" ref="account.view_move_form"/>
-            <field name="type">form</field>
-            <field name="arch" type="xml">
-                <field name="company_id" position="after">
-                    <field name="account_journal_reversal"/>
-                </field>
-            </field>
-        </record>
-        
+        <!--<record id="view_move_consolidation_form" model="ir.ui.view">-->
+            <!--<field name="name">account.move.consolidation.form</field>-->
+            <!--<field name="model">account.move</field>-->
+            <!--<field name="inherit_id" ref="account.view_move_form"/>-->
+            <!--<field name="type">form</field>-->
+            <!--<field name="arch" type="xml">-->
+                <!--<field name="company_id" position="after">-->
+                    <!--<field name="account_journal_reversal"/>-->
+                <!--</field>-->
+            <!--</field>-->
+        <!--</record>-->
+        <!---->
     </data>
 </openerp>
 
