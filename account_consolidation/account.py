@@ -75,7 +75,7 @@ class account_move(osv.osv):
     _inherit = 'account.move'
 
     _columns = {
-        'consol_company_id': fields.many2one('res.company', 'Is a consolidation from company'),
+        'consol_company_id': fields.many2one('res.company', 'Consolidated from Company', readonly=True),
     }
 
 account_move()

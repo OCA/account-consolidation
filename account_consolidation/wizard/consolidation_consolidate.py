@@ -30,7 +30,7 @@
 
 from osv import osv, fields
 from tools.translate import _
-
+from tools import safe_eval as eval
 
 class account_consolidation_consolidate(osv.osv_memory):
     _name = 'account.consolidation.consolidate'
@@ -161,7 +161,7 @@ class account_consolidation_consolidate(osv.osv_memory):
 
         pass
 
-    def consolidate_account(self, cr, uid, ids, consolidation_mode, holding_period_ids, state, move_id,
+    def consolidate_account(self, cr, uid, ids, consolidation_mode, subsidiary_period_ids, state, move_id,
                             holding_account_id, subsidiary_id, context=None):
         """
         Consolidates the subsidiary account on the holding account
@@ -172,7 +172,7 @@ class account_consolidation_consolidate(osv.osv_memory):
         @param uid: the current user’s ID for security checks,
         @param ids: List of the wizard IDs (commonly the first element is the current ID)
         @param consolidation_mode: consolidate by Periods or Year To Date ('period' or 'ytd')
-        @param holding_period_ids: IDs of the periods to consolidate (the holding ones)
+        @param subsidiary_period_ids: IDs of periods for which we want to sum the debit/credit
         @param state: state of the moves to consolidate ('all' or 'posted')
         @param move_id: ID of the move on which all the created move lines will be linked
         @param holding_account_id: ID of the account to consolidate (on the holding), the method will find the subsidiary's corresponding account
@@ -185,25 +185,22 @@ class account_consolidation_consolidate(osv.osv_memory):
         account_obj = self.pool.get('account.account')
         move_obj = self.pool.get('account.move')
         move_line_obj = self.pool.get('account.move.line')
-#        currency_obj = self.pool.get('res.currency')
 
         move = move_obj.browse(cr, uid, move_id, context=context)
         holding_account = account_obj.browse(cr, uid, holding_account_id, context=context)
 
-        subsidiary_account_id = account_obj.search(cr, uid, [('code', '=', holding_account.code),
-                                                             ('company_id', '=', subsidiary_id)],
+        subsidiary_account_id = account_obj.search(cr, uid,
+                                                   [('code', '=', holding_account.code),
+                                                    ('company_id', '=', subsidiary_id)],
                                                    context=context)
 
         if not subsidiary_account_id:
             return []  # an account may exist on the holding and not in the subsidiaries, nothing to do
 
-        subs_period_ids = self._periods_holding_to_subsidiary(cr, uid, ids, holding_period_ids,
-                                                              subsidiary_id, context=context)
-
         browse_ctx = context.copy()
         browse_ctx.update({
             'state': state,
-            'periods': subs_period_ids,
+            'periods': subsidiary_period_ids,
         })
         # subsidiary_account_id[0] because only one account per company for one code is permitted
         subs_account = account_obj.browse(cr, uid, subsidiary_account_id[0], context=browse_ctx)
@@ -246,6 +243,30 @@ class account_consolidation_consolidate(osv.osv_memory):
 
         return move_line_id
 
+    def reverse_moves(self, cr, uid, ids, subsidiary_id, journal_id, reversal_date, context):
+        """
+        Reverse all account moves of a journal which have the "To be reversed" flag
+
+        @param self: The object pointer
+        @param cr: the current row, from the database cursor,
+        @param uid: the current user’s ID for security checks,
+        @param ids: List of the wizard IDs (commonly the first element is the current ID)
+        @param subsidiary_id: ID of the subsidiary moves to reverse
+        @param journal_id: ID of the journal with moves to reverse
+        @param reversal_date: date when to create the reversal
+        @param context: A standard dictionary for contextual values
+
+        @return: tuple with : list of IDs of the reversed moves, list of IDs of the reversal moves
+        """
+        move_obj = self.pool.get('account.move')
+        reversed_ids = move_obj.search(cr, uid,
+                                       [('journal_id', '=', journal_id),
+                                        ('to_be_reversed', '=', True),
+                                        ('consol_company_id', '=', subsidiary_id)],
+                                       context=context)
+        reversal_ids = move_obj.create_reversal(cr, uid, reversed_ids, reversal_date, context=context)
+        return reversed_ids, reversal_ids
+
     def consolidate_subsidiary(self, cr, uid, ids, subsidiary_id, context=None):
         """
         Consolidate one subsidiary on the Holding.
@@ -260,7 +281,7 @@ class account_consolidation_consolidate(osv.osv_memory):
         @param subsidiary_id: ID of the subsidiary to consolidate on the holding
         @param context: A standard dictionary for contextual values
 
-        @return: list of IDs of the created moves
+        @return: Tuple of (list of IDs of the YTD moves, list of IDs of the Period Moves)
         """
 
         context = context or {}
@@ -293,27 +314,48 @@ class account_consolidation_consolidate(osv.osv_memory):
                                                   form.from_period_id.id,
                                                   form.to_period_id.id)
 
-        move_ids = []
         generic_move_vals = {
             'journal_id': form.journal_id.id,
             'company_id': form.company_id.id,
             'consol_company_id': subsidiary.id,
         }
 
+        ytd_move_ids = []
+        period_move_ids = []
         for consolidation_mode, accounts in consolidation_modes.iteritems():
             if not accounts:
                 continue
 
             # get list of periods for which we have to create a move
             # in period mode : a move per period
-            # in ytd mode : a move at the last period (which will contains lines from first period to last period)
+            # in ytd mode : a move at the last period (which will contains lines from 1st january to last period)
             move_period_ids = consolidation_mode == 'period' \
                               and period_ids \
                               or [form.to_period_id.id]
+
             for move_period_id in move_period_ids:
                 period = period_obj.browse(cr, uid, move_period_id, context=context)
 
-                # TODO if YTD: reverse previous entries
+                # in ytd we compute the amount from the first day of the fiscal year
+                # in period, only for the period
+                if consolidation_mode == 'ytd':
+                    date_from = period.fiscalyear_id.date_start
+                else:
+                    date_from = period.date_start
+                date_to = period.date_stop
+
+                period_ctx = context.copy()
+                period_ctx.update({
+                    'company_id': subsidiary.id,
+                })
+                compute_from_period_id = period_obj.find(cr, uid, date_from, context=period_ctx)[0]
+                compute_to_period_id = period_obj.find(cr, uid, date_to, context=period_ctx)[0]
+                compute_period_ids = period_obj.build_ctx_periods(cr, uid,
+                                                          compute_from_period_id,
+                                                          compute_to_period_id)
+
+                # reverse previous entries with flag 'to_be_reversed' (YTD)
+                self.reverse_moves(cr, uid, ids, subsidiary.id, form.journal_id.id, date_to, context=context)
 
                 # TODO if moves found for the same period : skip ?
 
@@ -321,18 +363,11 @@ class account_consolidation_consolidate(osv.osv_memory):
                 # at the very last date of the end period
                 move_vals = generic_move_vals.copy()
                 move_vals.update({
-                    'name': _("Consolidation %s") % (consolidation_mode,),
                     'ref': _("Consolidation %s") % (consolidation_mode,),
                     'period_id': period.id,
                     'date': period.date_stop,
-                    'account_journal_reversal': consolidation_mode == 'ytd',
                 })
                 move_id = move_obj.create(cr, uid, move_vals, context=context)
-
-                # for the move lines, in ytd mode we create move lines for all periods
-                move_line_period_ids = consolidation_mode == 'period' \
-                                       and [move_period_id] \
-                                       or period_ids
 
                 move_line_ids = []
                 # create a move line per account
@@ -340,7 +375,7 @@ class account_consolidation_consolidate(osv.osv_memory):
                     move_line_ids.append(
                         self.consolidate_account(cr, uid, ids,
                                              consolidation_mode,
-                                             move_line_period_ids,
+                                             compute_period_ids,
                                              form.target_move,
                                              move_id,
                                              account.id,
@@ -354,9 +389,9 @@ class account_consolidation_consolidate(osv.osv_memory):
                 self.create_rate_difference_line(cr, uid, ids,
                                                  move_id, context=context)
 
-                move_ids.append(move_id)
+                locals()[consolidation_mode + '_move_ids'].append(move_id)
 
-        return move_ids
+        return ytd_move_ids, period_move_ids
 
     def run_consolidation(self, cr, uid, ids, context=None):
         """
@@ -374,25 +409,27 @@ class account_consolidation_consolidate(osv.osv_memory):
         super(account_consolidation_consolidate, self).run_consolidation(cr, uid, ids, context=context)
 
         mod_obj = self.pool.get('ir.model.data')
+        act_obj = self.pool.get('ir.actions.act_window')
+        move_obj = self.pool.get('account.move')
         form = self.browse(cr, uid, ids[0], context=context)
 
         move_ids = []
+        ytd_move_ids = []
         for subsidiary in form.subsidiary_ids:
-            move_ids.extend(self.consolidate_subsidiary(cr, uid, ids, subsidiary.id, context=context))
+            new_move_ids = self.consolidate_subsidiary(cr, uid, ids, subsidiary.id, context=context)
+            ytd_move_ids.extend(new_move_ids[0])
+            move_ids.extend(sum(new_move_ids, []))
+
+        # YTD moves have to be reversed on the next consolidation
+        move_obj.write(cr, uid, ytd_move_ids, {'to_be_reversed': True}, context=context)
 
         context.update({'move_ids': move_ids})
-        model_data_ids = mod_obj.search(cr, uid, [('model', '=', 'ir.ui.view'),
-                                                  ('name', '=', 'view_move_form')],
-                                        context=context)
-        resource_id = mod_obj.read(cr, uid, model_data_ids, fields=['res_id'], context=context)[0]['res_id']
-        return {
-            'domain': "[('id','in', [" + ','.join([str(move_id) for move_id in move_ids]) + "])]",
-            'name': 'Entries',
-            'view_type': 'form',
-            'view_mode': 'tree,form',
-            'res_model': 'account.move',
-            'views': [(False, 'tree'), (resource_id, 'form')],
-            'type': 'ir.actions.act_window',
-        }
+        action_ref = mod_obj.get_object_reference(cr, uid, 'account', 'action_move_journal_line')
+        action_id = action_ref and action_ref[1] or False
+        action = act_obj.read(cr, uid, [action_id], context=context)[0]
+        action['domain'] = unicode([('id', 'in', move_ids)])
+        action['name'] = _('Consolidated Entries')
+        action['context'] = unicode({'search_default_to_be_reversed': 0})
+        return action
 
 account_consolidation_consolidate()
