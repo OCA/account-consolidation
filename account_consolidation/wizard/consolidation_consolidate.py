@@ -230,7 +230,7 @@ class account_consolidation_consolidate(osv.osv_memory):
                                                   holding_account.company_currency_id.id,
                                                   subs_account.company_currency_id.id,
                                                   subs_account.balance,
-                                                  currency_rate_type_from=currency_rate_type,
+                                                  currency_rate_type_from=False,  # means spot
                                                   currency_rate_type_to=currency_rate_type,
                                                   context=context)
             vals.update({
