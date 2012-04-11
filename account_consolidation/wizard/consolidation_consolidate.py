@@ -273,7 +273,7 @@ class account_consolidation_consolidate(osv.osv_memory):
                                         ('to_be_reversed', '=', True),
                                         ('consol_company_id', '=', subsidiary_id)],
                                        context=context)
-        reversal_ids = move_obj.create_reversals(cr, uid, reversed_ids, reversal_date, context=context)
+        reversal_ids = move_obj.create_reversal(cr, uid, reversed_ids, reversal_date, context=context)
         return reversed_ids, reversal_ids
 
     def consolidate_subsidiary(self, cr, uid, ids, subsidiary_id, context=None):
