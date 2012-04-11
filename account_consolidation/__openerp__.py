@@ -47,6 +47,7 @@ Some explanations to do...
      "depends" : [
          'base',
          'account',
+         'account_reversal',
      ],
      "init_xml" : [],
      "demo_xml" : [
