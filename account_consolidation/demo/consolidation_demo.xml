@@ -28,7 +28,7 @@
             <field name="name">Consolidation Account</field>
             <field ref="account.chart0" name="parent_id"/>
             <field name="type">view</field>
-            <field name="user_type" ref="account.account_type_root"/>
+            <field name="user_type" ref="account.data_account_type_view"/>
             <field name="company_id" ref="base.main_company"/>
         </record>
 
@@ -37,7 +37,7 @@
             <field name="name">Consolidation Expense Account</field>
             <field ref="chart0_consolidation" name="parent_id"/>
             <field name="type">other</field>
-            <field name="user_type" ref="account.account_type_expense"/>
+            <field name="user_type" ref="account.data_account_type_expense"/>
             <field name="company_id" ref="base.main_company"/>
         </record>
 
@@ -46,7 +46,7 @@
             <field name="name">Consolidation Income Account</field>
             <field ref="chart0_consolidation" name="parent_id"/>
             <field name="type">other</field>
-            <field name="user_type" ref="account.account_type_income"/>
+            <field name="user_type" ref="account.data_account_type_income"/>
             <field name="company_id" ref="base.main_company"/>
         </record>
 

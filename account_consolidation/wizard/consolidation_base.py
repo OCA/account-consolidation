@@ -50,7 +50,7 @@ class account_consolidation_base(osv.osv_memory):
                                                  'Chart of Accounts',
                                                  required=True,
                                                  domain=[('parent_id', '=', False)]),
-        'subsidiary_ids': fields.many2many('res.company', 'account_conso_comp_rel', 'id', 'id',
+        'subsidiary_ids': fields.many2many('res.company', 'account_conso_comp_rel', 'conso_id', 'company_id',
                                            'Subsidiaries', required=True)
     }
 

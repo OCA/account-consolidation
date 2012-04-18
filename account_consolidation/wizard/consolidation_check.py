@@ -28,7 +28,7 @@
 #
 ##############################################################################
 
-from osv import osv
+from osv import osv, fields
 
 from tools.translate import _
 
@@ -37,6 +37,11 @@ class account_consolidation_check(osv.osv_memory):
     _name = 'account.consolidation.check'
     _inherit = 'account.consolidation.base'
     _description = 'Consolidation Checks. Model used for views'
+
+    _columns = {
+        'subsidiary_ids': fields.many2many('res.company', 'account_conso_check_comp_rel', 'conso_id', 'company_id',
+                                            'Subsidiaries', required=True),
+    }
 
     def check_account_charts(self, cr, uid, ids, context=None):
         """

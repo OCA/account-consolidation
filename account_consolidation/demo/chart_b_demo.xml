@@ -11,7 +11,7 @@
             <field name="name">Chart For Automated Tests B</field>
             <field eval="0" name="parent_id"/>
             <field name="type">view</field>
-            <field name="user_type" ref="account.account_type_root"/>
+            <field name="user_type" ref="account.data_account_type_view"/>
             <field name="company_id" ref="subsidiary_b"/>
         </record>
 
@@ -22,7 +22,7 @@
             <field name="name">Balance Sheet - (test)</field>
             <field ref="chart_subsidiary_b" name="parent_id"/>
             <field name="type">view</field>
-            <field name="user_type" ref="account.account_type_root"/>
+            <field name="user_type" ref="account.data_account_type_view"/>
             <field name="company_id" ref="subsidiary_b"/>
         </record>
 
@@ -30,7 +30,7 @@
             <field name="name">Assets - (test)</field>
             <field name="code">Y10</field>
             <field name="type">view</field>
-            <field name="user_type" ref="account.account_type_asset"/>
+            <field name="user_type" ref="account.data_account_type_asset"/>
             <field name="reconcile" eval="False"/>
             <field name="parent_id" ref="bal_b"/>
             <field name="company_id" ref="subsidiary_b"/>
@@ -41,7 +41,7 @@
             <field name="name">Fixed Assets - (test)</field>
             <field ref="assets_view_b" name="parent_id"/>
             <field name="type">view</field>
-            <field name="user_type" ref="account.account_type_asset"/>
+            <field name="user_type" ref="account.data_account_type_asset"/>
             <field name="company_id" ref="subsidiary_b"/>
         </record>
 
@@ -50,7 +50,7 @@
             <field name="name">Fixed Asset Account - (test)</field>
             <field ref="fas_b" name="parent_id"/>
             <field name="type">other</field>
-            <field name="user_type" ref="account.account_type_asset"/>
+            <field name="user_type" ref="account.data_account_type_asset"/>
             <field name="company_id" ref="subsidiary_b"/>
         </record>
 
@@ -59,7 +59,7 @@
             <field name="name">Net Current Assets - (test)</field>
             <field ref="assets_view_b" name="parent_id"/>
             <field name="type">view</field>
-            <field name="user_type" ref="account.account_type_asset"/>
+            <field name="user_type" ref="account.data_account_type_asset"/>
             <field name="company_id" ref="subsidiary_b"/>
         </record>
 
@@ -68,7 +68,7 @@
             <field name="name">Current Assets - (test)</field>
             <field ref="nca_b" name="parent_id"/>
             <field name="type">view</field>
-            <field name="user_type" ref="account.account_type_asset"/>
+            <field name="user_type" ref="account.data_account_type_asset"/>
             <field name="company_id" ref="subsidiary_b"/>
         </record>
 
@@ -77,7 +77,7 @@
             <field name="name">Purchased Stocks - (test)</field>
             <field ref="cas_b" name="parent_id"/>
             <field name="type">other</field>
-            <field name="user_type" ref="account.account_type_asset"/>
+            <field name="user_type" ref="account.data_account_type_asset"/>
             <field name="company_id" ref="subsidiary_b"/>
         </record>
 
@@ -87,7 +87,7 @@
             <field ref="cas_b" name="parent_id"/>
             <field name="type">receivable</field>
             <field eval="True" name="reconcile"/>
-            <field name="user_type" ref="account.account_type_receivable"/>
+            <field name="user_type" ref="account.data_account_type_receivable"/>
             <field name="company_id" ref="subsidiary_b"/>
         </record>
 
@@ -96,7 +96,7 @@
             <field name="name">Output VAT - (test)</field>
             <field ref="cas_b" name="parent_id"/>
             <field name="type">other</field>
-            <field name="user_type" ref="account.account_type_asset"/>
+            <field name="user_type" ref="account.data_account_type_asset"/>
             <field name="company_id" ref="subsidiary_b"/>
         </record>
 
@@ -105,7 +105,7 @@
             <field name="name">Bank Current Account - (test)</field>
             <field ref="cas_b" name="parent_id"/>
             <field name="type">liquidity</field>
-            <field name="user_type" ref="account.account_type_asset"/>
+            <field name="user_type" ref="account.data_account_type_asset"/>
             <field name="company_id" ref="subsidiary_b"/>
         </record>
 
@@ -114,7 +114,7 @@
             <field name="name">Cash - (test)</field>
             <field ref="cas_b" name="parent_id"/>
             <field name="type">liquidity</field>
-            <field name="user_type" ref="account.account_type_asset"/>
+            <field name="user_type" ref="account.data_account_type_asset"/>
             <field name="company_id" ref="subsidiary_b"/>
         </record>
 
@@ -123,7 +123,7 @@
             <field name="name">Opening Income - (test)</field>
             <field ref="cas_b" name="parent_id"/>
             <field name="type">other</field>
-            <field name="user_type" ref="account.account_type_income"/>
+            <field name="user_type" ref="account.data_account_type_income"/>
             <field name="company_id" ref="subsidiary_b"/>
         </record>
 
@@ -131,7 +131,7 @@
             <field name="name">Liabilities - (test)</field>
             <field name="code">Y11</field>
             <field name="type">view</field>
-            <field name="user_type" ref="account.account_type_liability"/>
+            <field name="user_type" ref="account.data_account_type_liability"/>
             <field name="reconcile" eval="False"/>
             <field name="parent_id" ref="bal_b"/>
             <field name="company_id" ref="subsidiary_b"/>
@@ -142,7 +142,7 @@
             <field name="name">Current Liabilities - (test)</field>
             <field ref="liabilities_view_b" name="parent_id"/>
             <field name="type">view</field>
-            <field name="user_type" ref="account.account_type_liability"/>
+            <field name="user_type" ref="account.data_account_type_liability"/>
             <field name="company_id" ref="subsidiary_b"/>
         </record>
 
@@ -152,7 +152,7 @@
             <field ref="cli_b" name="parent_id"/>
             <field name="type">payable</field>
             <field eval="True" name="reconcile"/>
-            <field name="user_type" ref="account.account_type_payable"/>
+            <field name="user_type" ref="account.data_account_type_payable"/>
             <field name="company_id" ref="subsidiary_b"/>
         </record>
 
@@ -161,7 +161,7 @@
             <field name="name">Input VAT - (test)</field>
             <field ref="cli_b" name="parent_id"/>
             <field name="type">other</field>
-            <field name="user_type" ref="account.account_type_liability"/>
+            <field name="user_type" ref="account.data_account_type_liability"/>
             <field name="company_id" ref="subsidiary_b"/>
         </record>
 
@@ -170,7 +170,7 @@
             <field name="name">Reserve and Profit/Loss - (test)</field>
             <field ref="cli_b" name="parent_id"/>
             <field name="type">other</field>
-            <field name="user_type" ref="account.account_type_liability"/>
+            <field name="user_type" ref="account.data_account_type_liability"/>
             <field name="company_id" ref="subsidiary_b"/>
         </record>
 
@@ -179,7 +179,7 @@
             <field name="name">Opening Expense - (test)</field>
             <field ref="cli_b" name="parent_id"/>
             <field name="type">other</field>
-            <field name="user_type" ref="account.account_type_expense"/>
+            <field name="user_type" ref="account.data_account_type_expense"/>
             <field name="company_id" ref="subsidiary_b"/>
         </record>
 
@@ -190,7 +190,7 @@
             <field name="name">Profit and Loss - (test)</field>
             <field ref="chart_subsidiary_b" name="parent_id"/>
             <field name="type">view</field>
-            <field name="user_type" ref="account.account_type_root"/>
+            <field name="user_type" ref="account.data_account_type_view"/>
             <field name="company_id" ref="subsidiary_b"/>
         </record>
 
@@ -198,7 +198,7 @@
             <field name="name">Income - (test)</field>
             <field name="code">X20</field>
             <field name="type">view</field>
-            <field name="user_type" ref="account.account_type_income"/>
+            <field name="user_type" ref="account.data_account_type_income"/>
             <field name="reconcile" eval="False"/>
             <field name="parent_id" ref="gpf_b"/>
             <field name="company_id" ref="subsidiary_b"/>
@@ -208,7 +208,7 @@
             <field name="name">Foreign Exchange Gain - (test)</field>
             <field name="code">X201</field>
             <field name="type">other</field>
-            <field name="user_type" ref="account.account_type_income"/>
+            <field name="user_type" ref="account.data_account_type_income"/>
             <field name="reconcile" eval="False"/>
             <field name="parent_id" ref="income_view_b"/>
             <field name="company_id" ref="subsidiary_b"/>
@@ -219,7 +219,7 @@
             <field name="name">Revenue - (test)</field>
             <field ref="income_view_b" name="parent_id"/>
             <field name="type">view</field>
-            <field name="user_type" ref="account.account_type_income"/>
+            <field name="user_type" ref="account.data_account_type_income"/>
             <field name="company_id" ref="subsidiary_b"/>
         </record>
 
@@ -228,7 +228,7 @@
             <field name="name">Product Sales - (test)</field>
             <field ref="rev_b" name="parent_id"/>
             <field name="type">other</field>
-            <field name="user_type" ref="account.account_type_income"/>
+            <field name="user_type" ref="account.data_account_type_income"/>
             <field name="company_id" ref="subsidiary_b"/>
         </record>
 
@@ -236,7 +236,7 @@
             <field name="name">Expense - (test)</field>
             <field name="code">X21</field>
             <field name="type">view</field>
-            <field name="user_type" ref="account.account_type_expense"/>
+            <field name="user_type" ref="account.data_account_type_expense"/>
             <field name="reconcile" eval="False"/>
             <field name="parent_id" ref="gpf_b"/>
             <field name="company_id" ref="subsidiary_b"/>
@@ -248,7 +248,7 @@
             <field name="name">Cost of Sales - (test)</field>
             <field ref="expense_view_b" name="parent_id"/>
             <field name="type">view</field>
-            <field name="user_type" ref="account.account_type_expense"/>
+            <field name="user_type" ref="account.data_account_type_expense"/>
             <field name="company_id" ref="subsidiary_b"/>
         </record>
 
@@ -257,7 +257,7 @@
             <field name="name">Cost of Goods Sold - (test)</field>
             <field ref="cos_b" name="parent_id"/>
             <field name="type">other</field>
-            <field name="user_type" ref="account.account_type_expense"/>
+            <field name="user_type" ref="account.data_account_type_expense"/>
             <field name="company_id" ref="subsidiary_b"/>
         </record>
 
@@ -266,7 +266,7 @@
             <field name="name">Overheads - (test)</field>
             <field ref="expense_view_b" name="parent_id"/>
             <field name="type">view</field>
-            <field name="user_type" ref="account.account_type_expense"/>
+            <field name="user_type" ref="account.data_account_type_expense"/>
             <field name="company_id" ref="subsidiary_b"/>
         </record>
 
@@ -275,7 +275,7 @@
             <field name="name">Expenses - (test)</field>
             <field ref="ovr_b" name="parent_id"/>
             <field name="type">other</field>
-            <field name="user_type" ref="account.account_type_expense"/>
+            <field name="user_type" ref="account.data_account_type_expense"/>
             <field name="company_id" ref="subsidiary_b"/>
         </record>
 
@@ -283,7 +283,7 @@
             <field name="name">Foreign Exchange Loss - (test)</field>
             <field name="code">X2111</field>
             <field name="type">other</field>
-            <field name="user_type" ref="account.account_type_expense"/>
+            <field name="user_type" ref="account.data_account_type_expense"/>
             <field name="reconcile" eval="False"/>
             <field name="parent_id" ref="ovr_b"/>
             <field name="company_id" ref="subsidiary_b"/>
@@ -294,7 +294,7 @@
             <field name="name">Salary Expenses - (test)</field>
             <field ref="ovr_b" name="parent_id"/>
             <field name="type">other</field>
-            <field name="user_type" ref="account.account_type_expense"/>
+            <field name="user_type" ref="account.data_account_type_expense"/>
             <field name="company_id" ref="subsidiary_b"/>
         </record>
 
@@ -305,7 +305,7 @@
             <field name="name">Virtual Chart For Automated Tests B</field>
             <field eval="0" name="parent_id"/>
             <field name="type">view</field>
-            <field name="user_type" ref="account.account_type_root"/>
+            <field name="user_type" ref="account.data_account_type_view"/>
             <field name="company_id" ref="subsidiary_b"/>
         </record>
 
@@ -314,7 +314,7 @@
             <field name="name">Virtual Account Expense</field>
             <field eval="virtual_chart_subsidiary_b" name="parent_id"/>
             <field name="type">consolidation</field>
-            <field name="user_type" ref="account.account_type_expense"/>
+            <field name="user_type" ref="account.data_account_type_expense"/>
             <field name="company_id" ref="subsidiary_b"/>
             <field name="child_consol_ids" eval="[(6,0,[expense_view_b])]"/>
         </record>
@@ -324,7 +324,7 @@
             <field name="name">Virtual Account Income</field>
             <field eval="virtual_chart_subsidiary_b" name="parent_id"/>
             <field name="type">consolidation</field>
-            <field name="user_type" ref="account.account_type_income"/>
+            <field name="user_type" ref="account.data_account_type_income"/>
             <field name="company_id" ref="subsidiary_b"/>
             <field name="child_consol_ids" eval="[(6,0,[income_view_b])]"/>
         </record>

@@ -48,6 +48,8 @@ class account_consolidation_consolidate(osv.osv_memory):
         'target_move': fields.selection([('posted', 'All Posted Entries'),
                                          ('all', 'All Entries'),
                                         ], 'Target Moves', required=True),
+        'subsidiary_ids': fields.many2many('res.company', 'account_conso_conso_comp_rel', 'conso_id', 'company_id',
+                                            'Subsidiaries', required=True),
     }
 
     _defaults = {
@@ -271,7 +273,7 @@ class account_consolidation_consolidate(osv.osv_memory):
                                         ('to_be_reversed', '=', True),
                                         ('consol_company_id', '=', subsidiary_id)],
                                        context=context)
-        reversal_ids = move_obj.create_reversal(cr, uid, reversed_ids, reversal_date, context=context)
+        reversal_ids = move_obj.create_reversals(cr, uid, reversed_ids, reversal_date, context=context)
         return reversed_ids, reversal_ids
 
     def consolidate_subsidiary(self, cr, uid, ids, subsidiary_id, context=None):
