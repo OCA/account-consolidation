@@ -1,47 +1,49 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-# Copyright (c) 2011 Camptocamp SA (http://www.camptocamp.com)
-# All Right Reserved
+#    Author: Guewen Baconnier
+#    Copyright 2011-2013 Camptocamp SA
 #
-# Author : Guewen Baconnier (Camptocamp)
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU Affero General Public License as
+#    published by the Free Software Foundation, either version 3 of the
+#    License, or (at your option) any later version.
 #
-# WARNING: This program as such is intended to be used by professional
-# programmers who take the whole responsability of assessing all potential
-# consequences resulting from its eventual inadequacies and bugs
-# End users who are looking for a ready-to-use solution with commercial
-# garantees and support are strongly adviced to contract a Free Software
-# Service Company
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU Affero General Public License for more details.
 #
-# This program is Free Software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
 
-
 {
      "name" : "Account Consolidation",
-     "version" : "0.0",
+     "version" : "1.0",
      "author" : "Camptocamp",
+     'license': 'AGPL-3',
      "category" : "Generic Modules/Accounting",
      "description":
 """
-Account consolidation module. Coding in progress...
+Account consolidation
+=====================
 
-Some explanations to do...
+Introduction
+------------
 
- - Difference between debit/credit is balanced on the debit/credit default account of the journal?
+Consolidate chart of accounts on subsidiaries
+in a virtual chart of accounts of the holding.
+
+Installation
+------------
+The `account_reversal` module is required,
+it can be found on the account-financial-tools_
+project
+
+.. _account-financial-tools: https://launchpad.net/account-financial-tools
+
 """,
      "website": "http://www.camptocamp.com",
      "depends" : [
@@ -49,13 +51,12 @@ Some explanations to do...
          'account',
          'account_reversal',
      ],
-     "init_xml" : [],
      "demo_xml" : [
          'demo/consolidation_demo.xml',
          'demo/chart_a_demo.xml',
          'demo/chart_b_demo.xml',
          ],
-     "update_xml" : [
+     "data" : [
          'company_view.xml',
          'account_view.xml',
          'wizard/consolidation_check_view.xml',
@@ -68,5 +69,5 @@ Some explanations to do...
         'test/consolidation_consolidate.yml',
             ],
      "active": False,
-     "installable": True
+     "installable": True,
 }
