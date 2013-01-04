@@ -19,16 +19,15 @@
 #
 ##############################################################################
 
-from osv import osv, fields
+from openerp.osv import orm, fields
 
 
-class res_company(osv.osv):
+class res_company(orm.Model):
     _inherit = 'res.company'
 
     _columns = {
-        'consolidation_chart_account_id': fields.many2one('account.account',
-                                            'Chart of Accounts for Consolidation',
-                                            domain=[('parent_id', '=', False)]),
+        'consolidation_chart_account_id': fields.many2one(
+            'account.account',
+            'Chart of Accounts for Consolidation',
+            domain=[('parent_id', '=', False)]),
     }
-
-res_company()

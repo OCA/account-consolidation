@@ -19,50 +19,53 @@
 #
 ##############################################################################
 
-from osv import osv, fields
+from openerp.osv import orm, fields
 
 
-class account_account(osv.osv):
+class account_account(orm.Model):
     _inherit = 'account.account'
 
     _columns = {
-        'consolidation_rate_type_id': fields.many2one('res.currency.rate.type',
-                                                      'Consolidation Currency Rate Type',
-                                                      help="Currency rate type used on this account for the consolidation, Leave empty to use the rate type of the account type."),
-        'consolidation_mode':  fields.selection([('', ''),
-                                                 ('ytd', 'YTD'),
-                                                 ('period', 'Period Movements'),
-                                                 ],
-                                                 'Consolidation Mode'),
+        'consolidation_rate_type_id': fields.many2one(
+            'res.currency.rate.type',
+            'Consolidation Currency Rate Type',
+            help="Currency rate type used on this account "
+                 "for the consolidation. "
+                 "Leave empty to use the rate type of the account type."),
+        'consolidation_mode': fields.selection(
+            [('ytd', 'YTD'),
+             ('period', 'Period Movements')],
+            'Consolidation Mode'),
     }
 
-account_account()
 
-
-class account_account_type(osv.osv):
+class account_account_type(orm.Model):
     _inherit = 'account.account.type'
 
     _columns = {
-        'consolidation_rate_type_id': fields.many2one('res.currency.rate.type',
-                                                      'Consolidation Currency Rate Type',
-                                                      help="Currency rate type used on this account type for the consolidation, Leave empty to use the 'spot' rate type."),
-        'consolidation_mode':  fields.selection([('ytd', 'YTD'),
-                                                 ('period', 'Period Movements'),],
-                                                 'Consolidation Mode'),
+        'consolidation_rate_type_id': fields.many2one(
+            'res.currency.rate.type',
+            'Consolidation Currency Rate Type',
+            help="Currency rate type used on this account type "
+                 "for the consolidation. "
+                 "Leave empty to use the 'spot' rate type."),
+        'consolidation_mode': fields.selection(
+            [('ytd', 'YTD'),
+             ('period', 'Period Movements')],
+            'Consolidation Mode'),
     }
 
     _defaults = {
         'consolidation_mode': 'ytd',
     }
 
-account_account_type()
 
-
-class account_move(osv.osv):
+class account_move(orm.Model):
     _inherit = 'account.move'
 
     _columns = {
-        'consol_company_id': fields.many2one('res.company', 'Consolidated from Company', readonly=True),
+        'consol_company_id': fields.many2one(
+            'res.company',
+            'Consolidated from Company',
+            readonly=True),
     }
-
-account_move()
