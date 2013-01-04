@@ -21,17 +21,29 @@
 
 {
      "name" : "Account Consolidation",
-     "version" : "0.0",
+     "version" : "1.0",
      "author" : "Camptocamp",
      'license': 'AGPL-3',
      "category" : "Generic Modules/Accounting",
      "description":
 """
-Account consolidation module. Coding in progress...
+Account consolidation
+=====================
 
-Some explanations to do...
+Introduction
+------------
 
- - Difference between debit/credit is balanced on the debit/credit default account of the journal?
+Consolidate chart of accounts on subsidiaries
+in a virtual chart of accounts of the holding.
+
+Installation
+------------
+The `account_reversal` module is required,
+it can be found on the account-financial-tools_
+project
+
+.. _account-financial-tools: https://launchpad.net/account-financial-tools
+
 """,
      "website": "http://www.camptocamp.com",
      "depends" : [
@@ -39,13 +51,12 @@ Some explanations to do...
          'account',
          'account_reversal',
      ],
-     "init_xml" : [],
      "demo_xml" : [
          'demo/consolidation_demo.xml',
          'demo/chart_a_demo.xml',
          'demo/chart_b_demo.xml',
          ],
-     "update_xml" : [
+     "data" : [
          'company_view.xml',
          'account_view.xml',
          'wizard/consolidation_check_view.xml',
@@ -58,5 +69,5 @@ Some explanations to do...
         'test/consolidation_consolidate.yml',
             ],
      "active": False,
-     "installable": False,
+     "installable": True,
 }
