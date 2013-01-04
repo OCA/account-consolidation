@@ -9,8 +9,8 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <data>
-                    <xpath expr="/form/notebook/page[@string='General Information']/group[2]" position="after">
-                        <group col="2" colspan="2">
+                    <xpath expr="//field[@name='note']" position="after">
+                        <group>
                             <separator string="Consolidation" colspan="2"/>
                             <field name="consolidation_rate_type_id" widget="selection"/>
                             <field name="consolidation_mode"/>
@@ -44,11 +44,11 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <field name="company_id" position="after">
-                    <field name="consol_company_id" attrs="{'invisible': [('consol_company_id', '=', False)]}"/>
+                    <field name="consol_company_id"
+                        attrs="{'invisible': [('consol_company_id', '=', False)]}"/>
                 </field>
             </field>
         </record>
 
     </data>
 </openerp>
-

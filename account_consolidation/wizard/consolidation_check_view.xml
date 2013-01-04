@@ -7,26 +7,38 @@
             <field name="model">account.consolidation.check</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form string="Consolidation: Checks">
-                    <group col="4" colspan="6">
-                        <field name="company_id" on_change="on_change_company_id(company_id)" invisible="True"/>
-                        <field name="fiscalyear_id" domain="[('company_id', '=', company_id)]"/>
+                <form string="Consolidation: Checks" version="7.0">
+                    <label string="Prepare your consolidation and make sure that your consolidation will be correct by proceeding with the checks. The 'Check Periods' verify if fiscal year exists for each subsidiary, and if the periods have the same beginning and ending dates. The 'Check Charts' verify if subsidiary accounts are missing in the Holding's Chart of Accounts."/>
+                    <group>
+                        <field name="company_id"
+                            on_change="on_change_company_id(company_id)"
+                            invisible="True"/>
+                        <field name="fiscalyear_id"
+                            domain="[('company_id', '=', company_id)]"/>
                         <newline/>
-                        <field name="holding_chart_account_id" domain="[('company_id', '=', company_id), ('parent_id', '=', False)]"/>
+                        <field name="holding_chart_account_id"
+                            domain="[('company_id', '=', company_id), ('parent_id', '=', False)]"/>
                         <separator string="Subsidiaries to Consolidate" colspan="4"/>
-                        <field name="subsidiary_ids" colspan="4" nolabel="1" required="True" domain="[('parent_id', '=', company_id)]">
+                        <field name="subsidiary_ids" colspan="4" nolabel="1"
+                            required="True"
+                            domain="[('parent_id', '=', company_id)]">
                             <tree>
                                 <field name="name"/>
                                 <field name="consolidation_chart_account_id"/>
                             </tree>
                         </field>
                     </group>
-                    <separator colspan="4"/>
-                    <group col="3" colspan="4">
-                        <button special="cancel" string="Cancel" icon='gtk-cancel'/>
-                        <button name="check_all_periods" string="Check Periods" colspan="1" type="object" icon="gtk-execute"/>
-                        <button name="check_account_charts" string="Check Charts" colspan="1" type="object" icon="gtk-execute"/>
-                    </group>
+                    <footer>
+                        <button name="check_all_periods"
+                            string="Check Periods" type="object"
+                            class="oe_highlight"/>
+                        or
+                        <button name="check_account_charts"
+                            string="Check Charts" type="object"
+                            class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
                 </form>
             </field>
         </record>
@@ -37,7 +49,6 @@
             <field name="res_model">account.consolidation.check</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
-            <field name="help">Prepare your consolidation and make sure that your consolidation will be correct by proceeding with the checks. The "Check Periods" verify if fiscal year exists for each subsidiary, and if the periods have the same beginning and ending dates. The "Check Charts" verify if subsidiary accounts are missing in the Holding's Chart of Accounts.</field>
             <field name="target">new</field>
         </record>
 
