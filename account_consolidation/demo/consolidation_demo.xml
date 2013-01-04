@@ -295,7 +295,6 @@
         <record id="account_journal_sale0" model="account.journal">
             <field name="code">SALE</field>
             <field name="name">SALE</field>
-            <field name="view_id" ref="account.account_sp_journal_view"/>
             <field name="company_id" ref="account_consolidation.subsidiary_a"/>
             <field name="sequence_id" ref="account.sequence_sale_journal"/>
             <field eval="1" name="allow_date"/>
@@ -305,7 +304,6 @@
         <record id="account_journal_sale1" model="account.journal">
             <field name="code">SALE</field>
             <field name="name">SALE</field>
-            <field name="view_id" ref="account.account_sp_journal_view"/>
             <field name="company_id" ref="account_consolidation.subsidiary_b"/>
             <field name="sequence_id" ref="account.sequence_sale_journal"/>
             <field eval="1" name="allow_date"/>
