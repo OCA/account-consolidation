@@ -58,5 +58,5 @@ Some explanations to do...
         'test/consolidation_consolidate.yml',
             ],
      "active": False,
-     "installable": True
+     "installable": False,
 }
