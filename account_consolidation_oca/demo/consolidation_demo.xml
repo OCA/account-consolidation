@@ -183,7 +183,7 @@
             <field name="company_id" ref="subsidiary_a"/>
         </record>
 
-       <record id="period_b_1" model="account.period">
+        <record id="period_b_1" model="account.period">
             <field eval="'01/'+time.strftime('%Y')" name="code"/>
             <field eval="'01/'+time.strftime('%Y')" name="name"/>
             <field eval="True" name="special"/>
@@ -292,25 +292,23 @@
             <field name="company_id" ref="subsidiary_b"/>
         </record>
 
-		<record id="account_journal_sale0" model="account.journal">
-			<field name="code">SALE</field>
-			<field name="name">SALE</field>
-			<field name="view_id" ref="account.account_sp_journal_view"/>
-			<field name="company_id" ref="account_consolidation.subsidiary_a"/>
-			<field name="sequence_id" ref="account.sequence_sale_journal"/>
-			<field eval="1" name="allow_date"/>
-			<field name="type">sale</field>
-		</record>
+        <record id="account_journal_sale0" model="account.journal">
+            <field name="code">SALE</field>
+            <field name="name">SALE</field>
+            <field name="company_id" ref="account_consolidation.subsidiary_a"/>
+            <field name="sequence_id" ref="account.sequence_sale_journal"/>
+            <field eval="1" name="allow_date"/>
+            <field name="type">sale</field>
+        </record>
 
-		<record id="account_journal_sale1" model="account.journal">
-			<field name="code">SALE</field>
-			<field name="name">SALE</field>
-			<field name="view_id" ref="account.account_sp_journal_view"/>
-			<field name="company_id" ref="account_consolidation.subsidiary_b"/>
-			<field name="sequence_id" ref="account.sequence_sale_journal"/>
-			<field eval="1" name="allow_date"/>
-			<field name="type">sale</field>
-		</record>
+        <record id="account_journal_sale1" model="account.journal">
+            <field name="code">SALE</field>
+            <field name="name">SALE</field>
+            <field name="company_id" ref="account_consolidation.subsidiary_b"/>
+            <field name="sequence_id" ref="account.sequence_sale_journal"/>
+            <field eval="1" name="allow_date"/>
+            <field name="type">sale</field>
+        </record>
 
     </data>
 </openerp>
