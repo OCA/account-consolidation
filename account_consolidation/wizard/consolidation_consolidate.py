@@ -105,15 +105,15 @@ class account_consolidation_consolidate(orm.TransientModel):
         """
         Returns the currency rate type to use
 
-        :param account: browse instance of account.account
+        :param account: browse_record instance of account.account
 
-        :return: 'spot' or 'average'
+        :return: id of the currency rate type to use
         """
         if account.consolidation_rate_type_id:
-            return account.consolidation_rate_type_id
+            return account.consolidation_rate_type_id.id
 
         elif account.user_type.consolidation_rate_type_id:
-            return account.user_type.consolidation_rate_type_id
+            return account.user_type.consolidation_rate_type_id.id
 
         else:
             return False
