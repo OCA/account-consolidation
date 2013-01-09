@@ -82,15 +82,22 @@ class account_consolidation_base(orm.AbstractModel):
 
     def check_subsidiary_periods(self, cr, uid, ids, holding_company_id,
                                  subs_company_id, fyear_id, context=None):
-        """ Check Subsidiary company periods vs Holding company periods
-        and returns a list of errors
+        """ Check Subsidiary company periods vs Holding company periods and
+        returns a list of errors
 
-        All the periods defined within the group must be the same
-        (same beginning and ending dates)
+        The periods checked are the periods within the fiscal year of the
+        holding, and the periods of the subsidiary company in the same range of
+        time.
+
+        The fiscal year of the subsidiary is deduced from the start/stop date
+        of the holding's fiscal year.
+
+        All the periods defined within the group must have the same beginning
+        and ending dates to be valid.
 
         :param holding_company_id: ID of the holding company
         :param subs_company_id: ID of the subsidiary company to check
-        :param fyear_id: ID of the fiscal years to compare
+        :param fyear_id: ID of the fiscal year of the holding.
 
         :return: dict of list with errors for each company
                  {company_id: ['error 1', 'error2']}
