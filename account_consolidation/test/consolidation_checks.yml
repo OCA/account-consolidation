@@ -42,7 +42,8 @@
         raise
 
 -
-  In order to test the consolidation checks on misconfigured periods, I use the wizard on FY2012
+  In order to test the consolidation checks on misconfigured periods, I use the wizard on the next year
+  which is misconfigured
 -
   !record {model: account.consolidation.check, id: conso_check_period_1}:
     fiscalyear_id: account_fiscalyear_fy0
@@ -80,7 +81,7 @@
     parent_id: account_consolidation.virtual_chart_subsidiary_a
     type: consolidation
     user_type: account.account_type_expense
-    
+
 -
   In order to test the consolidation checks on misconfigured charts, I use the wizard
 -
