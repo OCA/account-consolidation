@@ -170,7 +170,7 @@
       - code: !eval "'02/%s' % datetime.now().year"
         company_id: base.main_company
         date_start: !eval "'%s-02-01' % datetime.now().year"
-        date_stop: !eval "'%s-02-29' % datetime.now().year"
+        date_stop: !eval "'%s-02-%s' % (datetime.now().year, (datetime(datetime.now().year, 3, 1) - timedelta(days=1)).day)"
         name: !eval "'02/%s' % datetime.now().year"
       - code: !eval "'03/%s' % datetime.now().year"
         company_id: base.main_company
@@ -265,7 +265,7 @@
       - code: !eval "'02/%s' % datetime.now().year"
         company_id: account_consolidation.subsidiary_a
         date_start: !eval "'%s-02-01' % datetime.now().year"
-        date_stop: !eval "'%s-02-29' % datetime.now().year"
+        date_stop: !eval "'%s-02-%s' % (datetime.now().year, (datetime(datetime.now().year, 3, 1) - timedelta(days=1)).day)"
         name: !eval "'02/%s' % datetime.now().year"
       - code: !eval "'03/%s' % datetime.now().year"
         company_id: account_consolidation.subsidiary_a
