@@ -80,7 +80,7 @@
     name: Virtual Account Spare
     parent_id: account_consolidation.virtual_chart_subsidiary_a
     type: consolidation
-    user_type: account.account_type_expense
+    user_type: account.data_account_type_expense
 
 -
   In order to test the consolidation checks on misconfigured charts, I use the wizard
