@@ -3,14 +3,14 @@
 -
   !record {model: account.move, id: account_move_0}:
     company_id: subsidiary_b
-    date: '2011-01-02'
+    date: !eval "'%s-01-02' % datetime.now().year"
     journal_id: account_journal_sale1
     line_id:
       - company_id: subsidiary_b
         account_id: a_sale_b
         amount_currency: 0.0
         credit: 0.0
-        date: '2011-01-01'
+        date: !eval "'%s-01-02' % datetime.now().year"
         debit: 1240.0
         journal_id: account_journal_sale1
         name: Entry 0
@@ -22,7 +22,7 @@
         account_id: cog_b
         amount_currency: 0.0
         credit: 1240.0
-        date: '2011-01-01'
+        date: !eval "'%s-01-02' % datetime.now().year"
         debit: 0.0
         journal_id: account_journal_sale1
         name: Entry 0
@@ -40,14 +40,14 @@
 -
   !record {model: account.move, id: account_move_1}:
     company_id: account_consolidation.subsidiary_a
-    date: '2011-01-20'
+    date: !eval "'%s-01-20' % datetime.now().year"
     journal_id: account_journal_sale0
     line_id:
       - account_id: account_consolidation.a_sale_a
         amount_currency: 0.0
         company_id: account_consolidation.subsidiary_a
         credit: 0.0
-        date: '2011-01-20'
+        date: !eval "'%s-01-20' % datetime.now().year"
         debit: 40.0
         journal_id: account_journal_sale0
         name: Entry 1
@@ -59,7 +59,7 @@
         amount_currency: 0.0
         company_id: account_consolidation.subsidiary_a
         credit: 40.0
-        date: '2011-01-20'
+        date: !eval "'%s-01-20' % datetime.now().year"
         debit: 0.0
         journal_id: account_journal_sale0
         name: Entry 1
@@ -77,14 +77,14 @@
 -
   !record {model: account.move, id: account_move_2}:
     company_id: account_consolidation.subsidiary_a
-    date: '2011-02-23'
+    date: !eval "'%s-02-23' % datetime.now().year"
     journal_id: account_journal_sale0
     line_id:
       - account_id: account_consolidation.a_sale_a
         amount_currency: 0.0
         company_id: account_consolidation.subsidiary_a
         credit: 0.0
-        date: '2011-02-01'
+        date: !eval "'%s-02-23' % datetime.now().year"
         debit: 200.0
         journal_id: account_journal_sale0
         name: Entry 2
@@ -96,7 +96,7 @@
         amount_currency: 0.0
         company_id: account_consolidation.subsidiary_a
         credit: 200.0
-        date: '2011-02-01'
+        date: !eval "'%s-02-23' % datetime.now().year"
         debit: 0.0
         journal_id: account_journal_sale0
         name: Entry 2
@@ -114,14 +114,14 @@
 -
   !record {model: account.move, id: account_move_3}:
     company_id: account_consolidation.subsidiary_a
-    date: '2011-01-15'
+    date: !eval "'%s-01-15' % datetime.now().year"
     journal_id: account_journal_sale0
     line_id:
       - account_id: account_consolidation.cog_a
         amount_currency: 0.0
         company_id: account_consolidation.subsidiary_a
         credit: 300.0
-        date: '2011-01-01'
+        date: !eval "'%s-01-15' % datetime.now().year"
         debit: 0.0
         journal_id: account_journal_sale0
         name: Entry 3
@@ -133,7 +133,7 @@
         amount_currency: 0.0
         company_id: account_consolidation.subsidiary_a
         credit: 0.0
-        date: '2011-01-01'
+        date: !eval "'%s-01-15' % datetime.now().year"
         debit: 300.0
         journal_id: account_journal_sale0
         name: Entry 3
@@ -150,94 +150,94 @@
   Creating a account.fiscalyear record with a missing period for january
 -
   !record {model: account.fiscalyear, id: account_fiscalyear_fy0}:
-    code: FY2012
+    code: !eval "'FY%s' % datetime.now().year"
     company_id: base.main_company
-    date_start: '2012-01-01'
-    date_stop: '2012-12-31'
-    name: FY2012
+    date_start: !eval "'%s-01-01' % datetime.now().year"
+    date_stop: !eval "'%s-12-31' % datetime.now().year"
+    name: !eval "'FY%s' % datetime.now().year"
     period_ids:
-      - code: 00/2012
+      - code: !eval "'00/%s' % datetime.now().year"
         company_id: base.main_company
-        date_start: '2012-01-01'
-        date_stop: '2012-01-01'
+        date_start: !eval "'%s-01-01' % datetime.now().year"
+        date_stop: !eval "'%s-01-01' % datetime.now().year"
         name: Opening Period
         special: true
-      - code: 01/2012
+      - code: !eval "'01/%s' % datetime.now().year"
         company_id: base.main_company
-        date_start: '2012-01-01'
-        date_stop: '2012-01-31'
-        name: 01/2012
-      - code: 02/2012
+        date_start: !eval "'%s-01-01' % datetime.now().year"
+        date_stop: !eval "'%s-01-31' % datetime.now().year"
+        name: !eval "'01/%s' % datetime.now().year"
+      - code: !eval "'02/%s' % datetime.now().year"
         company_id: base.main_company
-        date_start: '2012-02-01'
-        date_stop: '2012-02-29'
-        name: 02/2012
-      - code: 03/2012
+        date_start: !eval "'%s-02-01' % datetime.now().year"
+        date_stop: !eval "'%s-02-29' % datetime.now().year"
+        name: !eval "'02/%s' % datetime.now().year"
+      - code: !eval "'03/%s' % datetime.now().year"
         company_id: base.main_company
-        date_start: '2012-03-01'
-        date_stop: '2012-03-31'
-        name: 03/2012
-      - code: 04/2012
+        date_start: !eval "'%s-03-01' % datetime.now().year"
+        date_stop: !eval "'%s-03-31' % datetime.now().year"
+        name: !eval "'03/%s' % datetime.now().year"
+      - code: !eval "'04/%s' % datetime.now().year"
         company_id: base.main_company
-        date_start: '2012-04-01'
-        date_stop: '2012-04-30'
-        name: 04/2012
-      - code: 05/2012
+        date_start: !eval "'%s-04-01' % datetime.now().year"
+        date_stop: !eval "'%s-04-30' % datetime.now().year"
+        name: !eval "'04/%s' % datetime.now().year"
+      - code: !eval "'05/%s' % datetime.now().year"
         company_id: base.main_company
-        date_start: '2012-05-01'
-        date_stop: '2012-05-31'
-        name: 05/2012
-      - code: 06/2012
+        date_start: !eval "'%s-05-01' % datetime.now().year"
+        date_stop: !eval "'%s-05-31' % datetime.now().year"
+        name: !eval "'05/%s' % datetime.now().year"
+      - code: !eval "'06/%s' % datetime.now().year"
         company_id: base.main_company
-        date_start: '2012-06-01'
-        date_stop: '2012-06-30'
-        name: 06/2012
-      - code: 07/2012
+        date_start: !eval "'%s-06-01' % datetime.now().year"
+        date_stop: !eval "'%s-06-30' % datetime.now().year"
+        name: !eval "'06/%s' % datetime.now().year"
+      - code: !eval "'07/%s' % datetime.now().year"
         company_id: base.main_company
-        date_start: '2012-07-01'
-        date_stop: '2012-07-31'
-        name: 07/2012
-      - code: 08/2012
+        date_start: !eval "'%s-07-01' % datetime.now().year"
+        date_stop: !eval "'%s-07-31' % datetime.now().year"
+        name: !eval "'07/%s' % datetime.now().year"
+      - code: !eval "'08/%s' % datetime.now().year"
         company_id: base.main_company
-        date_start: '2012-08-01'
-        date_stop: '2012-08-31'
-        name: 08/2012
-      - code: 09/2012
+        date_start: !eval "'%s-08-01' % datetime.now().year"
+        date_stop: !eval "'%s-08-31' % datetime.now().year"
+        name: !eval "'08/%s' % datetime.now().year"
+      - code: !eval "'09/%s' % datetime.now().year"
         company_id: base.main_company
-        date_start: '2012-09-01'
-        date_stop: '2012-09-30'
-        name: 09/2012
-      - code: 10/2012
+        date_start: !eval "'%s-09-01' % datetime.now().year"
+        date_stop: !eval "'%s-09-30' % datetime.now().year"
+        name: !eval "'09/%s' % datetime.now().year"
+      - code: !eval "'10/%s' % datetime.now().year"
         company_id: base.main_company
-        date_start: '2012-10-01'
-        date_stop: '2012-10-31'
-        name: 10/2012
-      - code: 11/2012
+        date_start: !eval "'%s-10-01' % datetime.now().year"
+        date_stop: !eval "'%s-10-31' % datetime.now().year"
+        name: !eval "'10/%s' % datetime.now().year"
+      - code: !eval "'11/%s' % datetime.now().year"
         company_id: base.main_company
-        date_start: '2012-11-01'
-        date_stop: '2012-11-30'
-        name: 11/2012
-      - code: 12/2012
+        date_start: !eval "'%s-11-01' % datetime.now().year"
+        date_stop: !eval "'%s-11-30' % datetime.now().year"
+        name: !eval "'11/%s' % datetime.now().year"
+      - code: !eval "'12/%s' % datetime.now().year"
         company_id: base.main_company
-        date_start: '2012-12-01'
-        date_stop: '2012-12-31'
-        name: 12/2012
+        date_start: !eval "'%s-12-01' % datetime.now().year"
+        date_stop: !eval "'%s-12-31' % datetime.now().year"
+        name: !eval "'12/%s' % datetime.now().year"
 
 
 -
   Creating a account.fiscalyear record with a period in december but with different dates than the holding
 -
   !record {model: account.fiscalyear, id: account_fiscalyear_fy1}:
-    code: FY2012
+    code: !eval "'FY%s' % datetime.now().year"
     company_id: account_consolidation.subsidiary_b
-    date_start: '2012-01-01'
-    date_stop: '2012-12-31'
-    name: FY2012
+    date_start: !eval "'%s-01-01' % datetime.now().year"
+    date_stop: !eval "'%s-12-31' % datetime.now().year"
+    name: !eval "'FY%s' % datetime.now().year"
     period_ids:
       - code: diff_dates
         company_id: account_consolidation.subsidiary_b
-        date_start: '2012-12-15'
-        date_stop: '2012-12-31'
+        date_start: !eval "'%s-12-15' % datetime.now().year"
+        date_stop: !eval "'%s-12-31' % datetime.now().year"
         name: diff_dates
 
 
@@ -245,70 +245,70 @@
   Creating a account.fiscalyear record on subsidiary with a period for january (missing on holding)
 -
   !record {model: account.fiscalyear, id: account_fiscalyear_fy2}:
-    code: FY2012
+    code: !eval "'FY%s' % datetime.now().year"
     company_id: account_consolidation.subsidiary_a
-    date_start: '2012-01-01'
-    date_stop: '2012-12-31'
-    name: FY2012
+    date_start: !eval "'%s-01-01' % datetime.now().year"
+    date_stop: !eval "'%s-12-31' % datetime.now().year"
+    name: !eval "'FY%s' % datetime.now().year"
     period_ids:
-      - code: 00/2012
+      - code: !eval "'00/%s' % datetime.now().year"
         company_id: account_consolidation.subsidiary_a
-        date_start: '2012-01-01'
-        date_stop: '2012-01-01'
+        date_start: !eval "'%s-01-01' % datetime.now().year"
+        date_stop: !eval "'%s-01-01' % datetime.now().year"
         name: Opening Period
         special: true
-      - code: 01/2012
+      - code: !eval "'01/%s' % datetime.now().year"
         company_id: account_consolidation.subsidiary_a
-        date_start: '2012-01-01'
-        date_stop: '2012-01-31'
-        name: 01/2012
-      - code: 02/2012
+        date_start: !eval "'%s-01-01' % datetime.now().year"
+        date_stop: !eval "'%s-01-31' % datetime.now().year"
+        name: !eval "'01/%s' % datetime.now().year"
+      - code: !eval "'02/%s' % datetime.now().year"
         company_id: account_consolidation.subsidiary_a
-        date_start: '2012-02-01'
-        date_stop: '2012-02-29'
-        name: 02/2012
-      - code: 03/2012
+        date_start: !eval "'%s-02-01' % datetime.now().year"
+        date_stop: !eval "'%s-02-29' % datetime.now().year"
+        name: !eval "'02/%s' % datetime.now().year"
+      - code: !eval "'03/%s' % datetime.now().year"
         company_id: account_consolidation.subsidiary_a
-        date_start: '2012-03-01'
-        date_stop: '2012-03-31'
-        name: 03/2012
-      - code: 04/2012
+        date_start: !eval "'%s-03-01' % datetime.now().year"
+        date_stop: !eval "'%s-03-31' % datetime.now().year"
+        name: !eval "'03/%s' % datetime.now().year"
+      - code: !eval "'04/%s' % datetime.now().year"
         company_id: account_consolidation.subsidiary_a
-        date_start: '2012-04-01'
-        date_stop: '2012-04-30'
-        name: 04/2012
-      - code: 05/2012
+        date_start: !eval "'%s-04-01' % datetime.now().year"
+        date_stop: !eval "'%s-04-30' % datetime.now().year"
+        name: !eval "'04/%s' % datetime.now().year"
+      - code: !eval "'05/%s' % datetime.now().year"
         company_id: account_consolidation.subsidiary_a
-        date_start: '2012-05-01'
-        date_stop: '2012-05-31'
-        name: 05/2012
-      - code: 06/2012
+        date_start: !eval "'%s-05-01' % datetime.now().year"
+        date_stop: !eval "'%s-05-31' % datetime.now().year"
+        name: !eval "'05/%s' % datetime.now().year"
+      - code: !eval "'06/%s' % datetime.now().year"
         company_id: account_consolidation.subsidiary_a
-        date_start: '2012-06-01'
-        date_stop: '2012-06-30'
-        name: 06/2012
-      - code: 08/2012
+        date_start: !eval "'%s-06-01' % datetime.now().year"
+        date_stop: !eval "'%s-06-30' % datetime.now().year"
+        name: !eval "'06/%s' % datetime.now().year"
+      - code: !eval "'08/%s' % datetime.now().year"
         company_id: account_consolidation.subsidiary_a
-        date_start: '2012-08-01'
-        date_stop: '2012-08-31'
-        name: 08/2012
-      - code: 09/2012
+        date_start: !eval "'%s-08-01' % datetime.now().year"
+        date_stop: !eval "'%s-08-31' % datetime.now().year"
+        name: !eval "'08/%s' % datetime.now().year"
+      - code: !eval "'09/%s' % datetime.now().year"
         company_id: account_consolidation.subsidiary_a
-        date_start: '2012-09-01'
-        date_stop: '2012-09-30'
-        name: 09/2012
-      - code: 10/2012
+        date_start: !eval "'%s-09-01' % datetime.now().year"
+        date_stop: !eval "'%s-09-30' % datetime.now().year"
+        name: !eval "'09/%s' % datetime.now().year"
+      - code: !eval "'10/%s' % datetime.now().year"
         company_id: account_consolidation.subsidiary_a
-        date_start: '2012-10-01'
-        date_stop: '2012-10-31'
-        name: 10/2012
-      - code: 11/2012
+        date_start: !eval "'%s-10-01' % datetime.now().year"
+        date_stop: !eval "'%s-10-31' % datetime.now().year"
+        name: !eval "'10/%s' % datetime.now().year"
+      - code: !eval "'11/%s' % datetime.now().year"
         company_id: account_consolidation.subsidiary_a
-        date_start: '2012-11-01'
-        date_stop: '2012-11-30'
-        name: 11/2012
-      - code: 12/2012
+        date_start: !eval "'%s-11-01' % datetime.now().year"
+        date_stop: !eval "'%s-11-30' % datetime.now().year"
+        name: !eval "'11/%s' % datetime.now().year"
+      - code: !eval "'12/%s' % datetime.now().year"
         company_id: account_consolidation.subsidiary_a
-        date_start: '2012-12-01'
-        date_stop: '2012-12-31'
-        name: 12/2012
+        date_start: !eval "'%s-12-01' % datetime.now().year"
+        date_stop: !eval "'%s-12-31' % datetime.now().year"
+        name: !eval "'12/%s' % datetime.now().year"
