@@ -27,18 +27,16 @@ class account_account(osv.osv):
     _inherit = "account.account"
     
     _columns = {
-        'parallel_account_ids': fields.many2many('account.account', 'parallel_account_rel', 'child_id',
-            'parent_id', 'Parallel Currency Accounts', Help="Set here the accounts you want to automatically move when registering entries in this account"),
-        'master_parallel_account_ids': fields.many2many('account.account', 'parallel_account_rel', 'parent_id',
-            'child_id', 'Master Parallel Currency Accounts', Help="You can see here the accounts that automatically move this account", readonly=True),
+        'parallel_account_ids': fields.many2many('account.account',
+            'parallel_account_rel', 'parent_id',
+            'child_id', 'Parallel Currency Accounts',
+            Help="Set here the accounts you want to automatically move when registering entries in this account"),
+        'master_parallel_account_ids': fields.many2many('account.account',
+            'parallel_account_rel', 'child_id',
+            'parent_id', 'Master Parallel Currency Accounts',
+            Help="You can see here the accounts that automatically move this account", readonly=True),
         }
-    
-account_account()
 
-class account_move_line(osv.osv):
-    _inherit = "account.move.line"
-    
-account_move_line()
 
 #and tax codes?
 class account_move(osv.osv):
@@ -223,15 +221,17 @@ class account_move(osv.osv):
                 
         return res
 
-account_move()
 
 class account_journal(osv.osv):
     _inherit = "account.journal"
     
     _columns = {
-        'parallel_journal_ids': fields.many2many('account.journal', 'parallel_journal_rel', 'child_id',
-            'parent_id', 'Parallel Currency Journals', Help="Set here the journals you want to automatically move when registering entries in this journal"),
-        'master_parallel_journal_ids': fields.many2many('account.journal', 'parallel_journal_rel', 'parent_id',
-            'child_id', 'Master Parallel Currency Journals', Help="You can see here the journals that automatically move this journal", readonly=True),
+        'parallel_journal_ids': fields.many2many('account.journal',
+            'parallel_journal_rel', 'parent_id',
+            'child_id', 'Parallel Currency Journals',
+            Help="Set here the journals you want to automatically move when registering entries in this journal"),
+        'master_parallel_journal_ids': fields.many2many('account.journal',
+            'parallel_journal_rel', 'child_id',
+            'parent_id', 'Master Parallel Currency Journals',
+            Help="You can see here the journals that automatically move this journal", readonly=True),
         }
-account_journal()
