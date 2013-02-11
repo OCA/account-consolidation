@@ -6,9 +6,11 @@
             <field name="model">res.users</field>
             <field name="inherit_id" ref="base.view_users_form"></field>
             <field name="arch" type="xml">
-                <field name="company_ids" position="after">
-                    <field name="parallel_user_id"/>
-                </field>
+                <page string="Access Rights" position="inside">
+                    <group string="Parallel Currency" groups="base.group_multi_company">
+                        <field name="parallel_user_id" />
+                    </group>
+                </page>
             </field>
         </record>
     </data>
