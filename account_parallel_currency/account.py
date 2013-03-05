@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #    
-#    Copyright (C) 2012 Agile Business Group sagl (<http://www.agilebg.com>)
+#    Copyright (C) 2012-2013 Agile Business Group sagl
+#    (<http://www.agilebg.com>)
 #    Copyright (C) 2012 Domsense srl (<http://www.domsense.com>)
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -12,18 +13,18 @@
 #    This program is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
+#    GNU Affero General Public License for more details.
 #
 #    You should have received a copy of the GNU Affero General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
 
-from osv import fields, osv
+from openerp.osv import fields, orm
 from tools.translate import _
 import time
 
-class account_account(osv.osv):
+class account_account(orm.Model):
     _inherit = "account.account"
     
     _columns = {
@@ -39,7 +40,7 @@ class account_account(osv.osv):
 
 
 #and tax codes?
-class account_move(osv.osv):
+class account_move(orm.Model):
     _inherit = "account.move"
     
     _columns = {
@@ -129,10 +130,10 @@ class account_move(osv.osv):
                             ('company_id', '=', parallel_account.company_id.id)])
                             
                         if len(period_ids) == 0:
-                            raise osv.except_osv(_('Error !'), _('Period %s does not exist in company %s !')
+                            raise orm.except_orm(_('Error !'), _('Period %s does not exist in company %s !')
                                 % (line.date, parallel_account.company_id.name))
                         if len(period_ids) > 1:
-                            raise osv.except_osv(_('Error !'), _('Too many periods %s for company %s !')
+                            raise orm.except_orm(_('Error !'), _('Too many periods %s for company %s !')
                                 % (line.date, parallel_account.company_id.name))
                         
                         parallel_data[parallel_account.company_id.id]['period_id'] = period_ids[0]
@@ -144,10 +145,10 @@ class account_move(osv.osv):
                                 parallel_journal_ids.append(journal.id)
                         
                         if len(parallel_journal_ids) == 0:
-                            raise osv.except_osv(_('Error !'), _('Journal %s does not exist in company %s !')
+                            raise orm.except_orm(_('Error !'), _('Journal %s does not exist in company %s !')
                                 % (line.journal_id.name, parallel_account.company_id.name))
                         if len(parallel_journal_ids) > 1:
-                            raise osv.except_osv(_('Error !'), _('Too many journals %s for company %s !')
+                            raise orm.except_orm(_('Error !'), _('Too many journals %s for company %s !')
                                 % (line.journal_id.name, parallel_account.company_id.name))
                         
                         parallel_data[parallel_account.company_id.id]['journal_id'] = parallel_journal_ids[0]
@@ -176,10 +177,10 @@ class account_move(osv.osv):
                             ], context=context)
                             
                         if len(parallel_secondary_curr_ids) == 0:
-                            raise osv.except_osv(_('Error !'), _('Currency %s does not exist in company %s !')
+                            raise orm.except_orm(_('Error !'), _('Currency %s does not exist in company %s !')
                                 % (parallel_sec_curr_iso_code, parallel_account.company_id.name))
                         if len(parallel_secondary_curr_ids) > 1:
-                            raise osv.except_osv(_('Error !'), _('Too many currencies %s for company %s !')
+                            raise orm.except_orm(_('Error !'), _('Too many currencies %s for company %s !')
                                 % (parallel_sec_curr_iso_code, parallel_account.company_id.name))
                         
                         # compute parallel base amount from document currency, using move date
@@ -222,7 +223,7 @@ class account_move(osv.osv):
         return res
 
 
-class account_journal(osv.osv):
+class account_journal(orm.Model):
     _inherit = "account.journal"
     
     _columns = {

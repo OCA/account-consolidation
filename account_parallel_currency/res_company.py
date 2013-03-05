@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #    
-#    Copyright (C) 2012 Agile Business Group sagl (<http://www.agilebg.com>)
+#    Copyright (C) 2012-2013 Agile Business Group sagl
+#    (<http://www.agilebg.com>)
 #    Copyright (C) 2012 Domsense srl (<http://www.domsense.com>)
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -12,22 +13,21 @@
 #    This program is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
+#    GNU Affero General Public License for more details.
 #
 #    You should have received a copy of the GNU Affero General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
 
-from osv import osv
+from openerp.osv import fields, orm
 from osv import fields
 
-class res_company(osv.osv):
+class res_company(orm.Model):
     _inherit = "res.company"
 
     _columns = {
         'parallel_company_ids': fields.many2many('res.company', 'parallel_companies_rel', 'master_id', 
             'parallel_id', 'Parallel Companies'),
     }
-    
-res_company()
+

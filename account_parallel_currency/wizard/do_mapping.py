@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #    
-#    Copyright (C) 2012 Agile Business Group sagl (<http://www.agilebg.com>)
+#    Copyright (C) 2012-2013 Agile Business Group sagl
+#    (<http://www.agilebg.com>)
 #    Copyright (C) 2012 Domsense srl (<http://www.domsense.com>)
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -12,17 +13,17 @@
 #    This program is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
+#    GNU Affero General Public License for more details.
 #
 #    You should have received a copy of the GNU Affero General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
 
-from osv import fields,osv
+from openerp.osv import fields, orm
 from tools.translate import _
 
-class account_parallel_mapping(osv.osv_memory):
+class account_parallel_mapping(orm.TransientModel):
 
     _name = "account.parallel.mapping"
     
@@ -51,7 +52,7 @@ class account_parallel_mapping(osv.osv_memory):
                             ('company_id', '=', parallel_company.id),
                             ])
                         if len(parallel_account_ids) > 1:
-                            raise osv.except_osv(_('Error'), _('Duplicated account %s for company %s')
+                            raise orm.except_orm(_('Error'), _('Duplicated account %s for company %s')
                                 % (master_account.code,parallel_company.name))
                         elif not parallel_account_ids:
                             print _('No account %s for company %s') % (master_account.code,parallel_company.name)
@@ -60,5 +61,4 @@ class account_parallel_mapping(osv.osv_memory):
                                 [(4,parallel_account_ids[0])]})
         self.write(cr, uid, ids, {'message': _('Done')})
         return True
-        
-account_parallel_mapping()
+
