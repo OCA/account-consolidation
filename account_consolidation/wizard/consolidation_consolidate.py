@@ -222,11 +222,15 @@ class account_consolidation_consolidate(orm.TransientModel):
             'date': move.date
         }
 
+        balance = subs_account.balance
+        if not balance:
+
+            return None
         if (holding_account.company_currency_id.id ==
                 subs_account.company_currency_id.id):
             vals.update({
-                'debit': subs_account.debit,
-                'credit': subs_account.credit,
+                'debit': balance if balance > 0.0 else 0.0,
+                'credit': abs(balance) if balance < 0.0 else 0.0,
             })
         else:
             currency_rate_type = self._currency_rate_type(
@@ -236,19 +240,17 @@ class account_consolidation_consolidate(orm.TransientModel):
                     cr, uid,
                     holding_account.company_currency_id.id,
                     subs_account.company_currency_id.id,
-                    subs_account.balance,
+                    balance,
                     currency_rate_type_from=False,  # means spot
                     currency_rate_type_to=currency_rate_type,
                     context=context)
             vals.update({
                 'currency_id': subs_account.company_currency_id.id,
                 'amount_currency': subs_account.balance,
-                'debit': currency_value > 0 and currency_value or 0.0,
-                'credit': currency_value < 0 and -currency_value or 0.0
+                'debit': currency_vale if currency_value > 0.0 else 0.0,
+                'credit': abs(currency_vale) if currency_value < 0.0 else 0.0,
             })
-
         move_line_id = move_line_obj.create(cr, uid, vals, context=context)
-
         return move_line_id
 
     def reverse_moves(self, cr, uid, ids, subsidiary_id, journal_id,
@@ -392,11 +394,9 @@ class account_consolidation_consolidate(orm.TransientModel):
                         date=period.date_stop)
                 move_id = move_obj.create(cr, uid, move_vals, context=context)
 
-                move_line_ids = []
                 # create a move line per account
                 for account in accounts:
-                    move_line_ids.append(
-                        self.consolidate_account(
+                    self.consolidate_account(
                             cr, uid, ids,
                             consolidation_mode,
                             compute_period_ids,
@@ -405,8 +405,6 @@ class account_consolidation_consolidate(orm.TransientModel):
                             account.id,
                             subsidiary.id,
                             context=context)
-                    )
-
                 self.create_rate_difference_line(
                         cr, uid, ids, move_id, context=context)
 
