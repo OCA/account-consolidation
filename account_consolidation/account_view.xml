@@ -10,7 +10,7 @@
             <field name="arch" type="xml">
                 <data>
                     <xpath expr="//field[@name='note']" position="after">
-                        <group>
+                        <group groups="account_consolidation.consolidation_manager">
                             <separator string="Consolidation" colspan="2"/>
                             <field name="consolidation_rate_type_id" widget="selection"/>
                             <field name="consolidation_mode"/>
@@ -28,7 +28,7 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <separator string="Description" position="before">
-                    <group col="2" colspan="2">
+                    <group col="2" colspan="2" groups="account_consolidation.consolidation_manager">
                         <separator string="Consolidation" colspan="4"/>
                         <field name="consolidation_rate_type_id" widget="selection"/>
                         <field name="consolidation_mode"/>
@@ -45,7 +45,8 @@
             <field name="arch" type="xml">
                 <field name="company_id" position="after">
                     <field name="consol_company_id"
-                        attrs="{'invisible': [('consol_company_id', '=', False)]}"/>
+                        attrs="{'invisible': [('consol_company_id', '=', False)]}"
+                        groups="account_consolidation.consolidation_manager,account_consolidation.consolidation_user"/>
                 </field>
             </field>
         </record>
