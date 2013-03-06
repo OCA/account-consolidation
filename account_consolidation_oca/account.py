@@ -32,10 +32,12 @@ class account_account(orm.Model):
             help="Currency rate type used on this account "
                  "for the consolidation. "
                  "Leave empty to use the rate type of the account type."),
+
         'consolidation_mode': fields.selection(
             [('ytd', 'YTD'),
              ('period', 'Period Movements')],
-            'Consolidation Mode'),
+            'Consolidation Mode',
+            help="This must be set on the holding company accounts only"),
     }
 
 
@@ -49,15 +51,16 @@ class account_account_type(orm.Model):
             help="Currency rate type used on this account type "
                  "for the consolidation. "
                  "Leave empty to use the 'spot' rate type."),
+
         'consolidation_mode': fields.selection(
             [('ytd', 'YTD'),
              ('period', 'Period Movements')],
-            'Consolidation Mode'),
+            'Consolidation Mode',
+            help="This must be set on the holding company accounts only"),
+
     }
 
-    _defaults = {
-        'consolidation_mode': 'ytd',
-    }
+    _defaults = {'consolidation_mode': 'ytd'}
 
 
 class account_move(orm.Model):
