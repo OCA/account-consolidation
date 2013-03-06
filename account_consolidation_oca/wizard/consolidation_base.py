@@ -28,11 +28,14 @@ class account_consolidation_base(orm.AbstractModel):
     _description = 'Common consolidation wizard. Intended to be inherited'
 
     def _default_company(self, cr, uid, context=None):
-        user = self.pool.get('res.users').browse(cr, uid, uid, context=context)
-        if user.company_id:
-            return user.company_id.id
-        return self.pool.get('res.company').search(
-                cr, uid, [('parent_id', '=', False)])[0]
+        comp_obj = self.pool['res.company']
+        return comp_obj._company_default_get(cr, uid)
+
+    def _default_chart(self, cr, uid, context=None):
+        comp_obj = self.pool['res.company']
+        comp_id = comp_obj._company_default_get(cr, uid)
+        company = comp_obj.browse(cr, uid, comp_id)
+        return company.consolidation_chart_account_id.id
 
     _columns = {
         'fiscalyear_id': fields.many2one(
@@ -57,9 +60,9 @@ class account_consolidation_base(orm.AbstractModel):
             required=True)
     }
 
-    _defaults = {
-        'company_id': _default_company,
-    }
+    _defaults = {'company_id': _default_company,
+                 'holding_chart_account_id': _default_chart,
+                 }
 
     def on_change_company_id(self, cr, uid, ids, company_id, context=None):
         """

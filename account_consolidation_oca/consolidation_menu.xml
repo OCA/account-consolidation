@@ -5,18 +5,21 @@
          <menuitem
                 name="Consolidation"
                 parent="account.menu_finance_periodical_processing"
+                groups="account_consolidation.consolidation_manager,account_consolidation.consolidation_user"
                 id="menu_consolidation"/>
 
          <menuitem
                 name="Consolidation: Checks"
                 parent="menu_consolidation"
                 action="action_consolidation_checks"
+                groups="account_consolidation.consolidation_manager,account_consolidation.consolidation_user"
                 id="menu_consolidation_checks"/>
 
          <menuitem
                 name="Consolidation: Consolidate"
                 parent="menu_consolidation"
                 action="action_consolidation_consolidate"
+                groups="account_consolidation.consolidation_manager,account_consolidation.consolidation_user"
                 id="menu_consolidation_consolidate"/>
 
      </data>
