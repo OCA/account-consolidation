@@ -247,8 +247,8 @@ class account_consolidation_consolidate(orm.TransientModel):
             vals.update({
                 'currency_id': subs_account.company_currency_id.id,
                 'amount_currency': subs_account.balance,
-                'debit': currency_vale if currency_value > 0.0 else 0.0,
-                'credit': abs(currency_vale) if currency_value < 0.0 else 0.0,
+                'debit': currency_value if currency_value > 0.0 else 0.0,
+                'credit': abs(currency_value) if currency_value < 0.0 else 0.0,
             })
         move_line_id = move_line_obj.create(cr, uid, vals, context=context)
         return move_line_id
