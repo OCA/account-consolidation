@@ -27,6 +27,7 @@ class AccountMoveLine(orm.Model):
 
     _columns = {'consol_company_id': fields.related('move_id', 'consol_company_id',
                                                     relation='res.company',
+                                                    type="many2one",
                                                     string='Consolidated from Company',
                                                     store=True, # for the group_by
                                                     readonly=True),
