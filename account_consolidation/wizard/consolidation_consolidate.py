@@ -156,7 +156,7 @@ class account_consolidation_consolidate(orm.TransientModel):
                 context=context)
         return subs_period_ids
 
-    def create_rate_difference_line(self, cr, uid, ids, move_id, context):
+    def create_rate_difference_line(self, cr, uid, ids, move_id, consolidation_mode, context):
         """
         We can have consolidation difference when a account is in YTD but in normal counterpart
         has a different setting.
@@ -185,7 +185,8 @@ class account_consolidation_consolidate(orm.TransientModel):
                          'company_id': move.company_id.id,
                          'date': move.date,
                          'debit': balance if balance > 0.0 else 0.0,
-                         'credit': abs(balance) if balance < 0.0 else 0.0
+                         'credit': abs(balance) if balance < 0.0 else 0.0,
+                         'name': _('Consolidation difference in mode %s') % consolidation_mode
                          }
             return move_line_obj.create(cr, uid, diff_vals, context=context)
         return False
@@ -439,7 +440,7 @@ class account_consolidation_consolidate(orm.TransientModel):
 
                 if has_move_line:
                     self.create_rate_difference_line(cr, uid, ids,
-                                                     move_id, context=context)
+                                                     move_id, consolidation_mode, context=context)
                 else:
                     # We delete created move if it has no line.
                     # As move are generated in draft mode they will be no gap in
