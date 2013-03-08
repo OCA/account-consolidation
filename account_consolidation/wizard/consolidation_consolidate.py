@@ -423,19 +423,30 @@ class account_consolidation_consolidate(orm.TransientModel):
                 move_id = move_obj.create(cr, uid, move_vals, context=context)
 
                 # create a move line per account
+                has_move_line = False
                 for account in accounts:
-                    self.consolidate_account(
-                            cr, uid, ids,
-                            consolidation_mode,
-                            compute_period_ids,
-                            form.target_move,
-                            move_id,
-                            account.id,
-                            subsidiary.id,
-                            context=context)
-                self.create_rate_difference_line(
-                        cr, uid, ids, move_id, context=context)
+                    m_id =  self.consolidate_account(
+                                cr, uid, ids,
+                                consolidation_mode,
+                                compute_period_ids,
+                                form.target_move,
+                                move_id,
+                                account.id,
+                                subsidiary.id,
+                                context=context)
+                    if m_id:
+                        has_move_line = True
 
+                if has_move_line:
+                    self.create_rate_difference_line(cr, uid, ids,
+                                                     move_id, context=context)
+                else:
+                    # We delete created move if it has no line.
+                    # As move are generated in draft mode they will be no gap in
+                    # number if consolidation journal has correct settings.
+                    # I agree it can be more efficient but size of refactoring
+                    # is not in ressource scope
+                    move_obj.unlink(cr, uid, [move_id])
                 locals()[consolidation_mode + '_move_ids'].append(move_id)
 
         return ytd_move_ids, period_move_ids
