@@ -9,7 +9,7 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <page string="Configuration" position="inside">
-                  <group col="2" colspan="2">
+                  <group col="2" colspan="2" groups="account_consolidation.consolidation_manager">
                       <separator string="Accounts Consolidation" colspan="2"/>
                       <field name="consolidation_chart_account_id" colspan="2"/>
                       <field name="consolidation_diff_account_id" colspan="2"/>

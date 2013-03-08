@@ -18,15 +18,12 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-
-{
-     "name" : "Account Consolidation",
-     "version" : "1.0",
-     "author" : "Camptocamp",
-     'license': 'AGPL-3',
-     "category" : "Generic Modules/Accounting",
-     "description":
-"""
+{"name": "Account Consolidation",
+ "version": "1.0",
+ "author": "Camptocamp",
+ "license": "AGPL-3",
+ "category": "Generic Modules/Accounting",
+ "description": """
 Account consolidation
 =====================
 
@@ -42,32 +39,33 @@ The `account_reversal` module is required,
 it can be found on the account-financial-tools_
 project
 
-.. _account-financial-tools: https://launchpad.net/account-financial-tools
+.. _account-financial-tools: https://launchpad.net/account-financial-tools""",
 
-""",
-     "website": "http://www.camptocamp.com",
-     "depends" : [
-         'base',
-         'account',
-         'account_reversal',
-     ],
-     "demo_xml" : [
-         'demo/consolidation_demo.xml',
-         'demo/chart_a_demo.xml',
-         'demo/chart_b_demo.xml',
-         ],
-     "data" : [
-         'company_view.xml',
-         'account_view.xml',
-         'wizard/consolidation_check_view.xml',
-         'wizard/consolidation_consolidate_view.xml',
-         'consolidation_menu.xml',
-     ],
-    'test': [
-        'test/test_data.yml',
-        'test/consolidation_checks.yml',
-        'test/consolidation_consolidate.yml',
-            ],
-     "active": False,
-     "installable": True,
-}
+ "website": "http://www.camptocamp.com",
+ "depends": ['base',
+             'account',
+             'account_reversal',  # TODO check account_constraints compat.
+             ],
+
+ "demo_xml": ['demo/consolidation_demo.xml',
+              'demo/chart_a_demo.xml',
+              'demo/chart_b_demo.xml',
+              ],
+
+ "data": ['data.xml',
+          'account_move_line_view.xml',
+          'company_view.xml',
+          'account_view.xml',
+          'wizard/consolidation_check_view.xml',
+          'wizard/consolidation_consolidate_view.xml',
+          'consolidation_menu.xml',
+          ],
+
+ "test": ['test/test_data.yml',
+          'test/consolidation_checks.yml',
+          'test/consolidation_consolidate.yml',
+          ],
+
+ "active": False,
+ "installable": True,
+ }
