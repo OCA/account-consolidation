@@ -184,8 +184,8 @@ class account_consolidation_consolidate(orm.TransientModel):
                          'period_id': move.period_id.id,
                          'company_id': move.company_id.id,
                          'date': move.date,
-                         'debit': balance if balance > 0.0 else 0.0,
-                         'credit': abs(balance) if balance < 0.0 else 0.0,
+                         'debit': abs(balance) if balance < 0.0 else 0.0,
+                         'credit': balance if balance > 0.0 else 0.0,
                          'name': _('Consolidation difference in mode %s') % consolidation_mode
                          }
             return move_line_obj.create(cr, uid, diff_vals, context=context)
@@ -252,7 +252,6 @@ class account_consolidation_consolidate(orm.TransientModel):
         }
 
         balance = subs_account.balance
-        print balance
         if not balance:
             return None
         if (holding_account.company_currency_id.id ==
@@ -279,8 +278,8 @@ class account_consolidation_consolidate(orm.TransientModel):
                 'debit': currency_value if currency_value > 0.0 else 0.0,
                 'credit': abs(currency_value) if currency_value < 0.0 else 0.0,
             })
-        move_line_id = move_line_obj.create(cr, uid, vals, context=context)
-        return move_line_id
+
+        return move_line_obj.create(cr, uid, vals, context=context)
 
     def reverse_moves(self, cr, uid, ids, subsidiary_id, journal_id,
                       reversal_date, context=None):
@@ -435,12 +434,15 @@ class account_consolidation_consolidate(orm.TransientModel):
                                 account.id,
                                 subsidiary.id,
                                 context=context)
+                    print m_id
                     if m_id:
                         has_move_line = True
 
                 if has_move_line:
                     self.create_rate_difference_line(cr, uid, ids,
                                                      move_id, consolidation_mode, context=context)
+                    locals()[consolidation_mode + '_move_ids'].append(move_id)
+
                 else:
                     # We delete created move if it has no line.
                     # As move are generated in draft mode they will be no gap in
@@ -448,7 +450,6 @@ class account_consolidation_consolidate(orm.TransientModel):
                     # I agree it can be more efficient but size of refactoring
                     # is not in ressource scope
                     move_obj.unlink(cr, uid, [move_id])
-                locals()[consolidation_mode + '_move_ids'].append(move_id)
 
         return ytd_move_ids, period_move_ids
 
