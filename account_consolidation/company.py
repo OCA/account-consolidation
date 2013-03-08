@@ -35,7 +35,7 @@ class res_company(orm.Model):
                 'consolidation_diff_account_id': fields.many2one(
                                                     'account.account',
                                                     'Consolidation difference account',
-                                                    domain=[('type', '=', 'consolidation')],
+                                                    domain=[('type', '=', 'other')],
                                                     help=("Conso. differences will be affected"
                                                           " to this account"))
                 }
