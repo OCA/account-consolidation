@@ -89,13 +89,13 @@ class account_consolidation_consolidate(orm.TransientModel):
         """
         result = {}
         period_obj = self.pool.get('account.period')
-        from_period = period_obj.browse(
-                cr, uid, from_period_id, context=context)
+        from_period = period_obj.browse(cr, uid, from_period_id,
+                                        context=context)
         if not to_period_id:
             result['to_period_id'] = from_period_id
         else:
-            to_period = period_obj.browse(
-                    cr, uid, to_period_id, context=context)
+            to_period = period_obj.browse(cr, uid, to_period_id,
+                                          context=context)
             if to_period.date_start < from_period.date_start:
                 result['to_period_id'] = from_period_id
 
@@ -191,7 +191,6 @@ class account_consolidation_consolidate(orm.TransientModel):
             return move_line_obj.create(cr, uid, diff_vals, context=context)
         return False
 
-
     def consolidate_account(self, cr, uid, ids, consolidation_mode,
                             subsidiary_period_ids, state, move_id,
                             holding_account_id, subsidiary_id, context=None):
@@ -222,14 +221,13 @@ class account_consolidation_consolidate(orm.TransientModel):
         currency_obj = self.pool.get('res.currency')
 
         move = move_obj.browse(cr, uid, move_id, context=context)
-        holding_account = account_obj.browse(
-                cr, uid, holding_account_id, context=context)
+        holding_account = account_obj.browse(cr, uid, holding_account_id,
+                                             context=context)
 
-        subsidiary_account_id = account_obj.search(
-                cr, uid,
-                [('code', '=', holding_account.code),
-                 ('company_id', '=', subsidiary_id)],
-                context=context)
+        subsidiary_account_id = account_obj.search(cr, uid,
+                                                   [('code', '=', holding_account.code),
+                                                    ('company_id', '=', subsidiary_id)],
+                                                   context=context)
 
         if not subsidiary_account_id:
             # an account may exist on the holding and not in the subsidiaries,
@@ -238,8 +236,8 @@ class account_consolidation_consolidate(orm.TransientModel):
 
         browse_ctx = dict(context, state=state, periods=subsidiary_period_ids)
         # 1st item because the account's code is unique per company
-        subs_account = account_obj.browse(
-                cr, uid, subsidiary_account_id[0], context=browse_ctx)
+        subs_account = account_obj.browse(cr, uid, subsidiary_account_id[0],
+                                          context=browse_ctx)
 
         vals = {
             'name': _("Consolidation line in %s mode") % consolidation_mode,
@@ -261,17 +259,16 @@ class account_consolidation_consolidate(orm.TransientModel):
                 'credit': abs(balance) if balance < 0.0 else 0.0,
             })
         else:
-            currency_rate_type = self._currency_rate_type(
-                    cr, uid, ids, holding_account, context=context)
+            currency_rate_type = self._currency_rate_type(cr, uid, ids,
+                                                          holding_account, context=context)
 
-            currency_value = currency_obj.compute(
-                    cr, uid,
-                    holding_account.company_currency_id.id,
-                    subs_account.company_currency_id.id,
-                    balance,
-                    currency_rate_type_from=False,  # means spot
-                    currency_rate_type_to=currency_rate_type,
-                    context=context)
+            currency_value = currency_obj.compute(cr, uid,
+                                                  holding_account.company_currency_id.id,
+                                                  subs_account.company_currency_id.id,
+                                                  balance,
+                                                  currency_rate_type_from=False,  # means spot
+                                                  currency_rate_type_to=currency_rate_type,
+                                                  context=context)
             vals.update({
                 'currency_id': subs_account.company_currency_id.id,
                 'amount_currency': subs_account.balance,
@@ -295,12 +292,11 @@ class account_consolidation_consolidate(orm.TransientModel):
                               list of IDs of the reversal moves
         """
         move_obj = self.pool.get('account.move')
-        reversed_ids = move_obj.search(
-                cr, uid,
-                [('journal_id', '=', journal_id),
-                 ('to_be_reversed', '=', True),
-                 ('consol_company_id', '=', subsidiary_id)],
-                context=context)
+        reversed_ids = move_obj.search(cr, uid,
+                                       [('journal_id', '=', journal_id),
+                                        ('to_be_reversed', '=', True),
+                                        ('consol_company_id', '=', subsidiary_id)],
+                                       context=context)
         reversal_ids = move_obj.create_reversals(
                 cr, uid, reversed_ids, reversal_date, context=context)
         return reversed_ids, reversal_ids
@@ -425,15 +421,15 @@ class account_consolidation_consolidate(orm.TransientModel):
                 # create a move line per account
                 has_move_line = False
                 for account in accounts:
-                    m_id =  self.consolidate_account(
-                                cr, uid, ids,
-                                consolidation_mode,
-                                compute_period_ids,
-                                form.target_move,
-                                move_id,
-                                account.id,
-                                subsidiary.id,
-                                context=context)
+                    m_id = self.consolidate_account(
+                                 cr, uid, ids,
+                                 consolidation_mode,
+                                 compute_period_ids,
+                                 form.target_move,
+                                 move_id,
+                                 account.id,
+                                 subsidiary.id,
+                                 context=context)
                     print m_id
                     if m_id:
                         has_move_line = True
