@@ -20,6 +20,7 @@
 ##############################################################################
 
 from openerp.osv import orm, fields
+from openerp.osv.osv import except_osv
 from openerp.tools.translate import _
 
 
@@ -157,11 +158,37 @@ class account_consolidation_consolidate(orm.TransientModel):
 
     def create_rate_difference_line(self, cr, uid, ids, move_id, context):
         """
-        Placeholder for creation of a move line
-        for the gain/loss currency difference
-
-        :param move_id: ID of the move
+        We can have consolidation difference when a account is in YTD but in normal counterpart
+        has a different setting.
         """
+        move_obj = self.pool.get('account.move')
+        move_line_obj = self.pool.get('account.move.line')
+        move = move_obj.browse(cr, uid, move_id, context=context)
+
+        if not move.line_id:
+            return False
+        diff_account = move.company_id.consolidation_diff_account_id
+        if not diff_account:
+            raise except_osv(_('Settings ERROR'),
+                             _('Please set the "Consolidation difference account"'
+                               ' in company %s') % move.company_id.name)
+        debit = credit = 0.0
+        for line in move.line_id:
+            debit += line.debit
+            credit += line.credit
+        balance = debit - credit
+        if balance:
+            diff_vals = {'account_id': diff_account.id,
+                         'move_id': move.id,
+                         'journal_id': move.journal_id.id,
+                         'period_id': move.period_id.id,
+                         'company_id': move.company_id.id,
+                         'date': move.date,
+                         'debit': balance if balance > 0.0 else 0.0,
+                         'credit': abs(balance) if balance < 0.0 else 0.0
+                         }
+        return move_line_obj.create(cr, uid, diff_vals, context=context)
+
 
     def consolidate_account(self, cr, uid, ids, consolidation_mode,
                             subsidiary_period_ids, state, move_id,
@@ -223,8 +250,8 @@ class account_consolidation_consolidate(orm.TransientModel):
         }
 
         balance = subs_account.balance
+        print balance
         if not balance:
-
             return None
         if (holding_account.company_currency_id.id ==
                 subs_account.company_currency_id.id):

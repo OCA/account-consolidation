@@ -12,6 +12,7 @@
                   <group col="2" colspan="2">
                       <separator string="Accounts Consolidation" colspan="2"/>
                       <field name="consolidation_chart_account_id" colspan="2"/>
+                      <field name="consolidation_diff_account_id" colspan="2"/>
                   </group>
                 </page>
             </field>
