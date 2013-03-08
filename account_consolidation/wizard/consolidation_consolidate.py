@@ -187,7 +187,8 @@ class account_consolidation_consolidate(orm.TransientModel):
                          'debit': balance if balance > 0.0 else 0.0,
                          'credit': abs(balance) if balance < 0.0 else 0.0
                          }
-        return move_line_obj.create(cr, uid, diff_vals, context=context)
+            return move_line_obj.create(cr, uid, diff_vals, context=context)
+        return False
 
 
     def consolidate_account(self, cr, uid, ids, consolidation_mode,
