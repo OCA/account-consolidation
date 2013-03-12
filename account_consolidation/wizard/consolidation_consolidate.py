@@ -28,6 +28,15 @@ class account_consolidation_consolidate(orm.TransientModel):
     _name = 'account.consolidation.consolidate'
     _inherit = 'account.consolidation.base'
 
+    def _default_journal(self, cr, uid, context=None):
+        comp_obj = self.pool['res.company']
+        journ_obj = self.pool['account.journal']
+        comp_id = comp_obj._company_default_get(cr, uid)
+        journal_id = journ_obj.search(cr, uid, [('company_id', '=', comp_id)], limit=1)
+        if journal_id:
+            return journal_id[0]
+        return False
+
     _columns = {
         'from_period_id': fields.many2one(
             'account.period',
@@ -36,19 +45,23 @@ class account_consolidation_consolidate(orm.TransientModel):
             help="Select the same period in 'from' and 'to' "
                  "if you want to proceed with a single period. "
                  "Start Period is ignored for Year To Date accounts."),
+
         'to_period_id': fields.many2one(
             'account.period',
             'End Period',
             required=True,
             help="The consolidation will be done at the very "
                  "last date of the selected period."),
+
         'journal_id': fields.many2one(
             'account.journal', 'Journal', required=True),
+
         'target_move': fields.selection(
             [('posted', 'All Posted Entries'),
              ('all', 'All Entries')],
             'Target Moves',
             required=True),
+
         'subsidiary_ids': fields.many2many(
             'res.company',
             'account_conso_conso_comp_rel',
@@ -58,9 +71,9 @@ class account_consolidation_consolidate(orm.TransientModel):
             required=True),
     }
 
-    _defaults = {
-        'target_move': 'posted'
-    }
+    _defaults = {'target_move': 'posted',
+                 'journal_id': _default_journal,
+                 }
 
     def _check_periods_fy(self, cr, uid, ids, context=None):
         if isinstance(ids, (int, long)):
@@ -422,15 +435,14 @@ class account_consolidation_consolidate(orm.TransientModel):
                 has_move_line = False
                 for account in accounts:
                     m_id = self.consolidate_account(
-                                 cr, uid, ids,
-                                 consolidation_mode,
-                                 compute_period_ids,
-                                 form.target_move,
-                                 move_id,
-                                 account.id,
-                                 subsidiary.id,
-                                 context=context)
-                    print m_id
+                                cr, uid, ids,
+                                consolidation_mode,
+                                compute_period_ids,
+                                form.target_move,
+                                move_id,
+                                account.id,
+                                subsidiary.id,
+                                context=context)
                     if m_id:
                         has_move_line = True
 
