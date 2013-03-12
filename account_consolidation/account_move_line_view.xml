@@ -8,6 +8,7 @@
         <field name="date" position="before">
           <field name="consol_company_id"
                  groups="account_consolidation.consolidation_manager,account_consolidation.consolidation_user"/>
+          <field name="is_current_company" invisible="1"/>
         </field>
       </field>
     </record>
@@ -22,7 +23,6 @@
                   icon="terp-folder-green"
                   context="{'group_by':'consol_company_id'}"
                   groups="account_consolidation.consolidation_manager,account_consolidation.consolidation_user"/>
-
         </filter>
       </field>
     </record>

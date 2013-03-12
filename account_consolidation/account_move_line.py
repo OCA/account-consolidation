@@ -25,10 +25,27 @@ from openerp.osv import orm, fields
 class AccountMoveLine(orm.Model):
     _inherit = 'account.move.line'
 
+    def _current_company(self, cursor, uid, ids, name, args, context=None):
+        company_id = self.pool['res.company']._company_default_get(cursor, uid)
+        curr_ids = self.search(cursor, uid, [('company_id', '=', company_id)])
+        res = dict([(tid, tid in curr_ids) for tid in ids])
+        return res
+
+
+    def search_is_current_company(self, cursor, uid, obj, name, args, context=None):
+        company_id = self.pool['res.company']._company_default_get(cursor, uid)
+        res = self.search(cursor, uid, [('company_id', '=', company_id)])
+        return [('id', 'in', res)]
+
     _columns = {'consol_company_id': fields.related('move_id', 'consol_company_id',
                                                     relation='res.company',
                                                     type="many2one",
                                                     string='Consolidated from Company',
-                                                    store=True, # for the group_by
+                                                    store=True,  # for the group_by
                                                     readonly=True),
+
+                'is_current_company': fields.function(_current_company,
+                                                      string="Current company",
+                                                      type="boolean",
+                                                      fnct_search=search_is_current_company)
                 }

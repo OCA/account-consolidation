@@ -59,6 +59,7 @@ project
           'wizard/consolidation_check_view.xml',
           'wizard/consolidation_consolidate_view.xml',
           'consolidation_menu.xml',
+          'analysis_view.xml'
           ],
 
  "test": ['test/test_data.yml',
