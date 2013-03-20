@@ -22,6 +22,7 @@
 from openerp.osv import orm, fields
 from openerp.osv.osv import except_osv
 from openerp.tools.translate import _
+from openerp.tools import float_is_zero
 
 
 class account_consolidation_consolidate(orm.TransientModel):
@@ -190,7 +191,10 @@ class account_consolidation_consolidate(orm.TransientModel):
             debit += line.debit
             credit += line.credit
         balance = debit - credit
-        if balance:
+        # We do not want to create counter parts for amount smaller than cent.
+        # As generated lines are in draft accountant will be able to manage
+        # special cases
+        if balance and not float_is_zero(balance, 0.01):
             diff_vals = {'account_id': diff_account.id,
                          'move_id': move.id,
                          'journal_id': move.journal_id.id,
@@ -264,7 +268,7 @@ class account_consolidation_consolidate(orm.TransientModel):
 
         balance = subs_account.balance
         if not balance:
-            return None
+            return False
         if (holding_account.company_currency_id.id ==
                 subs_account.company_currency_id.id):
             vals.update({
