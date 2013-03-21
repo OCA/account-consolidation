@@ -22,8 +22,6 @@
 from openerp.osv import orm, fields
 from openerp.osv.osv import except_osv
 from openerp.tools.translate import _
-from openerp.tools import float_is_zero
-
 
 class account_consolidation_consolidate(orm.TransientModel):
     _name = 'account.consolidation.consolidate'
@@ -175,8 +173,9 @@ class account_consolidation_consolidate(orm.TransientModel):
         We can have consolidation difference when a account is in YTD but in normal counterpart
         has a different setting.
         """
-        move_obj = self.pool.get('account.move')
-        move_line_obj = self.pool.get('account.move.line')
+        move_obj = self.pool['account.move']
+        move_line_obj = self.pool['account.move.line']
+        currency_obj = self.pool['res.currency']
         move = move_obj.browse(cr, uid, move_id, context=context)
 
         if not move.line_id:
@@ -191,10 +190,12 @@ class account_consolidation_consolidate(orm.TransientModel):
             debit += line.debit
             credit += line.credit
         balance = debit - credit
-        # We do not want to create counter parts for amount smaller than cent.
-        # As generated lines are in draft accountant will be able to manage
+        # We do not want to create counter parts for amount smaller than
+        # "holding" company currency rounding policy.
+        # As generated lines are in draft state, accountant will be able to manage
         # special cases
-        if balance and not float_is_zero(balance, 0.01):
+        move_is_balanced = currency_obj.is_zero(cr, uid, move.company_id.currency_id, balance)
+        if not move_is_balanced:
             diff_vals = {'account_id': diff_account.id,
                          'move_id': move.id,
                          'journal_id': move.journal_id.id,
