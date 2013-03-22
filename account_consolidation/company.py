@@ -25,9 +25,17 @@ from openerp.osv import orm, fields
 class res_company(orm.Model):
     _inherit = 'res.company'
 
-    _columns = {
-        'consolidation_chart_account_id': fields.many2one(
-            'account.account',
-            'Chart of Accounts for Consolidation',
-            domain=[('parent_id', '=', False)]),
-    }
+    _columns = {'consolidation_chart_account_id': fields.many2one(
+                                                    'account.account',
+                                                    'Chart of Accounts for Consolidation',
+                                                    domain=[('parent_id', '=', False)],
+                                                    help=("Current company root account"
+                                                          " to be used when consolidating")),
+
+                'consolidation_diff_account_id': fields.many2one(
+                                                    'account.account',
+                                                    'Consolidation difference account',
+                                                    domain=[('type', '=', 'other')],
+                                                    help=("Conso. differences will be affected"
+                                                          " to this account"))
+                }

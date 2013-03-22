@@ -1,0 +1,13 @@
+<openerp>
+  <data>
+    <record id="consolidation_manager" model="res.groups">
+      <field name="name">Consolidation manager</field>
+      <field name="category_id" ref="base.module_category_accounting_and_finance"/>
+    </record>
+
+    <record id="consolidation_user" model="res.groups">
+      <field name="name">Consolidation user</field>
+      <field name="category_id" ref="base.module_category_accounting_and_finance"/>
+    </record>
+  </data>
+</openerp>
