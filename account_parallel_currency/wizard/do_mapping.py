@@ -58,7 +58,7 @@ class account_parallel_mapping(orm.TransientModel):
                             raise orm.except_orm(_('Error'), _('Duplicated account %s for company %s')
                                 % (master_account.code,parallel_company.name))
                         elif not parallel_account_ids:
-                            _logger.warning(_('No account %s for company %s'), (master_account.code,parallel_company.name)) 
+                            _logger.warning(_('No account %s for company %s') % (master_account.code,parallel_company.name))
                         elif len(parallel_account_ids) == 1:
                             master_account.write({'parallel_account_ids':
                                 [(4,parallel_account_ids[0])]})
