@@ -23,6 +23,10 @@
 from openerp.osv import fields, orm
 from tools.translate import _
 import time
+import logging
+from openerp import SUPERUSER_ID
+
+_logger = logging.getLogger(__name__)
 
 class account_account(orm.Model):
     _inherit = "account.account"
@@ -37,7 +41,79 @@ class account_account(orm.Model):
             'parent_id', 'Master Parallel Currency Accounts',
             Help="You can see here the accounts that automatically move this account", readonly=True),
         }
+    
+    def _search_parallel_account(self, cr, uid, account_code, parallel_company,
+        context=None):
+        parallel_acc_ids = self.search(cr, uid, [
+                ('company_id','=', parallel_company.id),
+                ('code','=', account_code),
+                ], context=context)
+        if len(parallel_acc_ids) > 1:
+            raise orm.except_orm(_('Error'), _('Too many accounts %s for company %s')
+                    % (account_code,parallel_company.name))
+        return parallel_acc_ids and parallel_acc_ids[0] or False
+    
+    def _build_account_vals(self, cr, uid, account_vals, parallel_company, context=None):
+        # build only fields I need
+        vals={}
+        if account_vals.has_key('name'):
+            vals['name'] = account_vals['name']
+        if account_vals.has_key('code'):
+            vals['code'] = account_vals['code']
+        if account_vals.has_key('type'):
+            vals['type'] = account_vals['type']
+        if account_vals.has_key('user_type'):
+            vals['user_type'] = account_vals['user_type']
+        if account_vals.has_key('active'):
+            vals['active'] = account_vals['active']
+        if account_vals.has_key('centralized'):
+            vals['centralized'] = account_vals['centralized']
+        if account_vals.has_key('parent_id'):
+            parent_account = self.browse(cr, uid, account_vals['parent_id'], context)
+            parent_parallel_acc_id = self._search_parallel_account(
+                cr, uid, parent_account.code, parallel_company, context=context)
+            if not parent_parallel_acc_id:
+                raise osv.except_osv(_('Error'),
+                    _('No parent account %s found in company %s') %
+                    (parent_account.code, parallel_company.name))
+            vals['parent_id'] = parent_parallel_acc_id
+        return vals
+    
+    def sync_parallel_accounts(self, cr, uid, ids, vals={}, context=None):
+        for account in self.browse(cr, uid, ids, context):
+            new_parallel_acc_ids = []
+            company_id = vals.get('company_id') or account.company_id.id
+            code = vals.get('code') or account.code
+            company = self.pool.get('res.company').browse(cr, uid, company_id, context)
+            for parallel_company in company.parallel_company_ids:
+                parallel_acc_id = self._search_parallel_account(
+                    cr, uid, code, parallel_company, context=context)
+                if not parallel_acc_id:
+                    # Then I create it, linked to parent account
+                    parallel_acc_id = self.create(cr, uid,
+                        self._build_account_vals(cr, uid,
+                        vals, parallel_company, context=context), context=context)
+                else:
+                    super(account_account,self).write(cr, uid, [parallel_acc_id],
+                        self._build_account_vals(cr, uid,
+                        vals, parallel_company, context=context), context)
+                    _logger.info(
+                        _("Parallel account %s (company %s) written") %
+                        (code, parallel_company.name))
+                new_parallel_acc_ids.append(parallel_acc_id)
+        return new_parallel_acc_ids
 
+    def write(self, cr, uid, ids, vals, context=None):
+        if not vals.has_key('parallel_account_ids'):
+            # write/create parallel accounts only if 'parallel_account_ids' not explicity written
+            for acc_id in ids:
+                new_parallel_acc_ids = self.sync_parallel_accounts(
+                    cr, SUPERUSER_ID, ids, vals=vals, context=context)
+                cr.execute("delete from parallel_account_rel where parent_id = %d" % acc_id)
+                for new_parallel_acc_id in new_parallel_acc_ids:
+                    cr.execute("insert into parallel_account_rel(parent_id,child_id) values (%d,%d)" % (acc_id,new_parallel_acc_id))
+        res=super(account_account,self).write(cr, uid, ids, vals, context=context)
+        return res
 
 #and tax codes?
 class account_move(orm.Model):
