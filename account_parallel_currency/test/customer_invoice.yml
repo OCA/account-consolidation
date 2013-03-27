@@ -1,0 +1,71 @@
+-
+  In order to test account invoice I create a new customer invoice
+-
+  I will create bank detail
+-
+  !record {model: res.partner.bank, id: res_partner_bank_0}:
+    state: bank
+    company_id: base.main_company
+    partner_id: base.main_partner
+    acc_number: 123456789
+    footer: True
+    bank: base.res_bank_1
+    bank_name: Reserve
+-
+  I create a customer invoice
+-
+  !record {model: account.invoice, id: account_invoice_customer0, view: account.invoice_form}:
+    payment_term: account.account_payment_term_advance
+    partner_bank_id: res_partner_bank_0
+    journal_id: account.sales_journal
+    partner_id: base.res_partner_3
+    reference_type: none
+    name: 'Test Customer Invoice'
+    invoice_line:
+      - product_id: product.product_product_5
+        quantity: 10.0
+-
+  I manually assign tax on invoice
+-
+  !python {model: account.invoice.tax}: |
+    amt = self.amount_change(cr, uid, [], 50.0, ref('base.EUR'), ref('base.main_company'), False)
+    base_amt = self.base_change(cr, uid, [], 9000.0, ref('base.EUR'), ref('base.main_company'), False)
+    invoice_tax_line = {
+        'name':  'Test Tax for Customer Invoice',
+        'manual': 1,
+        'base': base_amt['value']['base_amount'],
+        'amount': amt['value']['tax_amount'],
+        'account_id': ref('account.ova'),
+        'invoice_id': ref("account_invoice_customer0"),
+        }
+    tax = self.create(cr, uid, invoice_tax_line)
+    assert tax, "Tax has not been assigned correctly"
+
+-
+  I check that Initially customer invoice is in the "Draft" state
+-
+  !assert {model: account.invoice, id: account_invoice_customer0}:
+    - state == 'draft'
+-
+  I create invoice by clicking on Create button
+-
+  !workflow {model: account.invoice, action: invoice_open, ref: account_invoice_customer0}
+-
+  I check that the invoice state is "Open"
+-
+  !assert {model: account.invoice, id: account_invoice_customer0}:
+    - state == 'open'
+
+-
+  I check moves attached to the invoice
+-
+  !python {model: account.invoice}: |
+    acc_id=self.browse(cr, uid, ref("account_invoice_customer0"))
+    assert acc_id.move_id, "Move not created for open invoice"
+    assert acc_id.move_id.parallel_move_ids, "Parallel move not created for open invoice"
+    for parallel_move in acc_id.move_id.parallel_move_ids:
+        for line in parallel_move.line_id:
+            if line.account_id.id == ref("a_sale"):
+                assert line.credit == 11777.40, "CHF Product Sales must be 11777.40"
+                assert line.amount_currency == -9000.0, "EUR Product Sales must be -9000.0"
+                assert line.currency_id.id == ref("EUR"), "Secondary currency must be EUR"

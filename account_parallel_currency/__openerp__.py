@@ -49,6 +49,7 @@ For each user, it is possible to configure a 'parallel user' (that should be ass
         ],
     'test': [
         'test/mapping_parallel_accounts.yml',
+        'test/customer_invoice.yml',
         ],
     "active": False,
     "installable": True
