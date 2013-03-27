@@ -184,9 +184,7 @@ class account_move(orm.Model):
         curr_pool = self.pool.get('res.currency')
         user_pool = self.pool.get('res.users')
         company_pool = self.pool.get('res.company')
-        user = user_pool.browse(cr, uid, uid, context=context)
-        if user.parallel_user_id:
-            uid = user.parallel_user_id.id
+        uid = SUPERUSER_ID
         for move in self.browse(cr, uid, ids, context=context):
             if move.state == 'posted':
                 new_move_lines = []
