@@ -42,10 +42,14 @@ For each user, it is possible to configure a 'parallel user' (that should be ass
         'account_view.xml',
         'company_view.xml',
         'wizard/do_mapping.xml',
-        'user_view.xml',
         'security/security.xml',
         ],
-    "demo" : [],
+    "demo" : [
+        'account_demo.xml',
+        ],
+    'test': [
+        'test/mapping_parallel_accounts.yml',
+        ],
     "active": False,
     "installable": True
 }
