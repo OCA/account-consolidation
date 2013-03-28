@@ -244,27 +244,31 @@ class account_move(orm.Model):
                             parallel_sec_curr_iso_code = line.company_id.currency_id.name
                             amount = line.debit or ( - line.credit)
                             
-                        # search parallel currency by ISO code and parallel company
-                        parallel_secondary_curr_ids = curr_pool.search(cr, uid, [
-                            ('name', '=', parallel_sec_curr_iso_code),
-                            ('company_id', '=', parallel_account.company_id.id),
-                            ], context=context)
+                        parallel_base_amount = amount
+                        if parallel_sec_curr_iso_code != parallel_account.company_id.currency_id.name:
+                            # only if parallel company currency is != master move currency
+                            # search parallel currency by ISO code and parallel company
+                            parallel_secondary_curr_ids = curr_pool.search(cr, uid, [
+                                ('name', '=', parallel_sec_curr_iso_code),
+                                ('company_id', '=', parallel_account.company_id.id),
+                                ], context=context)
+                                
+                            if len(parallel_secondary_curr_ids) == 0:
+                                raise orm.except_orm(_('Error !'), _('Currency %s does not exist in company %s !')
+                                    % (parallel_sec_curr_iso_code, parallel_account.company_id.name))
+                            if len(parallel_secondary_curr_ids) > 1:
+                                raise orm.except_orm(_('Error !'), _('Too many currencies %s for company %s !')
+                                    % (parallel_sec_curr_iso_code, parallel_account.company_id.name))
                             
-                        if len(parallel_secondary_curr_ids) == 0:
-                            raise orm.except_orm(_('Error !'), _('Currency %s does not exist in company %s !')
-                                % (parallel_sec_curr_iso_code, parallel_account.company_id.name))
-                        if len(parallel_secondary_curr_ids) > 1:
-                            raise orm.except_orm(_('Error !'), _('Too many currencies %s for company %s !')
-                                % (parallel_sec_curr_iso_code, parallel_account.company_id.name))
-                        
-                        # compute parallel base amount from document currency, using move date
-                        context.update({'date': line.date})
-                        parallel_base_amount = curr_pool.compute(cr, uid, parallel_secondary_curr_ids[0],
-                            parallel_account.company_id.currency_id.id, amount,
-                            context=context)
+                            # compute parallel base amount from document currency, using move date
+                            context.update({'date': line.date})
+                            parallel_base_amount = curr_pool.compute(cr, uid, parallel_secondary_curr_ids[0],
+                                parallel_account.company_id.currency_id.id, amount,
+                                context=context)
                             
-                        new_line_values['amount_currency'] = amount or False
-                        new_line_values['currency_id'] = parallel_secondary_curr_ids[0]
+                            new_line_values['amount_currency'] = amount
+                            new_line_values['currency_id'] = parallel_secondary_curr_ids[0]
+                            
                         new_line_values['debit'] = 0.0
                         new_line_values['credit'] = 0.0
                         if parallel_base_amount > 0:
