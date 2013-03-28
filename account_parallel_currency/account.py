@@ -127,7 +127,7 @@ class account_move(orm.Model):
     
     def button_cancel(self, cr, uid, ids, context=None):
         res = super(account_move, self).button_cancel(cr, uid, ids, context=context)
-        for move in self.browse(cr, uid, ids, context=context):
+        for move in self.browse(cr, SUPERUSER_ID, ids, context=context):
             for parallel_move in move.parallel_move_ids:
                 parallel_move.button_cancel(context=context)
                 parallel_move.unlink(context=context)
