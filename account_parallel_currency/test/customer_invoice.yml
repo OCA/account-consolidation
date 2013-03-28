@@ -78,7 +78,7 @@
     journal_id: account.sales_journal
     partner_id: base.res_partner_3
     reference_type: none
-    name: 'Test Customer Invoice'
+    name: 'Test Customer CHF Invoice'
     currency_id: base.CHF
     invoice_line:
       - product_id: product.product_product_5
@@ -103,3 +103,36 @@
                 assert line.credit == 100.0, "CHF Product Sales must be 100.0"
                 assert not line.amount_currency, "amount_currency must be empty"
                 assert not line.currency_id, "currency_id must be empty"
+
+-
+  I create a customer USD invoice
+-
+  !record {model: account.invoice, id: account_invoice_customer2, view: account.invoice_form}:
+    journal_id: account.sales_journal
+    partner_id: base.res_partner_3
+    reference_type: none
+    name: 'Test Customer USD Invoice'
+    currency_id: base.USD
+    invoice_line:
+      - product_id: product.product_product_5
+        quantity: 1.0
+        price_unit: 100.0
+
+-
+  I confirm invoice by clicking on validate button
+-
+  !workflow {model: account.invoice, action: invoice_open, ref: account_invoice_customer2}
+
+-
+  I check moves attached to the invoice
+-
+  !python {model: account.invoice}: |
+    acc_id=self.browse(cr, uid, ref("account_invoice_customer2"))
+    assert acc_id.move_id, "Move not created for open invoice"
+    assert acc_id.move_id.parallel_move_ids, "Parallel move not created for open invoice"
+    for parallel_move in acc_id.move_id.parallel_move_ids:
+        for line in parallel_move.line_id:
+            if line.account_id.id == ref("a_sale"):
+                assert line.credit == 101.96, "USD Product Sales must be 101.96"
+                assert line.amount_currency == -100.0, "USD Product Sales must be -100.0"
+                assert line.currency_id.id == ref("USD"), "Secondary currency must be USD"
