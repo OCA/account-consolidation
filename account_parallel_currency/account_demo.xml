@@ -1,0 +1,504 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        
+        <!--
+        Parallel company
+        -->    
+        
+        <record id="parallel_company" model="res.company">
+            <field name="name" >Parallel company</field>
+            <field name="currency_id" ref="base.CHF"></field>
+        </record>
+        
+        <record id="base.main_company" model="res.company">
+            <field name="parallel_company_ids" eval="[(6,0,[ref('parallel_company')])]"></field>
+        </record>
+        
+        <!--
+        currencies
+        -->
+        
+        <record id="USD" model="res.currency">
+            <field name="name">USD</field>
+            <field name="symbol">$</field>
+            <field name="rounding">0.01</field>
+            <field name="accuracy">4</field>
+            <field name="position">before</field>
+            <field name="company_id" ref="parallel_company"/>
+        </record>
+        <record id="rateUSD" model="res.currency.rate">
+            <field name="rate">1.2834</field>
+            <field name="currency_id" ref="USD"/>
+            <field eval="time.strftime('%Y-01-01')" name="name"/>
+        </record>
+        <record id="CHF" model="res.currency">
+            <field name="name">CHF</field>
+            <field name="symbol">CHF</field>
+            <field name="rounding">0.01</field>
+            <field name="accuracy">4</field>
+            <field name="company_id" ref="parallel_company"/>
+        </record>
+        <record id="rateCHF" model="res.currency.rate">
+            <field name="rate">1.3086</field>
+            <field name="currency_id" ref="CHF"/>
+            <field eval="time.strftime('%Y-01-01')" name="name"/>
+        </record>
+        <record id="EUR" model="res.currency">
+            <field name="name">EUR</field>
+            <field name="symbol">€</field>
+            <field name="rounding">0.01</field>
+            <field name="accuracy">4</field>
+            <field name="company_id" ref="parallel_company"/>
+        </record>
+        <record id="rateEUR" model="res.currency.rate">
+            <field name="currency_id" ref="EUR" />
+            <field eval="time.strftime('%Y-01-01')" name="name"/>
+            <field name="rate">1.0</field>
+        </record>
+        
+        <!--
+        Journal
+        -->
+        
+        <record id="parallel_sales_journal" model="account.journal">
+            <field name="name">Parallel Sales Journal - (test)</field>
+            <field name="code">PSAJ</field>
+            <field name="type">sale</field>
+            <field name="company_id" ref="parallel_company"/>
+        </record>
+        <record id="account.sales_journal" model="account.journal">
+            <field name="parallel_journal_ids" eval="[(6,0,[ref('parallel_sales_journal')])]"></field>
+        </record>
+        
+        <!--
+        Fiscal year
+        -->    
+        
+        <record id="data_fiscalyear" model="account.fiscalyear">
+            <field eval="'Fiscal Year X '+time.strftime('%Y')" name="name"/>
+            <field eval="'FY'+time.strftime('%Y')" name="code"/>
+            <field eval="time.strftime('%Y')+'-01-01'" name="date_start"/>
+            <field eval="time.strftime('%Y')+'-12-31'" name="date_stop"/>
+            <field name="company_id" ref="parallel_company"/>
+        </record>
+        
+        <!--
+        Fiscal Periods
+        -->    
+        
+        <record id="period_1" model="account.period">
+            <field eval="'01/'+time.strftime('%Y')" name="code"/>
+            <field eval="'X 01/'+time.strftime('%Y')" name="name"/>
+            <field eval="True" name="special"/>
+            <field name="fiscalyear_id" ref="data_fiscalyear"/>
+            <field eval="time.strftime('%Y')+'-01-01'" name="date_start"/>
+            <field eval="time.strftime('%Y')+'-01-31'" name="date_stop"/>
+            <field name="company_id" ref="parallel_company"/>
+        </record>
+        <record id="period_2" model="account.period">
+            <field eval="'02/'+time.strftime('%Y')" name="code"/>
+            <field eval="'X 02/'+time.strftime('%Y')" name="name"/>
+            <field eval="True" name="special"/>
+            <field name="fiscalyear_id" ref="data_fiscalyear"/>
+            <field eval="time.strftime('%Y')+'-02-01'" name="date_start"/>
+            <!-- for the last day of February, we have to compute the day before March 1st -->
+            <field eval="(DateTime.today().replace(month=3, day=1) - timedelta(days=1)).strftime('%Y-%m-%d')" name="date_stop"/>
+            <field name="company_id" ref="parallel_company"/>
+        </record>
+        <record id="period_3" model="account.period">
+            <field eval="'03/'+time.strftime('%Y')" name="code"/>
+            <field eval="'X 03/'+time.strftime('%Y')" name="name"/>
+            <field eval="True" name="special"/>
+            <field name="fiscalyear_id" ref="data_fiscalyear"/>
+            <field eval="time.strftime('%Y')+'-03-01'" name="date_start"/>
+            <field eval="time.strftime('%Y')+'-03-31'" name="date_stop"/>
+            <field name="company_id" ref="parallel_company"/>
+        </record>
+        <record id="period_4" model="account.period">
+            <field eval="'04/'+time.strftime('%Y')" name="code"/>
+            <field eval="'X 04/'+time.strftime('%Y')" name="name"/>
+            <field eval="True" name="special"/>
+            <field name="fiscalyear_id" ref="data_fiscalyear"/>
+            <field eval="time.strftime('%Y')+'-04-01'" name="date_start"/>
+            <field eval="time.strftime('%Y')+'-04-30'" name="date_stop"/>
+            <field name="company_id" ref="parallel_company"/>
+        </record>
+        <record id="period_5" model="account.period">
+            <field eval="'05/'+time.strftime('%Y')" name="code"/>
+            <field eval="'X 05/'+time.strftime('%Y')" name="name"/>
+            <field eval="True" name="special"/>
+            <field name="fiscalyear_id" ref="data_fiscalyear"/>
+            <field eval="time.strftime('%Y')+'-05-01'" name="date_start"/>
+            <field eval="time.strftime('%Y')+'-05-31'" name="date_stop"/>
+            <field name="company_id" ref="parallel_company"/>
+        </record>
+        <record id="period_6" model="account.period">
+            <field eval="'06/'+time.strftime('%Y')" name="code"/>
+            <field eval="'X 06/'+time.strftime('%Y')" name="name"/>
+            <field name="fiscalyear_id" ref="data_fiscalyear"/>
+            <field eval="True" name="special"/>
+            <field eval="time.strftime('%Y')+'-06-01'" name="date_start"/>
+            <field eval="time.strftime('%Y')+'-06-30'" name="date_stop"/>
+            <field name="company_id" ref="parallel_company"/>
+        </record>
+        <record id="period_7" model="account.period">
+            <field eval="'07/'+time.strftime('%Y')" name="code"/>
+            <field eval="'X 07/'+time.strftime('%Y')" name="name"/>
+            <field eval="True" name="special"/>
+            <field name="fiscalyear_id" ref="data_fiscalyear"/>
+            <field eval="time.strftime('%Y')+'-07-01'" name="date_start"/>
+            <field eval="time.strftime('%Y')+'-07-31'" name="date_stop"/>
+            <field name="company_id" ref="parallel_company"/>
+        </record>
+        <record id="period_8" model="account.period">
+            <field eval="'08/'+time.strftime('%Y')" name="code"/>
+            <field eval="'X 08/'+time.strftime('%Y')" name="name"/>
+            <field eval="True" name="special"/>
+            <field name="fiscalyear_id" ref="data_fiscalyear"/>
+            <field eval="time.strftime('%Y')+'-08-01'" name="date_start"/>
+            <field eval="time.strftime('%Y')+'-08-31'" name="date_stop"/>
+            <field name="company_id" ref="parallel_company"/>
+        </record>
+        <record id="period_9" model="account.period">
+            <field eval="'09/'+time.strftime('%Y')" name="code"/>
+            <field eval="'X 09/'+time.strftime('%Y')" name="name"/>
+            <field eval="True" name="special"/>
+            <field name="fiscalyear_id" ref="data_fiscalyear"/>
+            <field eval="time.strftime('%Y')+'-09-01'" name="date_start"/>
+            <field eval="time.strftime('%Y')+'-09-30'" name="date_stop"/>
+            <field name="company_id" ref="parallel_company"/>
+        </record>
+        <record id="period_10" model="account.period">
+            <field eval="'10/'+time.strftime('%Y')" name="code"/>
+            <field eval="'X 10/'+time.strftime('%Y')" name="name"/>
+            <field eval="True" name="special"/>
+            <field name="fiscalyear_id" ref="data_fiscalyear"/>
+            <field eval="time.strftime('%Y')+'-10-01'" name="date_start"/>
+            <field eval="time.strftime('%Y')+'-10-31'" name="date_stop"/>
+            <field name="company_id" ref="parallel_company"/>
+        </record>
+        <record id="period_11" model="account.period">
+            <field eval="'11/'+time.strftime('%Y')" name="code"/>
+            <field eval="'X 11/'+time.strftime('%Y')" name="name"/>
+            <field eval="True" name="special"/>
+            <field name="fiscalyear_id" ref="data_fiscalyear"/>
+            <field eval="time.strftime('%Y')+'-11-01'" name="date_start"/>
+            <field eval="time.strftime('%Y')+'-11-30'" name="date_stop"/>
+            <field name="company_id" ref="parallel_company"/>
+        </record>
+        <record id="period_12" model="account.period">
+            <field eval="'12/'+time.strftime('%Y')" name="code"/>
+            <field eval="'X 12/'+time.strftime('%Y')" name="name"/>
+            <field eval="True" name="special"/>
+            <field name="fiscalyear_id" ref="data_fiscalyear"/>
+            <field eval="time.strftime('%Y')+'-12-01'" name="date_start"/>
+            <field eval="time.strftime('%Y')+'-12-31'" name="date_stop"/>
+            <field name="company_id" ref="parallel_company"/>
+        </record>
+        
+        <!--
+        Chart of Accounts
+        -->
+
+        <record id="chart0" model="account.account">
+            <field name="company_id" ref="parallel_company"/>
+            <field name="code">X0</field>
+            <field name="name">Chart For Automated Tests</field>
+            <field name="type">view</field>
+            <field name="user_type" ref="account.data_account_type_view"/>
+        </record>
+
+        <!-- Balance Sheet -->
+
+        <record id="bal" model="account.account">
+            <field name="company_id" ref="parallel_company"/>
+            <field name="code">X1</field>
+            <field name="name">Balance Sheet - (test)</field>
+            <field ref="chart0" name="parent_id"/>
+            <field name="type">view</field>
+            <field name="user_type" ref="account.data_account_type_view"/>
+        </record>
+
+        <record model="account.account" id="assets_view">
+            <field name="company_id" ref="parallel_company"/>
+            <field name="name">Assets - (test)</field>
+            <field name="code">X10</field>
+            <field name="type">view</field>
+            <field name="user_type" ref="account.data_account_type_asset"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="bal"/>
+        </record>
+
+        <record id="fas" model="account.account">
+            <field name="company_id" ref="parallel_company"/>
+            <field name="code">X100</field>
+            <field name="name">Fixed Assets - (test)</field>
+            <field ref="assets_view" name="parent_id"/>
+            <field name="type">view</field>
+            <field name="user_type" ref="account.data_account_type_asset"/>
+        </record>
+
+        <record id="xfa" model="account.account">
+            <field name="company_id" ref="parallel_company"/>
+            <field name="code">X1000</field>
+            <field name="name">Fixed Asset Account - (test)</field>
+            <field ref="fas" name="parent_id"/>
+            <field name="type">other</field>
+            <field name="user_type" ref="account.data_account_type_asset"/>
+        </record>
+
+        <record id="nca" model="account.account">
+            <field name="company_id" ref="parallel_company"/>
+            <field name="code">X101</field>
+            <field name="name">Net Current Assets - (test)</field>
+            <field ref="assets_view" name="parent_id"/>
+            <field name="type">view</field>
+            <field name="user_type" ref="account.data_account_type_asset"/>
+        </record>
+
+        <record id="cas" model="account.account">
+            <field name="company_id" ref="parallel_company"/>
+            <field name="code">X1100</field>
+            <field name="name">Current Assets - (test)</field>
+            <field ref="nca" name="parent_id"/>
+            <field name="type">view</field>
+            <field name="user_type" ref="account.data_account_type_asset"/>
+        </record>
+
+        <record id="stk" model="account.account">
+            <field name="company_id" ref="parallel_company"/>
+            <field name="code">X11001</field>
+            <field name="name">Purchased Stocks - (test)</field>
+            <field ref="cas" name="parent_id"/>
+            <field name="type">other</field>
+            <field name="user_type" ref="account.data_account_type_asset"/>
+        </record>
+
+        <record id="a_recv" model="account.account">
+            <field name="company_id" ref="parallel_company"/>
+            <field name="code">X11002</field>
+            <field name="name">Debtors - (test)</field>
+            <field ref="cas" name="parent_id"/>
+            <field name="type">receivable</field>
+            <field eval="True" name="reconcile"/>
+            <field name="user_type" ref="account.data_account_type_receivable"/>
+        </record>
+
+        <record id="ova" model="account.account">
+            <field name="company_id" ref="parallel_company"/>
+            <field name="code">X11003</field>
+            <field name="name">Output VAT - (test)</field>
+            <field ref="cas" name="parent_id"/>
+            <field name="type">other</field>
+            <field name="user_type" ref="account.data_account_type_asset"/>
+        </record>
+
+        <record id="bnk" model="account.account">
+            <field name="company_id" ref="parallel_company"/>
+            <field name="code">X11004</field>
+            <field name="name">Bank Current Account - (test)</field>
+            <field ref="cas" name="parent_id"/>
+            <field name="type">liquidity</field>
+            <field name="user_type" ref="account.data_account_type_asset"/>
+        </record>
+
+        <record id="cash" model="account.account">
+            <field name="company_id" ref="parallel_company"/>
+            <field name="code">X11005</field>
+            <field name="name">Cash - (test)</field>
+            <field ref="cas" name="parent_id"/>
+            <field name="type">liquidity</field>
+            <field name="user_type" ref="account.data_account_type_asset"/>
+        </record>
+
+        <record id="o_income" model="account.account">
+            <field name="company_id" ref="parallel_company"/>
+            <field name="code">X11006</field>
+            <field name="name">Opening Income - (test)</field>
+            <field ref="cas" name="parent_id"/>
+            <field name="type">other</field>
+            <field name="user_type" ref="account.data_account_type_income"/>
+        </record>
+        <record id="usd_bnk" model="account.account">
+            <field name="company_id" ref="parallel_company"/>
+            <field name="code">X11007</field>
+            <field name="name">USD Bank Account - (test)</field>
+            <field ref="cas" name="parent_id"/>
+            <field name="type">liquidity</field>
+            <field name="user_type" ref="account.data_account_type_asset"/>
+            <field name="currency_id" ref="base.USD"/>
+        </record>
+
+        <record model="account.account" id="liabilities_view">
+            <field name="company_id" ref="parallel_company"/>
+            <field name="name">Liabilities - (test)</field>
+            <field name="code">X11</field>
+            <field name="type">view</field>
+            <field name="user_type" ref="account.data_account_type_liability"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="bal"/>
+        </record>
+
+        <record id="cli" model="account.account">
+            <field name="company_id" ref="parallel_company"/>
+            <field name="code">X110</field>
+            <field name="name">Current Liabilities - (test)</field>
+            <field ref="liabilities_view" name="parent_id"/>
+            <field name="type">view</field>
+            <field name="user_type" ref="account.data_account_type_liability"/>
+        </record>
+
+        <record id="a_pay" model="account.account">
+            <field name="company_id" ref="parallel_company"/>
+            <field name="code">X1111</field>
+            <field name="name">Creditors - (test)</field>
+            <field ref="cli" name="parent_id"/>
+            <field name="type">payable</field>
+            <field eval="True" name="reconcile"/>
+            <field name="user_type" ref="account.data_account_type_payable"/>
+        </record>
+
+        <record id="iva" model="account.account">
+            <field name="company_id" ref="parallel_company"/>
+            <field name="code">X1112</field>
+            <field name="name">Input VAT - (test)</field>
+            <field ref="cli" name="parent_id"/>
+            <field name="type">other</field>
+            <field name="user_type" ref="account.data_account_type_liability"/>
+        </record>
+
+        <record id="rsa" model="account.account">
+            <field name="company_id" ref="parallel_company"/>
+            <field name="code">X1113</field>
+            <field name="name">Reserve and Profit/Loss - (test)</field>
+            <field ref="cli" name="parent_id"/>
+            <field name="type">other</field>
+            <field name="user_type" ref="account.data_account_type_liability"/>
+        </record>
+
+        <record id="o_expense" model="account.account">
+            <field name="company_id" ref="parallel_company"/>
+            <field name="code">X1114</field>
+            <field name="name">Opening Expense - (test)</field>
+            <field ref="cli" name="parent_id"/>
+            <field name="type">other</field>
+            <field name="user_type" ref="account.data_account_type_expense"/>
+        </record>
+
+        <!-- Profit and Loss -->
+
+        <record id="gpf" model="account.account">
+            <field name="company_id" ref="parallel_company"/>
+            <field name="code">X2</field>
+            <field name="name">Profit and Loss - (test)</field>
+            <field ref="chart0" name="parent_id"/>
+            <field name="type">view</field>
+            <field name="user_type" ref="account.data_account_type_view"/>
+        </record>
+
+        <record model="account.account" id="income_view">
+            <field name="company_id" ref="parallel_company"/>
+            <field name="name">Income - (test)</field>
+            <field name="code">X20</field>
+            <field name="type">view</field>
+            <field name="user_type" ref="account.data_account_type_income"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="gpf"/>
+        </record>
+
+        <record model="account.account" id="income_fx_income">
+            <field name="company_id" ref="parallel_company"/>
+            <field name="name">Foreign Exchange Gain - (test)</field>
+            <field name="code">X201</field>
+            <field name="type">other</field>
+            <field name="user_type" ref="account.data_account_type_income"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="income_view"/>
+        </record>
+
+        <record id="rev" model="account.account">
+            <field name="company_id" ref="parallel_company"/>
+            <field name="code">X200</field>
+            <field name="name">Revenue - (test)</field>
+            <field ref="income_view" name="parent_id"/>
+            <field name="type">view</field>
+            <field name="user_type" ref="account.data_account_type_income"/>
+        </record>
+
+        <record id="a_sale" model="account.account">
+            <field name="company_id" ref="parallel_company"/>
+            <field name="code">X2001</field>
+            <field name="name">Product Sales - (test)</field>
+            <field ref="rev" name="parent_id"/>
+            <field name="type">other</field>
+            <field name="user_type" ref="account.data_account_type_income"/>
+        </record>
+
+        <record model="account.account" id="expense_view">
+            <field name="company_id" ref="parallel_company"/>
+            <field name="name">Expense - (test)</field>
+            <field name="code">X21</field>
+            <field name="type">view</field>
+            <field name="user_type" ref="account.data_account_type_expense"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="gpf"/>
+        </record>
+
+
+        <record id="cos" model="account.account">
+            <field name="company_id" ref="parallel_company"/>
+            <field name="code">X210</field>
+            <field name="name">Cost of Sales - (test)</field>
+            <field ref="expense_view" name="parent_id"/>
+            <field name="type">view</field>
+            <field name="user_type" ref="account.data_account_type_expense"/>
+        </record>
+
+        <record id="cog" model="account.account">
+            <field name="company_id" ref="parallel_company"/>
+            <field name="code">X2100</field>
+            <field name="name">Cost of Goods Sold - (test)</field>
+            <field ref="cos" name="parent_id"/>
+            <field name="type">other</field>
+            <field name="user_type" ref="account.data_account_type_expense"/>
+        </record>
+
+        <record id="ovr" model="account.account">
+            <field name="company_id" ref="parallel_company"/>
+            <field name="code">X211</field>
+            <field name="name">Overheads - (test)</field>
+            <field ref="expense_view" name="parent_id"/>
+            <field name="type">view</field>
+            <field name="user_type" ref="account.data_account_type_expense"/>
+        </record>
+
+        <record id="a_expense" model="account.account">
+            <field name="company_id" ref="parallel_company"/>
+            <field name="code">X2110</field>
+            <field name="name">Expenses - (test)</field>
+            <field ref="ovr" name="parent_id"/>
+            <field name="type">other</field>
+            <field name="user_type" ref="account.data_account_type_expense"/>
+        </record>
+
+        <record model="account.account" id="income_fx_expense">
+            <field name="company_id" ref="parallel_company"/>
+            <field name="name">Foreign Exchange Loss - (test)</field>
+            <field name="code">X2111</field>
+            <field name="type">other</field>
+            <field name="user_type" ref="account.data_account_type_expense"/>
+            <field name="reconcile" eval="False"/>
+            <field name="parent_id" ref="ovr"/>
+        </record>
+
+        <record id="a_salary_expense" model="account.account">
+            <field name="company_id" ref="parallel_company"/>
+            <field name="code">X2112</field>
+            <field name="name">Salary Expenses - (test)</field>
+            <field ref="ovr" name="parent_id"/>
+            <field name="type">other</field>
+            <field name="user_type" ref="account.data_account_type_expense"/>
+        </record>
+    </data>
+</openerp>

@@ -32,7 +32,7 @@ In order to use the module, you have to define one company for each parallel cha
 A 'Parallel Account Mapping' wizard is provided. It is intended to be run when the same chart of account is used for the parallel companies. It allows to automatically map the 'master' account to 'parallel' accounts, based on account code.
 
 When posting new journal entries, the system checks the configured parallel accounts and automatically generates the parallel entries.
-For each user, it is possible to configure a 'parallel user' (that should be associated to a dummy parent company), used to carry out the parallel registrations. This allows to keep the companies separate, so that users of the master company don't see secondary company data (e.g. currencies and journals) but the system uses his parallel user in order to perform the parallel registrations.
+This is achieved keeping the companies separate, so that users of the master company don't see secondary company data (e.g. currencies and journals) but the system uses the super user in order to perform the parallel registrations.
 """,
     'author': 'Agile Business Group',
     'website': 'http://www.agilebg.com',
@@ -42,10 +42,15 @@ For each user, it is possible to configure a 'parallel user' (that should be ass
         'account_view.xml',
         'company_view.xml',
         'wizard/do_mapping.xml',
-        'user_view.xml',
         'security/security.xml',
         ],
-    "demo" : [],
+    "demo" : [
+        'account_demo.xml',
+        ],
+    'test': [
+        'test/mapping_parallel_accounts.yml',
+        'test/customer_invoice.yml',
+        ],
     "active": False,
     "installable": True
 }

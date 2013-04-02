@@ -21,4 +21,3 @@
 import account
 import res_company
 import wizard
-import res_user

@@ -1,0 +1,11 @@
+-
+  I create the mapping wizard
+-
+  !record {model: account.parallel.mapping, id: account_parallel_mapping_0}:
+    remove_old_mapping: True
+
+-
+  I click on do mapping
+-
+  !python {model: account.parallel.mapping}: |
+    self.do_mapping(cr, uid, [ref("account_parallel_mapping_0")])

@@ -127,7 +127,7 @@ class account_move(orm.Model):
     
     def button_cancel(self, cr, uid, ids, context=None):
         res = super(account_move, self).button_cancel(cr, uid, ids, context=context)
-        for move in self.browse(cr, uid, ids, context=context):
+        for move in self.browse(cr, SUPERUSER_ID, ids, context=context):
             for parallel_move in move.parallel_move_ids:
                 parallel_move.button_cancel(context=context)
                 parallel_move.unlink(context=context)
@@ -184,9 +184,7 @@ class account_move(orm.Model):
         curr_pool = self.pool.get('res.currency')
         user_pool = self.pool.get('res.users')
         company_pool = self.pool.get('res.company')
-        user = user_pool.browse(cr, uid, uid, context=context)
-        if user.parallel_user_id:
-            uid = user.parallel_user_id.id
+        uid = SUPERUSER_ID
         for move in self.browse(cr, uid, ids, context=context):
             if move.state == 'posted':
                 new_move_lines = []
@@ -246,27 +244,31 @@ class account_move(orm.Model):
                             parallel_sec_curr_iso_code = line.company_id.currency_id.name
                             amount = line.debit or ( - line.credit)
                             
-                        # search parallel currency by ISO code and parallel company
-                        parallel_secondary_curr_ids = curr_pool.search(cr, uid, [
-                            ('name', '=', parallel_sec_curr_iso_code),
-                            ('company_id', '=', parallel_account.company_id.id),
-                            ], context=context)
+                        parallel_base_amount = amount
+                        if parallel_sec_curr_iso_code != parallel_account.company_id.currency_id.name:
+                            # only if parallel company currency is != master move currency
+                            # search parallel currency by ISO code and parallel company
+                            parallel_secondary_curr_ids = curr_pool.search(cr, uid, [
+                                ('name', '=', parallel_sec_curr_iso_code),
+                                ('company_id', '=', parallel_account.company_id.id),
+                                ], context=context)
+                                
+                            if len(parallel_secondary_curr_ids) == 0:
+                                raise orm.except_orm(_('Error !'), _('Currency %s does not exist in company %s !')
+                                    % (parallel_sec_curr_iso_code, parallel_account.company_id.name))
+                            if len(parallel_secondary_curr_ids) > 1:
+                                raise orm.except_orm(_('Error !'), _('Too many currencies %s for company %s !')
+                                    % (parallel_sec_curr_iso_code, parallel_account.company_id.name))
                             
-                        if len(parallel_secondary_curr_ids) == 0:
-                            raise orm.except_orm(_('Error !'), _('Currency %s does not exist in company %s !')
-                                % (parallel_sec_curr_iso_code, parallel_account.company_id.name))
-                        if len(parallel_secondary_curr_ids) > 1:
-                            raise orm.except_orm(_('Error !'), _('Too many currencies %s for company %s !')
-                                % (parallel_sec_curr_iso_code, parallel_account.company_id.name))
-                        
-                        # compute parallel base amount from document currency, using move date
-                        context.update({'date': line.date})
-                        parallel_base_amount = curr_pool.compute(cr, uid, parallel_secondary_curr_ids[0],
-                            parallel_account.company_id.currency_id.id, amount,
-                            context=context)
+                            # compute parallel base amount from document currency, using move date
+                            context.update({'date': line.date})
+                            parallel_base_amount = curr_pool.compute(cr, uid, parallel_secondary_curr_ids[0],
+                                parallel_account.company_id.currency_id.id, amount,
+                                context=context)
                             
-                        new_line_values['amount_currency'] = amount or False
-                        new_line_values['currency_id'] = parallel_secondary_curr_ids[0]
+                            new_line_values['amount_currency'] = amount
+                            new_line_values['currency_id'] = parallel_secondary_curr_ids[0]
+                            
                         new_line_values['debit'] = 0.0
                         new_line_values['credit'] = 0.0
                         if parallel_base_amount > 0:
