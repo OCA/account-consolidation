@@ -1,4 +1,18 @@
 -
+  I create Tax Codes
+-
+  !record {model: account.tax.code, id: tax_code}:
+    name: tax_code
+    code: 1
+    company_id: base.main_company
+    sign: 1
+-
+  !record {model: account.tax.code, id: parallel_tax_code}:
+    name: parallel_tax_code
+    code: 1
+    company_id: parallel_company
+    sign: 1
+-
   I create the mapping wizard
 -
   !record {model: account.parallel.mapping, id: account_parallel_mapping_0}:

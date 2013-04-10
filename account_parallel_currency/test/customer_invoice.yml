@@ -37,6 +37,8 @@
         'amount': amt['value']['tax_amount'],
         'account_id': ref('account.ova'),
         'invoice_id': ref("account_invoice_customer0"),
+        'tax_code_id': ref('tax_code'),
+        'tax_amount': amt['value']['tax_amount'],
         }
     tax = self.create(cr, uid, invoice_tax_line)
     assert tax, "Tax has not been assigned correctly"
@@ -69,6 +71,9 @@
                 assert line.credit == 11777.40, "CHF Product Sales must be 11777.40"
                 assert line.amount_currency == -9000.0, "EUR Product Sales must be -9000.0"
                 assert line.currency_id.id == ref("EUR"), "Secondary currency must be EUR"
+            if line.account_id.id == ref("ova"):
+                assert line.tax_amount == 65.43, "CHF Tax amount must be 65.43"
+                assert line.credit == 65.43, "CHF Tax amount must be 65.43"
 
 -
   I create a customer CHF invoice
