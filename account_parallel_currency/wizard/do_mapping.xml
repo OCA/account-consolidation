@@ -19,7 +19,7 @@
         </record>
 
         <record id="action_account_parallel_mapping" model="ir.actions.act_window">
-            <field name="name">Parallel Account Mapping</field>
+            <field name="name">Parallel Accounting Mapping</field>
             <field name="res_model">account.parallel.mapping</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
@@ -27,6 +27,6 @@
            <field name="target">new</field>
         </record>
 
-        <menuitem name="Parallel Account Mapping" action="action_account_parallel_mapping" id="menu_action_account_parallel_mapping" parent="account.menu_finance_accounting"/>
+        <menuitem name="Parallel Accounting Mapping" action="action_account_parallel_mapping" id="menu_action_account_parallel_mapping" parent="account.menu_finance_accounting"/>
     </data>
 </openerp>
