@@ -114,6 +114,13 @@ class account_account(orm.Model):
                     cr.execute("insert into parallel_account_rel(parent_id,child_id) values (%d,%d)" % (acc_id,new_parallel_acc_id))
         res=super(account_account,self).write(cr, uid, ids, vals, context=context)
         return res
+        
+    def unlink(self, cr, uid, ids, context=None):
+        for account in self.browse(cr, SUPERUSER_ID, ids, context):
+            for parallel_account in account.parallel_account_ids:
+                parallel_account.unlink()
+        res=super(account_account,self).unlink(cr, uid, ids, context=context)
+        return res
 
 class account_move(orm.Model):
     _inherit = "account.move"

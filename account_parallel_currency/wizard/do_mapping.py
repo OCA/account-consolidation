@@ -89,4 +89,3 @@ class account_parallel_mapping(orm.TransientModel):
                                 [(4,parallel_tax_code_ids[0])]})
         self.write(cr, uid, ids, {'message': _('Done')})
         return True
-
