@@ -38,6 +38,7 @@ class account_parallel_mapping(orm.TransientModel):
     def do_mapping(self, cr, uid, ids, context=None):
         company_pool = self.pool.get('res.company')
         account_pool = self.pool.get('account.account')
+        tax_code_pool = self.pool.get('account.tax.code')
         company_ids = company_pool.search(cr, uid, [])
         wizard =self.browse(cr, uid, ids[0])
         if wizard.remove_old_mapping:
@@ -47,6 +48,8 @@ class account_parallel_mapping(orm.TransientModel):
             company = company_pool.browse(cr, uid, company_id)
             if company.parallel_company_ids:
                 master_account_ids = account_pool.search(cr, uid, [('company_id', '=', company.id)])
+                master_tax_code_ids = tax_code_pool.search(cr, uid, [('company_id', '=', company.id)])
+                # account mapping
                 for master_account_id in master_account_ids:
                     master_account = account_pool.browse(cr, uid, master_account_id)
                     for parallel_company in company.parallel_company_ids:
@@ -62,6 +65,22 @@ class account_parallel_mapping(orm.TransientModel):
                         elif len(parallel_account_ids) == 1:
                             master_account.write({'parallel_account_ids':
                                 [(4,parallel_account_ids[0])]})
+                # tax code mapping
+                for master_tax_code_id in master_tax_code_ids:
+                    master_tax_code = tax_code_pool.browse(cr, uid, master_atax_code_id)
+                    for parallel_company in company.parallel_company_ids:
+                        parallel_tax_code_ids = tax_code_pool.search(cr, uid, [
+                            ('code', '=', master_tax_code.code),
+                            ('company_id', '=', parallel_company.id),
+                            ])
+                        if len(parallel_tax_code_ids) > 1:
+                            raise orm.except_orm(_('Error'), _('Duplicated tax code %s for company %s')
+                                % (master_tax_code.code,parallel_company.name))
+                        elif not parallel_tax_code_ids:
+                            _logger.warning(_('No tax code %s for company %s') % (master_tax_code.code,parallel_company.name))
+                        elif len(parallel_tax_code_ids) == 1:
+                            master_tax_code.write({'parallel_tax_code_ids':
+                                [(4,parallel_tax_code_ids[0])]})
         self.write(cr, uid, ids, {'message': _('Done')})
         return True
 

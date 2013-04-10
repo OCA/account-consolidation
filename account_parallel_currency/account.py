@@ -350,3 +350,8 @@ class account_tax_code(orm.Model):
             'parent_id', 'Master Parallel Currency Tax Codes',
             Help="You can see here the tax codes that automatically move this journal", readonly=True),
         }
+
+    def write(self, cr, uid, ids, vals, context=None):
+        # TODO sync_parallel_tax_codes
+        res=super(account_tax_code,self).write(cr, uid, ids, vals, context=context)
+        return res
