@@ -35,6 +35,10 @@ class account_parallel_mapping(orm.TransientModel):
         'remove_old_mapping': fields.boolean('Remove Previous Mapping'),
         }
     
+    _defaults = {
+        'remove_old_mapping': True,
+        }
+    
     def do_mapping(self, cr, uid, ids, context=None):
         company_pool = self.pool.get('res.company')
         account_pool = self.pool.get('account.account')
