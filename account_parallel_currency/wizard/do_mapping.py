@@ -67,7 +67,7 @@ class account_parallel_mapping(orm.TransientModel):
                                 [(4,parallel_account_ids[0])]})
                 # tax code mapping
                 for master_tax_code_id in master_tax_code_ids:
-                    master_tax_code = tax_code_pool.browse(cr, uid, master_atax_code_id)
+                    master_tax_code = tax_code_pool.browse(cr, uid, master_tax_code_id)
                     for parallel_company in company.parallel_company_ids:
                         parallel_tax_code_ids = tax_code_pool.search(cr, uid, [
                             ('code', '=', master_tax_code.code),
