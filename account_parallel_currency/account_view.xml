@@ -38,7 +38,7 @@
             <field name="arch" type="xml">
                 <field name="info" position="after">
                     <group colspan="4" col="1" groups="account.group_account_manager">
-                        <field name="parallel_tax_code_ids"/>
+                        <field name="parallel_tax_code_ids" domain="[('company_id', '!=', company_id)]"/>
                         <field name="master_parallel_tax_code_ids"/>
                     </group>
                 </field>
