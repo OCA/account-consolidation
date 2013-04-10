@@ -115,7 +115,6 @@ class account_account(orm.Model):
         res=super(account_account,self).write(cr, uid, ids, vals, context=context)
         return res
 
-#and tax codes?
 class account_move(orm.Model):
     _inherit = "account.move"
     
@@ -313,4 +312,18 @@ class account_journal(orm.Model):
             'parallel_journal_rel', 'child_id',
             'parent_id', 'Master Parallel Currency Journals',
             Help="You can see here the journals that automatically move this journal", readonly=True),
+        }
+
+class account_tax_code(orm.Model):
+    _inherit = "account.tax.code"
+    
+    _columns = {
+        'parallel_tax_code_ids': fields.many2many('account.tax.code',
+            'parallel_tax_code_rel', 'parent_id',
+            'child_id', 'Parallel Currency Tax Codes',
+            Help="Set here the tax codes you want to automatically move when registering entries in this tax code"),
+        'master_parallel_tax_code_ids': fields.many2many('account.tax.code',
+            'parallel_tax_code_rel', 'child_id',
+            'parent_id', 'Master Parallel Currency Tax Codes',
+            Help="You can see here the tax codes that automatically move this journal", readonly=True),
         }
