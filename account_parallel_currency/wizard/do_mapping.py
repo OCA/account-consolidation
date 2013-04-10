@@ -61,7 +61,7 @@ class account_parallel_mapping(orm.TransientModel):
                             raise orm.except_orm(_('Error'), _('Duplicated account %s for company %s')
                                 % (master_account.code,parallel_company.name))
                         elif not parallel_account_ids:
-                            raise osv.except_osv(_('Error'), _('No account %s for company %s')
+                            raise orm.except_orm(_('Error'), _('No account %s for company %s')
                                 % (master_account.code,parallel_company.name))
                         elif len(parallel_account_ids) == 1:
                             master_account.write({'parallel_account_ids':
@@ -78,7 +78,7 @@ class account_parallel_mapping(orm.TransientModel):
                             raise orm.except_orm(_('Error'), _('Duplicated tax code %s for company %s')
                                 % (master_tax_code.code,parallel_company.name))
                         elif not parallel_tax_code_ids:
-                            raise osv.except_osv(_('Error'), _('No tax code %s for company %s')
+                            raise orm.except_orm(_('Error'), _('No tax code %s for company %s')
                                 % (master_tax_code.code,parallel_company.name))
                         elif len(parallel_tax_code_ids) == 1:
                             master_tax_code.write({'parallel_tax_code_ids':
