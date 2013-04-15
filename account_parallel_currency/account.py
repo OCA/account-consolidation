@@ -30,6 +30,16 @@ _logger = logging.getLogger(__name__)
 
 class account_account(orm.Model):
     _inherit = "account.account"
+
+    def _get_parallel_accounts_summary(self, cr, uid, ids, field_name, arg, context=None):
+        res={}
+        for account in self.browse(cr, SUPERUSER_ID, ids, context):
+            text='Configured parallel accounts:\n'
+            for parallel_account in account.parallel_account_ids:
+                text+= _('Account code: %s. Company: %s\n') % (
+                    parallel_account.code, parallel_account.company_id.name)
+            res[account.id] = text
+        return res
     
     _columns = {
         'parallel_account_ids': fields.many2many('account.account',
@@ -40,6 +50,7 @@ class account_account(orm.Model):
             'parallel_account_rel', 'child_id',
             'parent_id', 'Master Parallel Currency Accounts',
             Help="You can see here the accounts that automatically move this account", readonly=True),
+        'parallel_accounts_summary': fields.function(_get_parallel_accounts_summary, type='text', string='Parallel accounts summary'),
         }
     
     def _search_parallel_account(self, cr, uid, account_code, parallel_company,

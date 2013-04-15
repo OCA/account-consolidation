@@ -8,6 +8,7 @@
             <field name="arch" type="xml">
                 <field name="note" position="after">
                     <group colspan="4" string="Parallel Currency" groups="account.group_account_manager">
+                        <field  name="parallel_accounts_summary" />
                         <separator string="Parallel Currency Accounts" colspan="4"/>
                         <field colspan="4" name="parallel_account_ids" nolabel="1" domain="[('company_id', '!=', company_id)]"/>
                         <separator string="Master Parallel Currency Accounts" colspan="4"/>
