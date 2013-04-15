@@ -23,6 +23,7 @@
 from openerp.osv import fields, orm
 from tools.translate import _
 import logging
+from openerp import SUPERUSER_ID
 
 _logger = logging.getLogger(__name__)
 
@@ -43,21 +44,21 @@ class account_parallel_mapping(orm.TransientModel):
         company_pool = self.pool.get('res.company')
         account_pool = self.pool.get('account.account')
         tax_code_pool = self.pool.get('account.tax.code')
-        company_ids = company_pool.search(cr, uid, [])
+        company_ids = company_pool.search(cr, SUPERUSER_ID, [])
         wizard =self.browse(cr, uid, ids[0])
         if wizard.remove_old_mapping:
-            account_ids = account_pool.search(cr, uid, [])
-            account_pool.write(cr, uid, account_ids, {'parallel_account_ids': [(6,0,[])]})
+            account_ids = account_pool.search(cr, SUPERUSER_ID, [])
+            account_pool.write(cr, SUPERUSER_ID, account_ids, {'parallel_account_ids': [(6,0,[])]})
         for company_id in company_ids:
-            company = company_pool.browse(cr, uid, company_id)
+            company = company_pool.browse(cr, SUPERUSER_ID, company_id)
             if company.parallel_company_ids:
-                master_account_ids = account_pool.search(cr, uid, [('company_id', '=', company.id)])
-                master_tax_code_ids = tax_code_pool.search(cr, uid, [('company_id', '=', company.id)])
+                master_account_ids = account_pool.search(cr, SUPERUSER_ID, [('company_id', '=', company.id)])
+                master_tax_code_ids = tax_code_pool.search(cr, SUPERUSER_ID, [('company_id', '=', company.id)])
                 # account mapping
                 for master_account_id in master_account_ids:
-                    master_account = account_pool.browse(cr, uid, master_account_id)
+                    master_account = account_pool.browse(cr, SUPERUSER_ID, master_account_id)
                     for parallel_company in company.parallel_company_ids:
-                        parallel_account_ids = account_pool.search(cr, uid, [
+                        parallel_account_ids = account_pool.search(cr, SUPERUSER_ID, [
                             ('code', '=', master_account.code),
                             ('company_id', '=', parallel_company.id),
                             ])
@@ -72,9 +73,9 @@ class account_parallel_mapping(orm.TransientModel):
                                 [(4,parallel_account_ids[0])]})
                 # tax code mapping
                 for master_tax_code_id in master_tax_code_ids:
-                    master_tax_code = tax_code_pool.browse(cr, uid, master_tax_code_id)
+                    master_tax_code = tax_code_pool.browse(cr, SUPERUSER_ID, master_tax_code_id)
                     for parallel_company in company.parallel_company_ids:
-                        parallel_tax_code_ids = tax_code_pool.search(cr, uid, [
+                        parallel_tax_code_ids = tax_code_pool.search(cr, SUPERUSER_ID, [
                             ('code', '=', master_tax_code.code),
                             ('company_id', '=', parallel_company.id),
                             ])
