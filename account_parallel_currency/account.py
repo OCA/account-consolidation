@@ -90,6 +90,7 @@ class account_account(orm.Model):
             vals['parent_id'] = parent_parallel_acc_id
         return vals
     
+    # explicit button because user may want to create accounts independently and run mapping later
     def create_parallel_accounts(self, cr, uid, ids, context=None):
         for account in self.browse(cr, SUPERUSER_ID, ids, context):
             for parallel_company in account.company_id.parallel_company_ids:
