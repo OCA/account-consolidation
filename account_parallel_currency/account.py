@@ -90,6 +90,31 @@ class account_account(orm.Model):
             vals['parent_id'] = parent_parallel_acc_id
         return vals
     
+    def create_parallel_accounts(self, cr, uid, ids, context=None):
+        for account in self.browse(cr, SUPERUSER_ID, ids, context):
+            for parallel_company in account.company_id.parallel_company_ids:
+                for parallel_account in account.parallel_account_ids:
+                    if parallel_account.code == account.code and parallel_account.company_id.id == parallel_company.id:
+                        raise orm.except_orm(_('Error'),
+                            _('Account %s already exists for company %s')
+                            % (parallel_account.code, parallel_company.name))
+                parent_parallel_acc_id = self._search_parallel_account(
+                    cr, SUPERUSER_ID, account.parent_id.code, parallel_company, context=context)
+                new_id = self.create(cr, SUPERUSER_ID,{
+                    'company_id': parallel_company.id,
+                    'parent_id': parent_parallel_acc_id,
+                    'name': account.name,
+                    'code': account.code,
+                    'type': account.type,
+                    'user_type': account.user_type and account.user_type.id or False,
+                    'active': account.active,
+                    'centralized': account.centralized,
+                    })
+                cr.execute("insert into parallel_account_rel(parent_id,child_id) values (%d,%d)"
+                    % (account.id,new_id))
+        return True
+    
+    '''
     def sync_parallel_accounts(self, cr, uid, ids, vals={}, context=None):
         for account in self.browse(cr, uid, ids, context):
             new_parallel_acc_ids = []
@@ -101,9 +126,10 @@ class account_account(orm.Model):
                     cr, uid, code, parallel_company, context=context)
                 if not parallel_acc_id:
                     # Then I create it, linked to parent account
-                    parallel_acc_id = self.create(cr, uid,
-                        self._build_account_vals(cr, uid,
-                        vals, parallel_company, context=context), context=context)
+                    #parallel_acc_id = self.create(cr, uid,
+                        #self._build_account_vals(cr, uid,
+                        #vals, parallel_company, context=context), context=context)
+                    pass
                 else:
                     super(account_account,self).write(cr, uid, [parallel_acc_id],
                         self._build_account_vals(cr, uid,
@@ -113,16 +139,24 @@ class account_account(orm.Model):
                         (code, parallel_company.name))
                 new_parallel_acc_ids.append(parallel_acc_id)
         return new_parallel_acc_ids
+    '''
 
     def write(self, cr, uid, ids, vals, context=None):
         if not vals.has_key('parallel_account_ids'):
             # write/create parallel accounts only if 'parallel_account_ids' not explicity written
             for acc_id in ids:
-                new_parallel_acc_ids = self.sync_parallel_accounts(
-                    cr, SUPERUSER_ID, ids, vals=vals, context=context)
-                cr.execute("delete from parallel_account_rel where parent_id = %d" % acc_id)
-                for new_parallel_acc_id in new_parallel_acc_ids:
-                    cr.execute("insert into parallel_account_rel(parent_id,child_id) values (%d,%d)" % (acc_id,new_parallel_acc_id))
+                account = self.browse(cr, SUPERUSER_ID, acc_id, context)
+                company_id = vals.get('company_id') or account.company_id.id
+                company = self.pool.get('res.company').browse(
+                    cr, SUPERUSER_ID, company_id, context)
+                if len(company.parallel_company_ids) != len(account.parallel_account_ids):
+                    raise orm.except_orm(_('Error'),
+                    _('Parallel accounts number (%s) does not match with parallel companies number (%s). Create parallel accounts or map them with \'Parallel Mapping\' wizard')
+                    % (len(company.parallel_account_ids), len(account.parallel_company_ids)))
+                for parallel_account in account.parallel_account_ids:
+                    parallel_vals = self._build_account_vals(
+                        cr, uid, vals, parallel_account.company_id, context=context)
+                    parallel_account.write(parallel_vals)
         res=super(account_account,self).write(cr, uid, ids, vals, context=context)
         return res
         
