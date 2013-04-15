@@ -8,7 +8,7 @@
             <field name="arch" type="xml">
                 <form string="Parallel Mapping" >
                     <group col="2">
-                        <label string="This wizard will create the parallel account mapping. Please make sure you configured the 'Parallel Companies' field on your company. The wizard will search for matching account codes and write the result in the 'Parallel Currency Accounts' field" colspan="2"/>
+                        <label string="This wizard will create the parallel account mapping. Please make sure you configured the 'Parallel Companies' field on your company. The wizard will search for matching account and taz codes and write the result in the 'Parallel Currency Accounts' and 'Parallel Currency Tax Codes' fields" colspan="2"/>
                         <field name="remove_old_mapping" colspan="2"/>
                         <button icon="gtk-cancel" special="cancel" string="Close" />
                         <button icon="gtk-ok" name="do_mapping" string="Run" type="object"  />
@@ -19,7 +19,7 @@
         </record>
 
         <record id="action_account_parallel_mapping" model="ir.actions.act_window">
-            <field name="name">Parallel Account Mapping</field>
+            <field name="name">Parallel Accounting Mapping</field>
             <field name="res_model">account.parallel.mapping</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
@@ -27,6 +27,6 @@
            <field name="target">new</field>
         </record>
 
-        <menuitem name="Parallel Account Mapping" action="action_account_parallel_mapping" id="menu_action_account_parallel_mapping" parent="account.menu_finance_accounting"/>
+        <menuitem name="Parallel Accounting Mapping" action="action_account_parallel_mapping" id="menu_action_account_parallel_mapping" parent="account.menu_finance_accounting"/>
     </data>
 </openerp>

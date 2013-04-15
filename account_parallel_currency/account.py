@@ -114,8 +114,14 @@ class account_account(orm.Model):
                     cr.execute("insert into parallel_account_rel(parent_id,child_id) values (%d,%d)" % (acc_id,new_parallel_acc_id))
         res=super(account_account,self).write(cr, uid, ids, vals, context=context)
         return res
+        
+    def unlink(self, cr, uid, ids, context=None):
+        for account in self.browse(cr, SUPERUSER_ID, ids, context):
+            for parallel_account in account.parallel_account_ids:
+                parallel_account.unlink()
+        res=super(account_account,self).unlink(cr, uid, ids, context=context)
+        return res
 
-#and tax codes?
 class account_move(orm.Model):
     _inherit = "account.move"
     
@@ -186,7 +192,8 @@ class account_move(orm.Model):
         company_pool = self.pool.get('res.company')
         uid = SUPERUSER_ID
         for move in self.browse(cr, uid, ids, context=context):
-            if move.state == 'posted':
+            if move.state == 'posted' and not move.parallel_move_ids:
+                # avoid double post in case of 'Skip Draft State for Manual Entries'
                 new_move_lines = []
                 parallel_data = {}
                 for line in move.line_id:
@@ -276,6 +283,28 @@ class account_move(orm.Model):
                         elif parallel_base_amount < 0:
                             new_line_values['credit'] = abs(parallel_base_amount)
                         
+                        if line.tax_code_id and line.tax_amount:
+                            # search parallel tax codes for the parallel company
+                            parallel_tax_code_ids = []
+                            for tax_code in line.tax_code_id.parallel_tax_code_ids:
+                                if tax_code.company_id.id == parallel_account.company_id.id:
+                                    parallel_tax_code_ids.append(tax_code.id)
+                            
+                            if len(parallel_tax_code_ids) == 0:
+                                raise orm.except_orm(_('Error !'), _('Tax code %s does not exist in company %s !')
+                                    % (line.tax_code_id.name, parallel_account.company_id.name))
+                            if len(parallel_tax_code_ids) > 1:
+                                raise orm.except_orm(_('Error !'), _('Too many tax_codes %s for company %s !')
+                                    % (line.tax_code_id.name, parallel_account.company_id.name))
+                            
+                            new_line_values['tax_code_id'] = parallel_tax_code_ids[0]
+                            total_tax = new_line_values['debit'] - new_line_values['credit']
+                            new_line_values['tax_amount'] = line.tax_amount < 0 \
+                                and - abs(total_tax) \
+                                or line.tax_amount > 0 \
+                                and abs(total_tax) \
+                                or 0.0
+                        
                         new_move_lines.append((parallel_account.company_id.id, (0,0,new_line_values)))
                         #parallel_data[parallel_account.company_id.id]['move_lines'].append((0,0,new_line_values))
                         
@@ -296,7 +325,7 @@ class account_move(orm.Model):
                         'ref': parallel_data[company_id]['ref'],
                         }
                     move_id = self.create(cr, uid, move_values, context=context)
-                    self.post(cr, uid, [move_id], context=context)
+                    # self.post(cr, uid, [move_id], context=context)
                 
         return res
 
@@ -314,3 +343,22 @@ class account_journal(orm.Model):
             'parent_id', 'Master Parallel Currency Journals',
             Help="You can see here the journals that automatically move this journal", readonly=True),
         }
+
+class account_tax_code(orm.Model):
+    _inherit = "account.tax.code"
+    
+    _columns = {
+        'parallel_tax_code_ids': fields.many2many('account.tax.code',
+            'parallel_tax_code_rel', 'parent_id',
+            'child_id', 'Parallel Currency Tax Codes',
+            Help="Set here the tax codes you want to automatically move when registering entries in this tax code"),
+        'master_parallel_tax_code_ids': fields.many2many('account.tax.code',
+            'parallel_tax_code_rel', 'child_id',
+            'parent_id', 'Master Parallel Currency Tax Codes',
+            Help="You can see here the tax codes that automatically move this journal", readonly=True),
+        }
+
+    def write(self, cr, uid, ids, vals, context=None):
+        # TODO sync_parallel_tax_codes
+        res=super(account_tax_code,self).write(cr, uid, ids, vals, context=context)
+        return res
