@@ -8,7 +8,7 @@
             <field name="arch" type="xml">
                 <form string="Parallel Mapping" >
                     <group col="2">
-                        <label string="This wizard will create the parallel account mapping. Please make sure you configured the 'Parallel Companies' field on your company. The wizard will search for matching account and taz codes and write the result in the 'Parallel Currency Accounts' and 'Parallel Currency Tax Codes' fields" colspan="2"/>
+                        <label string="This wizard will create the parallel account mapping. Please make sure you configured the 'Parallel Companies' field on your company. The wizard will search for matching account and tax codes and write the result in the 'Parallel Currency Accounts' and 'Parallel Currency Tax Codes' fields" colspan="2"/>
                         <field name="remove_old_mapping" colspan="2"/>
                         <button icon="gtk-cancel" special="cancel" string="Close" />
                         <button icon="gtk-ok" name="do_mapping" string="Run" type="object"  />

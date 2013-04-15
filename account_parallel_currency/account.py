@@ -84,7 +84,7 @@ class account_account(orm.Model):
             parent_parallel_acc_id = self._search_parallel_account(
                 cr, uid, parent_account.code, parallel_company, context=context)
             if not parent_parallel_acc_id:
-                raise osv.except_osv(_('Error'),
+                raise orm.except_orm(_('Error'),
                     _('No parent account %s found in company %s') %
                     (parent_account.code, parallel_company.name))
             vals['parent_id'] = parent_parallel_acc_id
@@ -147,7 +147,7 @@ class account_account(orm.Model):
                 if len(company.parallel_company_ids) != len(account.parallel_account_ids):
                     raise orm.except_orm(_('Error'),
                     _('Parallel accounts number (%s) does not match with parallel companies number (%s). Create parallel accounts or map them with \'Parallel Mapping\' wizard')
-                    % (len(company.parallel_account_ids), len(account.parallel_company_ids)))
+                    % (len(account.parallel_account_ids), len(company.parallel_company_ids)))
                 for parallel_account in account.parallel_account_ids:
                     parallel_vals = self._build_account_vals(
                         cr, uid, vals, parallel_account.company_id, context=context)
@@ -386,6 +386,16 @@ class account_journal(orm.Model):
 
 class account_tax_code(orm.Model):
     _inherit = "account.tax.code"
+
+    def _get_parallel_tax_codes_summary(self, cr, uid, ids, field_name, arg, context=None):
+        res={}
+        for tax_code in self.browse(cr, SUPERUSER_ID, ids, context):
+            text='Configured parallel tax codes:\n'
+            for parallel_tax_code in tax_code.parallel_tax_code_ids:
+                text+= _('Tax code: %s. Company: %s\n') % (
+                    parallel_tax_code.code, parallel_tax_code.company_id.name)
+            res[tax_code.id] = text
+        return res
     
     _columns = {
         'parallel_tax_code_ids': fields.many2many('account.tax.code',
@@ -396,9 +406,89 @@ class account_tax_code(orm.Model):
             'parallel_tax_code_rel', 'child_id',
             'parent_id', 'Master Parallel Currency Tax Codes',
             Help="You can see here the tax codes that automatically move this journal", readonly=True),
+        'parallel_tax_codes_summary': fields.function(_get_parallel_tax_codes_summary, type='text', string='Parallel tax codes summary'),
         }
+    
+    def _search_parallel_tax_code(self, cr, uid, tax_code, parallel_company,
+        context=None):
+        parallel_tax_code_ids = self.search(cr, uid, [
+                ('company_id','=', parallel_company.id),
+                ('code','=', tax_code),
+                ], context=context)
+        if len(parallel_tax_code_ids) > 1:
+            raise orm.except_orm(_('Error'), _('Too many tax codes %s for company %s')
+                    % (tax_code,parallel_company.name))
+        return parallel_tax_code_ids and parallel_tax_code_ids[0] or False
+    
+    def _build_tax_code_vals(self, cr, uid, tax_code_vals, parallel_company, context=None):
+        # build only fields I need
+        vals={}
+        if tax_code_vals.has_key('name'):
+            vals['name'] = tax_code_vals['name']
+        if tax_code_vals.has_key('code'):
+            vals['code'] = tax_code_vals['code']
+        if tax_code_vals.has_key('type'):
+            vals['type'] = tax_code_vals['type']
+        if tax_code_vals.has_key('user_type'):
+            vals['user_type'] = tax_code_vals['user_type']
+        if tax_code_vals.has_key('active'):
+            vals['active'] = tax_code_vals['active']
+        if tax_code_vals.has_key('centralized'):
+            vals['centralized'] = tax_code_vals['centralized']
+        if tax_code_vals.has_key('parent_id'):
+            parent_tax_code = self.browse(cr, uid, tax_code_vals['parent_id'], context)
+            parent_parallel_acc_id = self._search_parallel_tax_code(
+                cr, uid, parent_tax_code.code, parallel_company, context=context)
+            if not parent_parallel_acc_id:
+                raise orm.except_orm(_('Error'),
+                    _('No parent tax code %s found in company %s') %
+                    (parent_tax_code.code, parallel_company.name))
+            vals['parent_id'] = parent_parallel_acc_id
+        return vals
+    
+    def create_parallel_tax_codes(self, cr, uid, ids, context=None):
+        for tax_code in self.browse(cr, SUPERUSER_ID, ids, context):
+            for parallel_company in tax_code.company_id.parallel_company_ids:
+                existing_ids = self.search(cr, SUPERUSER_ID, [
+                    ('code', '=', tax_code.code),
+                    ('company_id', '=', parallel_company.id),
+                    ])
+                if existing_ids:
+                    raise orm.except_orm(_('Error'),
+                    _('Tax code %s already exists for company %s. If you to associate it to the current tax code, run the \'Parallel Mapping\' wizard')
+                    % (tax_code.code, parallel_company.name))
+                parent_parallel_tax_code_id = self._search_parallel_tax_code(
+                    cr, SUPERUSER_ID, tax_code.parent_id.code, parallel_company,
+                    context=context)
+                new_id = self.create(cr, SUPERUSER_ID,{
+                    'company_id': parallel_company.id,
+                    'parent_id': parent_parallel_tax_code_id,
+                    'name': tax_code.name,
+                    'code': tax_code.code,
+                    'notprintable': tax_code.notprintable,
+                    'sign': tax_code.sign,
+                    'info': tax_code.info,
+                    })
+                cr.execute(
+                    "insert into parallel_tax_code_rel(parent_id,child_id) values (%d,%d)"
+                    % (tax_code.id,new_id))
+        return True
 
     def write(self, cr, uid, ids, vals, context=None):
-        # TODO sync_parallel_tax_codes
+        if not vals.has_key('parallel_tax_code_ids'):
+            # write/create parallel tax codes only if 'parallel_tax_code_ids' not explicity written
+            for tax_code_id in ids:
+                tax_code = self.browse(cr, SUPERUSER_ID, tax_code_id, context)
+                company_id = vals.get('company_id') or tax_code.company_id.id
+                company = self.pool.get('res.company').browse(
+                    cr, SUPERUSER_ID, company_id, context)
+                if len(company.parallel_company_ids) != len(tax_code.parallel_tax_code_ids):
+                    raise orm.except_orm(_('Error'),
+                    _('Parallel tax codes number (%s) does not match with parallel companies number (%s). Create parallel tax codes or map them with \'Parallel Mapping\' wizard')
+                    % (len(tax_code.parallel_tax_code_ids), len(company.parallel_company_ids)))
+                for parallel_tax_code in tax_code.parallel_tax_code_ids:
+                    parallel_vals = self._build_tax_code_vals(
+                        cr, uid, vals, parallel_tax_code.company_id, context=context)
+                    parallel_tax_code.write(parallel_vals)
         res=super(account_tax_code,self).write(cr, uid, ids, vals, context=context)
         return res

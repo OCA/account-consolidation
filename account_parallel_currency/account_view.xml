@@ -40,6 +40,8 @@
             <field name="arch" type="xml">
                 <field name="info" position="after">
                     <group colspan="4" col="1" groups="account.group_account_manager">
+                        <field  name="parallel_tax_codes_summary" />
+                        <button name="create_parallel_tax_codes" type="object" string="Create parallel tax codes"></button>
                         <field name="parallel_tax_code_ids" domain="[('company_id', '!=', company_id)]"/>
                         <field name="master_parallel_tax_code_ids"/>
                     </group>
