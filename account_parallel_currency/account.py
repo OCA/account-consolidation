@@ -90,7 +90,6 @@ class account_account(orm.Model):
             vals['parent_id'] = parent_parallel_acc_id
         return vals
     
-    # explicit button because user may want to create accounts independently and run mapping later
     def create_parallel_accounts(self, cr, uid, ids, context=None):
         for account in self.browse(cr, SUPERUSER_ID, ids, context):
             for parallel_company in account.company_id.parallel_company_ids:
@@ -154,6 +153,11 @@ class account_account(orm.Model):
                         cr, uid, vals, parallel_account.company_id, context=context)
                     parallel_account.write(parallel_vals)
         res=super(account_account,self).write(cr, uid, ids, vals, context=context)
+        return res
+    
+    def create(self, cr, uid, vals, context=None):
+        res=super(account_account,self).create(cr, uid, vals, context)
+        self.create_parallel_accounts(cr, uid, [res], context=None)
         return res
         
     def unlink(self, cr, uid, ids, context=None):
@@ -492,4 +496,9 @@ class account_tax_code(orm.Model):
                         cr, uid, vals, parallel_tax_code.company_id, context=context)
                     parallel_tax_code.write(parallel_vals)
         res=super(account_tax_code,self).write(cr, uid, ids, vals, context=context)
+        return res
+    
+    def create(self, cr, uid, vals, context=None):
+        res=super(account_tax_code,self).create(cr, uid, vals, context)
+        self.create_parallel_tax_codes(cr, uid, [res], context=None)
         return res
