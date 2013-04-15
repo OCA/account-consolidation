@@ -93,11 +93,6 @@ class account_account(orm.Model):
     def create_parallel_accounts(self, cr, uid, ids, context=None):
         for account in self.browse(cr, SUPERUSER_ID, ids, context):
             for parallel_company in account.company_id.parallel_company_ids:
-                for parallel_account in account.parallel_account_ids:
-                    if parallel_account.code == account.code and parallel_account.company_id.id == parallel_company.id:
-                        raise orm.except_orm(_('Error'),
-                            _('Account %s already exists for company %s')
-                            % (parallel_account.code, parallel_company.name))
                 parent_parallel_acc_id = self._search_parallel_account(
                     cr, SUPERUSER_ID, account.parent_id.code, parallel_company, context=context)
                 new_id = self.create(cr, SUPERUSER_ID,{
