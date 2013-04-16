@@ -150,7 +150,7 @@ class account_account(orm.Model):
                     cr, SUPERUSER_ID, company_id, context)
                 for parallel_account in account.parallel_account_ids:
                     parallel_vals = self._build_account_vals(
-                        cr, uid, vals, parallel_account.company_id, context=context)
+                        cr, SUPERUSER_ID, vals, parallel_account.company_id, context=context)
                     parallel_account.write(parallel_vals)
         res=super(account_account,self).write(cr, uid, ids, vals, context=context)
         return res
@@ -496,7 +496,7 @@ class account_tax_code(orm.Model):
                     cr, SUPERUSER_ID, company_id, context)
                 for parallel_tax_code in tax_code.parallel_tax_code_ids:
                     parallel_vals = self._build_tax_code_vals(
-                        cr, uid, vals, parallel_tax_code.company_id, context=context)
+                        cr, SUPERUSER_ID, vals, parallel_tax_code.company_id, context=context)
                     parallel_tax_code.write(parallel_vals)
         res=super(account_tax_code,self).write(cr, uid, ids, vals, context=context)
         return res
