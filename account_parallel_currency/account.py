@@ -467,7 +467,7 @@ class account_tax_code(orm.Model):
                     ])
                 if existing_ids:
                     raise orm.except_orm(_('Error'),
-                    _('Tax code %s already exists for company %s. If you to associate it to the current tax code, run the \'Parallel Mapping\' wizard')
+                    _('Tax code %s already exists for company %s')
                     % (tax_code.code, parallel_company.name))
                 parent_parallel_tax_code_id = self._search_parallel_tax_code(
                     cr, SUPERUSER_ID, tax_code.parent_id.code, parallel_company,
