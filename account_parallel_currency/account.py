@@ -42,7 +42,7 @@ class account_account(orm.Model):
             if text2:
                 res[account.id] = text + text2
             else:
-                res[account.id] = _("No parallel accounts found. Create or map them by the 'parallel mapping' wizard")
+                res[account.id] = _("No parallel accounts found")
         return res
     
     _columns = {
@@ -403,7 +403,7 @@ class account_tax_code(orm.Model):
             if text2:
                 res[tax_code.id] = text + text2
             else:
-                res[tax_code.id] = _("No parallel tax codes found. Create or map them by the 'parallel mapping' wizard")
+                res[tax_code.id] = _("No parallel tax codes found")
         return res
     
     _columns = {
