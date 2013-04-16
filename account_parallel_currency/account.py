@@ -35,10 +35,14 @@ class account_account(orm.Model):
         res={}
         for account in self.browse(cr, SUPERUSER_ID, ids, context):
             text='Configured parallel accounts:\n'
+            text2=''
             for parallel_account in account.parallel_account_ids:
-                text+= _('Account code: %s. Company: %s\n') % (
+                text2+= _('Account code: %s. Company: %s\n') % (
                     parallel_account.code, parallel_account.company_id.name)
-            res[account.id] = text
+            if text2:
+                res[account.id] = text + text2
+            else:
+                res[account.id] = _("No parallel accounts found. Create or map them by the 'parallel mapping' wizard")
         return res
     
     _columns = {
@@ -144,10 +148,6 @@ class account_account(orm.Model):
                 company_id = vals.get('company_id') or account.company_id.id
                 company = self.pool.get('res.company').browse(
                     cr, SUPERUSER_ID, company_id, context)
-                if len(company.parallel_company_ids) != len(account.parallel_account_ids):
-                    raise orm.except_orm(_('Error'),
-                    _('Parallel accounts number (%s) does not match with parallel companies number (%s). Create parallel accounts or map them with \'Parallel Mapping\' wizard')
-                    % (len(account.parallel_account_ids), len(company.parallel_company_ids)))
                 for parallel_account in account.parallel_account_ids:
                     parallel_vals = self._build_account_vals(
                         cr, uid, vals, parallel_account.company_id, context=context)
@@ -396,10 +396,14 @@ class account_tax_code(orm.Model):
         res={}
         for tax_code in self.browse(cr, SUPERUSER_ID, ids, context):
             text='Configured parallel tax codes:\n'
+            text2=''
             for parallel_tax_code in tax_code.parallel_tax_code_ids:
-                text+= _('Tax code: %s. Company: %s\n') % (
+                text2+= _('Tax code: %s. Company: %s\n') % (
                     parallel_tax_code.code, parallel_tax_code.company_id.name)
-            res[tax_code.id] = text
+            if text2:
+                res[tax_code.id] = text + text2
+            else:
+                res[tax_code.id] = _("No parallel tax codes found. Create or map them by the 'parallel mapping' wizard")
         return res
     
     _columns = {
@@ -454,6 +458,9 @@ class account_tax_code(orm.Model):
     def create_parallel_tax_codes(self, cr, uid, ids, context=None):
         for tax_code in self.browse(cr, SUPERUSER_ID, ids, context):
             for parallel_company in tax_code.company_id.parallel_company_ids:
+                if not tax_code.parent_id:
+                    raise orm.except_orm(_('Error'),_('Tax code %s does not have parent')
+                        % tax_code.code)
                 existing_ids = self.search(cr, SUPERUSER_ID, [
                     ('code', '=', tax_code.code),
                     ('company_id', '=', parallel_company.id),
@@ -487,10 +494,6 @@ class account_tax_code(orm.Model):
                 company_id = vals.get('company_id') or tax_code.company_id.id
                 company = self.pool.get('res.company').browse(
                     cr, SUPERUSER_ID, company_id, context)
-                if len(company.parallel_company_ids) != len(tax_code.parallel_tax_code_ids):
-                    raise orm.except_orm(_('Error'),
-                    _('Parallel tax codes number (%s) does not match with parallel companies number (%s). Create parallel tax codes or map them with \'Parallel Mapping\' wizard')
-                    % (len(tax_code.parallel_tax_code_ids), len(company.parallel_company_ids)))
                 for parallel_tax_code in tax_code.parallel_tax_code_ids:
                     parallel_vals = self._build_tax_code_vals(
                         cr, uid, vals, parallel_tax_code.company_id, context=context)
