@@ -249,18 +249,18 @@ class account_move(orm.Model):
                         parallel_data[parallel_account.company_id.id]['date'] = line.date
                         parallel_data[parallel_account.company_id.id]['move_id'] = line.move_id.id
                             
-                        # search period by move date and parallel company
+                        # search period by code and parallel company
                         period_ids = self.pool.get('account.period').search(cr, uid, [
-                            ('date_start','<=',line.date),
-                            ('date_stop','>=',line.date ),
-                            ('company_id', '=', parallel_account.company_id.id)])
+                            ('code','=',line.period_id.code),
+                            ('company_id', '=', parallel_account.company_id.id),
+                            ])
                             
                         if len(period_ids) == 0:
                             raise orm.except_orm(_('Error !'), _('Period %s does not exist in company %s !')
-                                % (line.date, parallel_account.company_id.name))
+                                % (line.period_id.code, parallel_account.company_id.name))
                         if len(period_ids) > 1:
                             raise orm.except_orm(_('Error !'), _('Too many periods %s for company %s !')
-                                % (line.date, parallel_account.company_id.name))
+                                % (line.period_id.code, parallel_account.company_id.name))
                         
                         parallel_data[parallel_account.company_id.id]['period_id'] = period_ids[0]
                         
