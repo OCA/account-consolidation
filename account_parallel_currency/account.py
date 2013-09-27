@@ -22,68 +22,72 @@
 
 from openerp.osv import fields, orm
 from tools.translate import _
-import time
 import logging
 from openerp import SUPERUSER_ID
 
 _logger = logging.getLogger(__name__)
 
+
 class account_account(orm.Model):
     _inherit = "account.account"
 
     def _get_parallel_accounts_summary(self, cr, uid, ids, field_name, arg, context=None):
-        res={}
+        res = {}
         for account in self.browse(cr, SUPERUSER_ID, ids, context):
-            text='Configured parallel accounts:\n'
-            text2=''
+            text = 'Configured parallel accounts:\n'
+            text2 = ''
             for parallel_account in account.parallel_account_ids:
-                text2+= _('Account code: %s. Company: %s\n') % (
+                text2 += _('Account code: %s. Company: %s\n') % (
                     parallel_account.code, parallel_account.company_id.name)
             if text2:
                 res[account.id] = text + text2
             else:
                 res[account.id] = _("No parallel accounts found")
         return res
-    
+
     _columns = {
         'parallel_account_ids': fields.many2many('account.account',
             'parallel_account_rel', 'parent_id',
             'child_id', 'Parallel Currency Accounts',
-            Help="Set here the accounts you want to automatically move when registering entries in this account"),
+            Help="""Set here the accounts you want to automatically move when
+                registering entries in this account"""),
         'master_parallel_account_ids': fields.many2many('account.account',
             'parallel_account_rel', 'child_id',
             'parent_id', 'Master Parallel Currency Accounts',
-            Help="You can see here the accounts that automatically move this account", readonly=True),
-        'parallel_accounts_summary': fields.function(_get_parallel_accounts_summary, type='text', string='Parallel accounts summary'),
+            Help="You can see here the accounts that automatically move this account",
+            readonly=True),
+        'parallel_accounts_summary': fields.function(
+            _get_parallel_accounts_summary, type='text',
+            string='Parallel accounts summary'),
         }
-    
+
     def _search_parallel_account(self, cr, uid, account_code, parallel_company,
         context=None):
         parallel_acc_ids = self.search(cr, uid, [
-                ('company_id','=', parallel_company.id),
-                ('code','=', account_code),
-                ], context=context)
+            ('company_id', '=', parallel_company.id),
+            ('code', '=', account_code),
+            ], context=context)
         if len(parallel_acc_ids) > 1:
             raise orm.except_orm(_('Error'), _('Too many accounts %s for company %s')
-                    % (account_code,parallel_company.name))
+                % (account_code, parallel_company.name))
         return parallel_acc_ids and parallel_acc_ids[0] or False
-    
+
     def _build_account_vals(self, cr, uid, account_vals, parallel_company, context=None):
         # build only fields I need
-        vals={}
-        if account_vals.has_key('name'):
+        vals = {}
+        if 'name' in account_vals:
             vals['name'] = account_vals['name']
-        if account_vals.has_key('code'):
+        if 'code' in account_vals:
             vals['code'] = account_vals['code']
-        if account_vals.has_key('type'):
+        if 'type' in account_vals:
             vals['type'] = account_vals['type']
-        if account_vals.has_key('user_type'):
+        if 'user_type' in account_vals:
             vals['user_type'] = account_vals['user_type']
-        if account_vals.has_key('active'):
+        if 'active' in account_vals:
             vals['active'] = account_vals['active']
-        if account_vals.has_key('centralized'):
+        if 'centralized' in account_vals:
             vals['centralized'] = account_vals['centralized']
-        if account_vals.has_key('parent_id'):
+        if 'parent_id' in account_vals:
             parent_account = self.browse(cr, uid, account_vals['parent_id'], context)
             parent_parallel_acc_id = self._search_parallel_account(
                 cr, uid, parent_account.code, parallel_company, context=context)
@@ -93,13 +97,14 @@ class account_account(orm.Model):
                     (parent_account.code, parallel_company.name))
             vals['parent_id'] = parent_parallel_acc_id
         return vals
-    
+
     def create_parallel_accounts(self, cr, uid, ids, context=None):
         for account in self.browse(cr, SUPERUSER_ID, ids, context):
             for parallel_company in account.company_id.parallel_company_ids:
                 parent_parallel_acc_id = self._search_parallel_account(
-                    cr, SUPERUSER_ID, account.parent_id.code, parallel_company, context=context)
-                new_id = self.create(cr, SUPERUSER_ID,{
+                    cr, SUPERUSER_ID, account.parent_id.code, parallel_company,
+                    context=context)
+                new_id = self.create(cr, SUPERUSER_ID, {
                     'company_id': parallel_company.id,
                     'parent_id': parent_parallel_acc_id,
                     'name': account.name,
@@ -110,9 +115,9 @@ class account_account(orm.Model):
                     'centralized': account.centralized,
                     })
                 cr.execute("insert into parallel_account_rel(parent_id,child_id) values (%d,%d)"
-                    % (account.id,new_id))
+                    % (account.id, new_id))
         return True
-    
+
     '''
     def sync_parallel_accounts(self, cr, uid, ids, vals={}, context=None):
         for account in self.browse(cr, uid, ids, context):
@@ -141,16 +146,14 @@ class account_account(orm.Model):
     '''
 
     def write(self, cr, uid, ids, vals, context=None):
-        if not vals.has_key('parallel_account_ids'):
+        if 'parallel_account_ids' not in vals:
             # write/create parallel accounts only if 'parallel_account_ids' not explicity written
             for acc_id in ids:
                 account = self.browse(cr, SUPERUSER_ID, acc_id, context)
-                company_id = vals.get('company_id') or account.company_id.id
-                company = self.pool.get('res.company').browse(
-                    cr, SUPERUSER_ID, company_id, context)
                 for parallel_account in account.parallel_account_ids:
                     parallel_vals = self._build_account_vals(
-                        cr, SUPERUSER_ID, vals, parallel_account.company_id, context=context)
+                        cr, SUPERUSER_ID, vals, parallel_account.company_id,
+                        context=context)
                     parallel_account.write(parallel_vals)
         res=super(account_account,self).write(cr, uid, ids, vals, context=context)
         return res
@@ -189,7 +192,6 @@ class account_move(orm.Model):
         returns 0 if lines are balanced, difference if unbalanced
         """
         balance = 0.0
-        curr_pool = self.pool.get('res.currency')
         for line_tuple in move_lines:
             balance += line_tuple[2]['debit'] or (- line_tuple[2]['credit']) or 0.0
         return balance
@@ -233,7 +235,6 @@ class account_move(orm.Model):
         if context is None:
             context = {}
         curr_pool = self.pool.get('res.currency')
-        user_pool = self.pool.get('res.users')
         company_pool = self.pool.get('res.company')
         uid = SUPERUSER_ID
         for move in self.browse(cr, uid, ids, context=context):
@@ -369,7 +370,7 @@ class account_move(orm.Model):
                         'master_parallel_move_id': parallel_data[company_id]['move_id'],
                         'ref': parallel_data[company_id]['ref'],
                         }
-                    move_id = self.create(cr, uid, move_values, context=context)
+                    self.create(cr, uid, move_values, context=context)
                     # self.post(cr, uid, [move_id], context=context)
                 
         return res
@@ -491,9 +492,6 @@ class account_tax_code(orm.Model):
             # write/create parallel tax codes only if 'parallel_tax_code_ids' not explicity written
             for tax_code_id in ids:
                 tax_code = self.browse(cr, SUPERUSER_ID, tax_code_id, context)
-                company_id = vals.get('company_id') or tax_code.company_id.id
-                company = self.pool.get('res.company').browse(
-                    cr, SUPERUSER_ID, company_id, context)
                 for parallel_tax_code in tax_code.parallel_tax_code_ids:
                     parallel_vals = self._build_tax_code_vals(
                         cr, SUPERUSER_ID, vals, parallel_tax_code.company_id, context=context)
