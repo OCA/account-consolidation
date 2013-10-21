@@ -1,0 +1,453 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* account_consolidation
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 7.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-10-21 09:06+0000\n"
+"PO-Revision-Date: 2013-10-21 09:06+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: account_consolidation
+#: help:account.account,consolidation_rate_type_id:0
+msgid "Currency rate type used on this account for the consolidation. Leave empty to use the rate type of the account type."
+msgstr ""
+
+#. module: account_consolidation
+#: help:account.consolidation.consolidate,from_period_id:0
+msgid "Select the same period in 'from' and 'to' if you want to proceed with a single period. Start Period is ignored for Year To Date accounts."
+msgstr ""
+
+#. module: account_consolidation
+#: model:ir.model,name:account_consolidation.model_account_consolidation_base
+#: model:ir.model,name:account_consolidation.model_account_consolidation_consolidate
+msgid "Common consolidation wizard. Intended to be inherited"
+msgstr ""
+
+#. module: account_consolidation
+#: field:account.account,consolidation_mode:0
+#: field:account.account.type,consolidation_mode:0
+msgid "Consolidation Mode"
+msgstr ""
+
+#. module: account_consolidation
+#: code:addons/account_consolidation/wizard/consolidation_base.py:323
+#, python-format
+msgid "Invalid periods, please launch the \"Consolidation: Checks\" wizard"
+msgstr ""
+
+#. module: account_consolidation
+#: code:addons/account_consolidation/wizard/consolidation_check.py:67
+#, python-format
+msgid "Invalid charts"
+msgstr ""
+
+#. module: account_consolidation
+#: code:addons/account_consolidation/wizard/consolidation_consolidate.py:434
+#, python-format
+msgid "Consolidation %s"
+msgstr ""
+
+#. module: account_consolidation
+#: code:addons/account_consolidation/wizard/consolidation_check.py:53
+#, python-format
+msgid "Chart of Accounts are OK."
+msgstr ""
+
+#. module: account_consolidation
+#: code:addons/account_consolidation/wizard/consolidation_consolidate.py:261
+#, python-format
+msgid "Consolidation line in %s mode"
+msgstr ""
+
+#. module: account_consolidation
+#: field:account.move,consol_company_id:0
+msgid "Consolidated from Company"
+msgstr ""
+
+#. module: account_consolidation
+#: view:account.move.line:0
+msgid "Period"
+msgstr ""
+
+#. module: account_consolidation
+#: help:account.consolidation.base,fiscalyear_id:0
+#: help:account.consolidation.check,fiscalyear_id:0
+#: help:account.consolidation.consolidate,fiscalyear_id:0
+msgid "The checks will be done on the periods of the selected fiscal year."
+msgstr ""
+
+#. module: account_consolidation
+#: model:ir.model,name:account_consolidation.model_account_account_type
+msgid "Account Type"
+msgstr ""
+
+#. module: account_consolidation
+#: field:account.consolidation.base,holding_chart_account_id:0
+#: field:account.consolidation.check,holding_chart_account_id:0
+#: field:account.consolidation.consolidate,holding_chart_account_id:0
+msgid "Chart of Accounts"
+msgstr ""
+
+#. module: account_consolidation
+#: help:account.consolidation.consolidate,to_period_id:0
+msgid "The consolidation will be done at the very last date of the selected period."
+msgstr ""
+
+#. module: account_consolidation
+#: code:addons/account_consolidation/wizard/consolidation_consolidate.py:185
+#, python-format
+msgid "Settings ERROR"
+msgstr ""
+
+#. module: account_consolidation
+#: code:addons/account_consolidation/wizard/consolidation_check.py:59
+#: code:addons/account_consolidation/wizard/consolidation_check.py:85
+#, python-format
+msgid "%s :"
+msgstr ""
+
+#. module: account_consolidation
+#: field:account.consolidation.base,subsidiary_ids:0
+#: field:account.consolidation.check,subsidiary_ids:0
+#: field:account.consolidation.consolidate,subsidiary_ids:0
+msgid "Subsidiaries"
+msgstr ""
+
+#. module: account_consolidation
+#: view:account.account.type:0
+msgid "Description"
+msgstr ""
+
+#. module: account_consolidation
+#: code:addons/account_consolidation/wizard/consolidation_base.py:328
+#, python-format
+msgid "Invalid charts, please launch the \"Consolidation: Checks\" wizard"
+msgstr ""
+
+#. module: account_consolidation
+#: view:account.consolidation.check:0
+msgid "Check Periods"
+msgstr ""
+
+#. module: account_consolidation
+#: selection:account.account,consolidation_mode:0
+#: selection:account.account.type,consolidation_mode:0
+msgid "Period Movements"
+msgstr ""
+
+#. module: account_consolidation
+#: field:account.consolidation.base,company_id:0
+#: field:account.consolidation.check,company_id:0
+#: field:account.consolidation.consolidate,company_id:0
+msgid "Company"
+msgstr ""
+
+#. module: account_consolidation
+#: view:account.consolidation.check:0
+#: model:ir.actions.act_window,name:account_consolidation.action_consolidation_checks
+#: model:ir.ui.menu,name:account_consolidation.menu_consolidation_checks
+msgid "Consolidation: Checks"
+msgstr ""
+
+#. module: account_consolidation
+#: view:account.account:0
+#: view:account.account.type:0
+#: model:ir.ui.menu,name:account_consolidation.menu_consolidation
+msgid "Consolidation"
+msgstr ""
+
+#. module: account_consolidation
+#: view:account.consolidation.check:0
+msgid "Check Charts"
+msgstr ""
+
+#. module: account_consolidation
+#: view:account.move.line:0
+#: field:account.move.line,consol_company_id:0
+msgid "Subsidaries"
+msgstr ""
+
+#. module: account_consolidation
+#: code:addons/account_consolidation/wizard/consolidation_consolidate.py:186
+#, python-format
+msgid "Please set the \"Consolidation difference account\" in company %s"
+msgstr ""
+
+#. module: account_consolidation
+#: field:res.company,consolidation_chart_account_id:0
+msgid "Chart of Accounts for Consolidation"
+msgstr ""
+
+#. module: account_consolidation
+#: code:addons/account_consolidation/wizard/consolidation_check.py:90
+#, python-format
+msgid "Invalid periods"
+msgstr ""
+
+#. module: account_consolidation
+#: field:res.company,consolidation_diff_account_id:0
+msgid "Consolidation difference account"
+msgstr ""
+
+#. module: account_consolidation
+#: view:res.company:0
+msgid "Accounts Consolidation"
+msgstr ""
+
+#. module: account_consolidation
+#: view:res.company:0
+msgid "Configuration"
+msgstr ""
+
+#. module: account_consolidation
+#: field:account.consolidation.consolidate,target_move:0
+msgid "Target Moves"
+msgstr ""
+
+#. module: account_consolidation
+#: field:account.consolidation.consolidate,from_period_id:0
+msgid "Start Period"
+msgstr ""
+
+#. module: account_consolidation
+#: model:res.groups,name:account_consolidation.consolidation_manager
+msgid "Consolidation manager"
+msgstr ""
+
+#. module: account_consolidation
+#: help:res.company,consolidation_chart_account_id:0
+msgid "Current company root account to be used when consolidating"
+msgstr ""
+
+#. module: account_consolidation
+#: model:ir.model,name:account_consolidation.model_account_account
+msgid "Account"
+msgstr ""
+
+#. module: account_consolidation
+#: code:addons/account_consolidation/wizard/consolidation_base.py:297
+#, python-format
+msgid "No chart of accounts for company %s"
+msgstr ""
+
+#. module: account_consolidation
+#: view:account.consolidation.check:0
+msgid "Prepare your consolidation and make sure that your consolidation will be correct by proceeding with the checks. The 'Check Periods' verify if fiscal year exists for each subsidiary, and if the periods have the same beginning and ending dates. The 'Check Charts' verify if subsidiary accounts are missing in the Holding's Chart of Accounts."
+msgstr ""
+
+#. module: account_consolidation
+#: code:addons/account_consolidation/wizard/consolidation_base.py:176
+#, python-format
+msgid "Period from %s to %s not found in holding company %s"
+msgstr ""
+
+#. module: account_consolidation
+#: selection:account.consolidation.consolidate,target_move:0
+msgid "All Posted Entries"
+msgstr ""
+
+#. module: account_consolidation
+#: code:addons/account_consolidation/wizard/consolidation_base.py:162
+#, python-format
+msgid "Holding company has less periods than the subsidiary company %s!"
+msgstr ""
+
+#. module: account_consolidation
+#: model:ir.model,name:account_consolidation.model_res_company
+msgid "Companies"
+msgstr ""
+
+#. module: account_consolidation
+#: field:account.consolidation.consolidate,to_period_id:0
+msgid "End Period"
+msgstr ""
+
+#. module: account_consolidation
+#: model:ir.actions.act_window,help:account_consolidation.action_account_moves_all_a
+msgid "<p class=\"oe_view_nocontent_create\">\n"
+"          Select the period and the journal you want to fill.\n"
+"          </p><p>\n"
+"          This view can be used by accountants in order to quickly record\n"
+"          entries in OpenERP. If you want to record a supplier invoice,\n"
+"          start by recording the line of the expense account. OpenERP\n"
+"          will propose to you automatically the Tax related to this\n"
+"          account and the counterpart \"Account Payable\".\n"
+"        </p>\n"
+"      "
+msgstr ""
+
+#. module: account_consolidation
+#: field:account.consolidation.base,fiscalyear_id:0
+#: field:account.consolidation.check,fiscalyear_id:0
+#: field:account.consolidation.consolidate,fiscalyear_id:0
+msgid "Fiscal Year"
+msgstr ""
+
+#. module: account_consolidation
+#: help:account.account,consolidation_mode:0
+#: help:account.account.type,consolidation_mode:0
+msgid "This must be set on the holding company accounts only"
+msgstr ""
+
+#. module: account_consolidation
+#: code:addons/account_consolidation/wizard/consolidation_check.py:62
+#, python-format
+msgid "Account with code %s does not exist on the Holding company."
+msgstr ""
+
+#. module: account_consolidation
+#: code:addons/account_consolidation/wizard/consolidation_base.py:296
+#: code:addons/account_consolidation/wizard/consolidation_base.py:322
+#: code:addons/account_consolidation/wizard/consolidation_base.py:327
+#, python-format
+msgid "Error"
+msgstr ""
+
+#. module: account_consolidation
+#: view:account.consolidation.check:0
+#: view:account.consolidation.consolidate:0
+msgid "Subsidiaries to Consolidate"
+msgstr ""
+
+#. module: account_consolidation
+#: selection:account.account,consolidation_mode:0
+#: selection:account.account.type,consolidation_mode:0
+msgid "YTD"
+msgstr ""
+
+#. module: account_consolidation
+#: view:account.consolidation.consolidate:0
+msgid "Run the consolidation for the selected periods and subsidiaries."
+msgstr ""
+
+#. module: account_consolidation
+#: field:account.move.line,is_current_company:0
+msgid "Current company"
+msgstr ""
+
+#. module: account_consolidation
+#: code:addons/account_consolidation/wizard/consolidation_consolidate.py:207
+#, python-format
+msgid "Consolidation difference in mode %s"
+msgstr ""
+
+#. module: account_consolidation
+#: view:account.consolidation.consolidate:0
+msgid "Consolidate"
+msgstr ""
+
+#. module: account_consolidation
+#: constraint:account.consolidation.consolidate:0
+msgid "Start Period and End Period must be of the same Fiscal Year !"
+msgstr ""
+
+#. module: account_consolidation
+#: view:account.consolidation.consolidate:0
+#: model:ir.actions.act_window,name:account_consolidation.action_consolidation_consolidate
+#: model:ir.ui.menu,name:account_consolidation.menu_consolidation_consolidate
+msgid "Consolidation: Consolidate"
+msgstr ""
+
+#. module: account_consolidation
+#: model:ir.model,name:account_consolidation.model_account_move
+msgid "Account Entry"
+msgstr ""
+
+#. module: account_consolidation
+#: model:ir.ui.menu,name:account_consolidation.menu_conso_entries
+msgid "Consolidation Entries"
+msgstr ""
+
+#. module: account_consolidation
+#: help:res.company,consolidation_diff_account_id:0
+msgid "Conso. differences will be affected to this account"
+msgstr ""
+
+#. module: account_consolidation
+#: code:addons/account_consolidation/wizard/consolidation_base.py:141
+#, python-format
+msgid "The fiscal year of the subsidiary company %s does not exists from %s to %s"
+msgstr ""
+
+#. module: account_consolidation
+#: model:ir.model,name:account_consolidation.model_account_consolidation_check
+msgid "Consolidation Checks. Model used for views"
+msgstr ""
+
+#. module: account_consolidation
+#: view:account.consolidation.check:0
+#: view:account.consolidation.consolidate:0
+msgid "or"
+msgstr ""
+
+#. module: account_consolidation
+#: code:addons/account_consolidation/wizard/consolidation_consolidate.py:504
+#, python-format
+msgid "Consolidated Entries"
+msgstr ""
+
+#. module: account_consolidation
+#: code:addons/account_consolidation/wizard/consolidation_check.py:52
+#: code:addons/account_consolidation/wizard/consolidation_check.py:78
+#, python-format
+msgid "Validation"
+msgstr ""
+
+#. module: account_consolidation
+#: code:addons/account_consolidation/wizard/consolidation_check.py:78
+#, python-format
+msgid "Periods are OK."
+msgstr ""
+
+#. module: account_consolidation
+#: model:res.groups,name:account_consolidation.consolidation_user
+msgid "Consolidation user"
+msgstr ""
+
+#. module: account_consolidation
+#: help:account.account.type,consolidation_rate_type_id:0
+msgid "Currency rate type used on this account type for the consolidation. Leave empty to use the 'spot' rate type."
+msgstr ""
+
+#. module: account_consolidation
+#: view:account.consolidation.consolidate:0
+msgid "Holding Chart of Accounts"
+msgstr ""
+
+#. module: account_consolidation
+#: view:account.consolidation.check:0
+#: view:account.consolidation.consolidate:0
+msgid "Cancel"
+msgstr ""
+
+#. module: account_consolidation
+#: field:account.account,consolidation_rate_type_id:0
+#: field:account.account.type,consolidation_rate_type_id:0
+msgid "Consolidation Currency Rate Type"
+msgstr ""
+
+#. module: account_consolidation
+#: field:account.consolidation.consolidate,journal_id:0
+msgid "Journal"
+msgstr ""
+
+#. module: account_consolidation
+#: selection:account.consolidation.consolidate,target_move:0
+msgid "All Entries"
+msgstr ""
+
+#. module: account_consolidation
+#: model:ir.actions.act_window,name:account_consolidation.action_account_moves_all_a
+#: model:ir.model,name:account_consolidation.model_account_move_line
+#: model:ir.ui.menu,name:account_consolidation.menu_action_account_moves_all
+msgid "Journal Items"
+msgstr ""
+
