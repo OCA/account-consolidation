@@ -1,0 +1,343 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* account_parallel_currency
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 7.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-10-21 09:05+0000\n"
+"PO-Revision-Date: 2013-10-21 09:05+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: account_parallel_currency
+#: code:addons/account_parallel_currency/wizard/do_mapping.py:83
+#, python-format
+msgid "Duplicated tax code %s for company %s"
+msgstr ""
+
+#. module: account_parallel_currency
+#: view:account.journal:0
+#: field:account.journal,master_parallel_journal_ids:0
+msgid "Master Parallel Currency Journals"
+msgstr ""
+
+#. module: account_parallel_currency
+#: code:addons/account_parallel_currency/account.py:429
+#, python-format
+msgid "Too many tax codes %s for company %s"
+msgstr ""
+
+#. module: account_parallel_currency
+#: view:account.move:0
+#: field:account.move,parallel_move_ids:0
+msgid "Parallel Entries"
+msgstr ""
+
+#. module: account_parallel_currency
+#: model:ir.model,name:account_parallel_currency.model_res_company
+msgid "Companies"
+msgstr ""
+
+#. module: account_parallel_currency
+#: model:ir.model,name:account_parallel_currency.model_account_tax_code
+msgid "Tax Code"
+msgstr ""
+
+#. module: account_parallel_currency
+#: view:account.account:0
+#: view:account.journal:0
+msgid "Parallel Currency"
+msgstr ""
+
+#. module: account_parallel_currency
+#: code:addons/account_parallel_currency/account.py:343
+#, python-format
+msgid "Too many tax_codes %s for company %s !"
+msgstr ""
+
+#. module: account_parallel_currency
+#: field:account.parallel.mapping,remove_old_mapping:0
+msgid "Remove Previous Mapping"
+msgstr ""
+
+#. module: account_parallel_currency
+#: field:account.tax.code,master_parallel_tax_code_ids:0
+msgid "Master Parallel Currency Tax Codes"
+msgstr ""
+
+#. module: account_parallel_currency
+#: view:account.account:0
+#: field:account.account,parallel_account_ids:0
+msgid "Parallel Currency Accounts"
+msgstr ""
+
+#. module: account_parallel_currency
+#: code:addons/account_parallel_currency/account.py:278
+#, python-format
+msgid "Too many journals %s for company %s !"
+msgstr ""
+
+#. module: account_parallel_currency
+#: view:account.journal:0
+#: field:account.journal,parallel_journal_ids:0
+msgid "Parallel Currency Journals"
+msgstr ""
+
+#. module: account_parallel_currency
+#: code:addons/account_parallel_currency/account.py:260
+#: code:addons/account_parallel_currency/account.py:263
+#: code:addons/account_parallel_currency/account.py:275
+#: code:addons/account_parallel_currency/account.py:278
+#: code:addons/account_parallel_currency/account.py:310
+#: code:addons/account_parallel_currency/account.py:313
+#: code:addons/account_parallel_currency/account.py:340
+#: code:addons/account_parallel_currency/account.py:343
+#, python-format
+msgid "Error !"
+msgstr ""
+
+#. module: account_parallel_currency
+#: view:account.parallel.mapping:0
+msgid "This wizard will create the parallel account mapping. Please make sure you configured the 'Parallel Companies' field on your company. The wizard will search for matching account and tax codes and write the result in the 'Parallel Currency Accounts' and 'Parallel Currency Tax Codes' fields"
+msgstr ""
+
+#. module: account_parallel_currency
+#: code:addons/account_parallel_currency/account.py:45
+#, python-format
+msgid "No parallel accounts found"
+msgstr ""
+
+#. module: account_parallel_currency
+#: model:ir.model,name:account_parallel_currency.model_account_journal
+msgid "Journal"
+msgstr ""
+
+#. module: account_parallel_currency
+#: view:account.account:0
+msgid "Create parallel accounts"
+msgstr ""
+
+#. module: account_parallel_currency
+#: code:addons/account_parallel_currency/account.py:340
+#, python-format
+msgid "Tax code %s does not exist in company %s !"
+msgstr ""
+
+#. module: account_parallel_currency
+#: code:addons/account_parallel_currency/account.py:40
+#, python-format
+msgid "Account code: %s. Company: %s\n"
+""
+msgstr ""
+
+#. module: account_parallel_currency
+#: code:addons/account_parallel_currency/account.py:313
+#, python-format
+msgid "Too many currencies %s for company %s !"
+msgstr ""
+
+#. module: account_parallel_currency
+#: model:ir.model,name:account_parallel_currency.model_account_parallel_mapping
+msgid "account.parallel.mapping"
+msgstr ""
+
+#. module: account_parallel_currency
+#: code:addons/account_parallel_currency/account.py:454
+#, python-format
+msgid "No parent tax code %s found in company %s"
+msgstr ""
+
+#. module: account_parallel_currency
+#: code:addons/account_parallel_currency/account.py:71
+#, python-format
+msgid "Too many accounts %s for company %s"
+msgstr ""
+
+#. module: account_parallel_currency
+#: code:addons/account_parallel_currency/account.py:463
+#, python-format
+msgid "Tax code %s does not have parent"
+msgstr ""
+
+#. module: account_parallel_currency
+#: code:addons/account_parallel_currency/account.py:402
+#, python-format
+msgid "Tax code: %s. Company: %s\n"
+""
+msgstr ""
+
+#. module: account_parallel_currency
+#: view:account.move:0
+msgid "Journal Items"
+msgstr ""
+
+#. module: account_parallel_currency
+#: field:account.tax.code,parallel_tax_codes_summary:0
+msgid "Parallel tax codes summary"
+msgstr ""
+
+#. module: account_parallel_currency
+#: view:res.company:0
+msgid "Configuration"
+msgstr ""
+
+#. module: account_parallel_currency
+#: model:ir.actions.act_window,name:account_parallel_currency.action_account_parallel_mapping
+#: model:ir.ui.menu,name:account_parallel_currency.menu_action_account_parallel_mapping
+msgid "Parallel Accounting Mapping"
+msgstr ""
+
+#. module: account_parallel_currency
+#: model:ir.model,name:account_parallel_currency.model_account_account
+msgid "Account"
+msgstr ""
+
+#. module: account_parallel_currency
+#: view:account.journal:0
+msgid "Entry Controls"
+msgstr ""
+
+#. module: account_parallel_currency
+#: code:addons/account_parallel_currency/account.py:275
+#, python-format
+msgid "Journal %s does not exist in company %s !"
+msgstr ""
+
+#. module: account_parallel_currency
+#: code:addons/account_parallel_currency/account.py:407
+#, python-format
+msgid "No parallel tax codes found"
+msgstr ""
+
+#. module: account_parallel_currency
+#: code:addons/account_parallel_currency/account.py:471
+#, python-format
+msgid "Tax code %s already exists for company %s"
+msgstr ""
+
+#. module: account_parallel_currency
+#: code:addons/account_parallel_currency/wizard/do_mapping.py:66
+#, python-format
+msgid "Duplicated account %s for company %s"
+msgstr ""
+
+#. module: account_parallel_currency
+#: code:addons/account_parallel_currency/account.py:71
+#: code:addons/account_parallel_currency/account.py:95
+#: code:addons/account_parallel_currency/account.py:429
+#: code:addons/account_parallel_currency/account.py:453
+#: code:addons/account_parallel_currency/account.py:463
+#: code:addons/account_parallel_currency/account.py:470
+#: code:addons/account_parallel_currency/wizard/do_mapping.py:66
+#: code:addons/account_parallel_currency/wizard/do_mapping.py:69
+#: code:addons/account_parallel_currency/wizard/do_mapping.py:83
+#: code:addons/account_parallel_currency/wizard/do_mapping.py:86
+#, python-format
+msgid "Error"
+msgstr ""
+
+#. module: account_parallel_currency
+#: view:account.account:0
+#: field:account.account,master_parallel_account_ids:0
+msgid "Master Parallel Currency Accounts"
+msgstr ""
+
+#. module: account_parallel_currency
+#: code:addons/account_parallel_currency/account.py:310
+#, python-format
+msgid "Currency %s does not exist in company %s !"
+msgstr ""
+
+#. module: account_parallel_currency
+#: code:addons/account_parallel_currency/account.py:96
+#, python-format
+msgid "No parent account %s found in company %s"
+msgstr ""
+
+#. module: account_parallel_currency
+#: code:addons/account_parallel_currency/account.py:263
+#, python-format
+msgid "Too many periods %s for company %s !"
+msgstr ""
+
+#. module: account_parallel_currency
+#: view:res.company:0
+#: field:res.company,parallel_company_ids:0
+msgid "Parallel Companies"
+msgstr ""
+
+#. module: account_parallel_currency
+#: view:account.parallel.mapping:0
+msgid "Run"
+msgstr ""
+
+#. module: account_parallel_currency
+#: model:ir.model,name:account_parallel_currency.model_account_move
+msgid "Account Entry"
+msgstr ""
+
+#. module: account_parallel_currency
+#: code:addons/account_parallel_currency/account.py:260
+#, python-format
+msgid "Period %s does not exist in company %s !"
+msgstr ""
+
+#. module: account_parallel_currency
+#: code:addons/account_parallel_currency/wizard/do_mapping.py:86
+#, python-format
+msgid "No tax code %s for company %s"
+msgstr ""
+
+#. module: account_parallel_currency
+#: field:account.account,parallel_accounts_summary:0
+msgid "Parallel accounts summary"
+msgstr ""
+
+#. module: account_parallel_currency
+#: field:account.move,master_parallel_move_id:0
+msgid "Master Parallel Entry"
+msgstr ""
+
+#. module: account_parallel_currency
+#: view:account.parallel.mapping:0
+msgid "Parallel Mapping"
+msgstr ""
+
+#. module: account_parallel_currency
+#: field:account.tax.code,parallel_tax_code_ids:0
+msgid "Parallel Currency Tax Codes"
+msgstr ""
+
+#. module: account_parallel_currency
+#: code:addons/account_parallel_currency/wizard/do_mapping.py:91
+#, python-format
+msgid "Done"
+msgstr ""
+
+#. module: account_parallel_currency
+#: view:account.tax.code:0
+msgid "Create parallel tax codes"
+msgstr ""
+
+#. module: account_parallel_currency
+#: view:account.parallel.mapping:0
+msgid "Close"
+msgstr ""
+
+#. module: account_parallel_currency
+#: field:account.parallel.mapping,message:0
+msgid "Message"
+msgstr ""
+
+#. module: account_parallel_currency
+#: code:addons/account_parallel_currency/wizard/do_mapping.py:69
+#, python-format
+msgid "No account %s for company %s"
+msgstr ""
+
