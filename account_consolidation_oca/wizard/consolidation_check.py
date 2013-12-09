@@ -89,3 +89,28 @@ class account_consolidation_check(orm.TransientModel):
 
         raise osv.except_osv(_('Invalid periods'),
                              '\n'.join(err_lines))
+
+
+    def check_subsidiary_mapping_account(self, cr, uid, ids, context=None):
+        """
+        Action launched with the button on the view.
+        Check the periods and display a report of the errors
+        """
+        errors_by_company = super(account_consolidation_check, self).\
+                check_subsidiary_mapping_account(cr, uid, ids, context=context)
+
+        if not errors_by_company:
+            raise osv.except_osv(_('Validation'), _('All account is mapped'))
+
+        company_obj = self.pool.get('res.company')
+
+        err_lines = []
+        for company_id, errors in errors_by_company.iteritems():
+            company = company_obj.browse(cr, uid, company_id, context=context)
+            err_lines.append(_("%s :") % company.name)
+            for error in errors:
+                err_lines.append(error)
+            err_lines.append('')
+
+        raise osv.except_osv(_('Invalid accounts'),
+                             '\n'.join(err_lines))
