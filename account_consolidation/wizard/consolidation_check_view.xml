@@ -34,11 +34,19 @@
                             class="oe_highlight"/>
                         or
                         <button name="check_account_charts"
-                            string="Check Charts" type="object"
+                            string="Check Charts 1" type="object"
                             class="oe_highlight"/>
                         or
+                        <button name="check_subsidiary_mapping_account"
+                            string="Check Charts 2" type="object"
+                            class="oe_highlight"/>
                         <button string="Cancel" class="oe_link" special="cancel"/>
                     </footer>
+                    <group>
+                    <label string="Check Period : Check consistency of accounting periods between subsidiaries and holding company." />
+                    <label string="Check Chart 1 : Check consistency between subsidiaries consolidation chart and Holding company chart." />
+                    <label string="Check  Chart 2 : For each subsidiary, check consistency between the regular chart of accounts and the consolidation chart." />
+                    </group>
                 </form>
             </field>
         </record>

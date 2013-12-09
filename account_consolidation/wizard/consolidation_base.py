@@ -249,6 +249,66 @@ class account_consolidation_base(orm.AbstractModel):
 
         return res
 
+    def check_subsidiary_mapping_account(self, cr, uid, ids, context=None):
+        """
+        Call the period check on each period of all subsidiaries
+        Returns the errors by subsidiary
+
+        :return: dict of list with errors for each company
+                 {company_id: ['error 1', 'error2']}
+        """
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+        assert len(ids) == 1, "only 1 id expected"
+
+        form = self.browse(cr, uid, ids[0], context=context)
+        errors_by_company = {}
+        for subsidiary in form.subsidiary_ids:
+            errors = self._check_subsidiary_mapping_account(
+                cr, uid,
+                ids,
+                subsidiary,
+                context=context)
+            if errors:
+                errors_by_company[subsidiary.id] = errors
+
+        return errors_by_company
+
+    def _check_subsidiary_mapping_account(self, cr, uid, ids,
+                                          company_id, context=None):
+        if context is None:
+            context = {}
+        errors = []
+        account_obj = self.pool.get('account.account')
+        normal_account_ids = account_obj.search(cr, uid,
+                                                [('company_id',
+                                                  '=',
+                                                  company_id.id),
+                                                 ('type',
+                                                  'not in',
+                                                  ['consolidation', 'view'])],
+                                                  context=context)
+        consolidated_account_ids = account_obj.search(cr, uid,
+                                                      [('company_id',
+                                                        '=',
+                                                        company_id.id),
+                                                       ('type',
+                                                        '=',
+                                                        'consolidation')],
+                                                        context=context)
+        consolidate_child_ids = []
+        for account_id in consolidated_account_ids:
+            consolidate_child_ids=consolidate_child_ids+account_obj._get_children_and_consol(cr, uid, account_id, context=context)
+        for sub_id in normal_account_ids:
+            res = {}
+            cpt_occur = consolidate_child_ids.count(sub_id)
+            if cpt_occur == 0 or cpt_occur > 1:
+                ## We read the code of account
+                code = account_obj.read(cr, uid, sub_id, ['code'], context=context)['code']
+                message = _("Code %s is mapping %s times" % (code, cpt_occur))
+                errors.append(message)
+        return errors
+
     def check_subsidiary_chart(self, cr, uid, ids, holding_chart_account_id,
                                subsidiary_chart_account_id, context=None):
         """
@@ -294,8 +354,7 @@ class account_consolidation_base(orm.AbstractModel):
             if not subsidiary.consolidation_chart_account_id:
                 raise osv.except_osv(
                         _('Error'),
-                        _('No chart of accounts for company %s') % subsidiary)
-
+                        _('No chart of accounts for company %s') % subsidiary.name)
             invalid_items = self.check_subsidiary_chart(
                     cr, uid,
                     ids,
