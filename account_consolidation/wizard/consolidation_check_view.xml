@@ -37,6 +37,9 @@
                             string="Check Charts" type="object"
                             class="oe_highlight"/>
                         or
+                        <button name="check_account_presence"
+                            string="Check Accounts Recurrence" type="object"
+                            class="oe_highlight"/>
                         <button string="Cancel" class="oe_link" special="cancel"/>
                     </footer>
                 </form>

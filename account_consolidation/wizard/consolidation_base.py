@@ -249,6 +249,68 @@ class account_consolidation_base(orm.AbstractModel):
 
         return res
 
+
+    def check_subsidiary_presence(self, cr, uid, ids, context=None):
+        """
+        Call the period check on each period of all subsidiaries
+        Returns the errors by subsidiary
+
+        :return: dict of list with errors for each company
+                 {company_id: ['error 1', 'error2']}
+        """
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+        assert len(ids) == 1, "only 1 id expected"
+
+        form = self.browse(cr, uid, ids[0], context=context)
+
+        errors_by_company = {}
+        for subsidiary in form.subsidiary_ids:
+            errors = self._check_subsidiary_presence(
+                cr, uid,
+                ids,
+                subsidiary.id,
+                form.company_id,
+                context=context)
+            if errors:
+                errors_by_company[subsidiary.id] = errors
+
+        return errors_by_company
+
+
+
+    
+    def _check_subsidiary_presence(self, cr, uid, ids,
+                                  subsidiary_chart_account_id,
+                                  company_id, context=None):
+        if context is None:
+            context = {}
+        errors = []
+        account_obj = self.pool.get('account.account')
+        subsidary_ids = account_obj._get_children_and_consol(
+                                    cr, uid, subsidiary_chart_account_id, context=context)
+        normal_account_ids = account_obj.search(cr, uid, [('id','in',subsidary_ids),
+                                                          ('type','not in',['consolidation','view'])])
+        consolidated_account_ids = account_obj.search(cr, uid, [('id','in',subsidary_ids),
+                                                          ('type','=','consolidation')])
+        consolidate_child_ids = []
+        for account_id in consolidated_account_ids:
+            consolidate_child_ids=consolidate_child_ids+account_obj._get_children_and_consol(cr, uid, account_id, context=context)
+        for sub_id in normal_account_ids:
+            res = {}
+            cpt_occur = 0
+            for conso_id in consolidate_child_ids:
+                if sub_id == conso_id:
+                    cpt_occur+=1
+            ## Not occurance found
+            if cpt_occur == 0 or cpt_occur > 1:
+                ## We read the code of account
+                code=account_obj.read(cr, uid,sub_id,['code'])['code']
+                message=_("Code %s is present %s in company %s"%(code,cpt_occur,company_id.name))
+                errors.append(message)
+        return errors
+        
+
     def check_subsidiary_chart(self, cr, uid, ids, holding_chart_account_id,
                                subsidiary_chart_account_id, context=None):
         """
@@ -295,7 +357,12 @@ class account_consolidation_base(orm.AbstractModel):
                 raise osv.except_osv(
                         _('Error'),
                         _('No chart of accounts for company %s') % subsidiary)
-
+#             self.check_subsidiary_presence(
+#                     cr, uid,
+#                     ids,
+#                     form.holding_chart_account_id.id,
+#                     subsidiary.consolidation_chart_account_id.id,
+#                     context=context)
             invalid_items = self.check_subsidiary_chart(
                     cr, uid,
                     ids,
