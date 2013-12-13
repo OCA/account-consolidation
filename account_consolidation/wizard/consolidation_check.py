@@ -114,4 +114,3 @@ class account_consolidation_check(orm.TransientModel):
 
         raise osv.except_osv(_('Invalid periods'),
                              '\n'.join(err_lines))
-
