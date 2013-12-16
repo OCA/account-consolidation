@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 7.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-21 09:06+0000\n"
-"PO-Revision-Date: 2013-10-21 09:06+0000\n"
+"POT-Creation-Date: 2013-12-13 09:10+0000\n"
+"PO-Revision-Date: 2013-12-13 09:10+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -38,7 +38,7 @@ msgid "Consolidation Mode"
 msgstr ""
 
 #. module: account_consolidation
-#: code:addons/account_consolidation/wizard/consolidation_base.py:323
+#: code:addons/account_consolidation/wizard/consolidation_base.py:375
 #, python-format
 msgid "Invalid periods, please launch the \"Consolidation: Checks\" wizard"
 msgstr ""
@@ -53,6 +53,11 @@ msgstr ""
 #: code:addons/account_consolidation/wizard/consolidation_consolidate.py:434
 #, python-format
 msgid "Consolidation %s"
+msgstr ""
+
+#. module: account_consolidation
+#: view:account.consolidation.check:0
+msgid "Check  Chart 2 : For each subsidiary, check consistency between the regular chart of accounts and the consolidation chart."
 msgstr ""
 
 #. module: account_consolidation
@@ -97,8 +102,8 @@ msgid "Chart of Accounts"
 msgstr ""
 
 #. module: account_consolidation
-#: help:account.consolidation.consolidate,to_period_id:0
-msgid "The consolidation will be done at the very last date of the selected period."
+#: view:account.consolidation.consolidate:0
+msgid "Run the consolidation for the selected periods and subsidiaries."
 msgstr ""
 
 #. module: account_consolidation
@@ -108,8 +113,15 @@ msgid "Settings ERROR"
 msgstr ""
 
 #. module: account_consolidation
+#: view:account.consolidation.check:0
+#: view:account.consolidation.consolidate:0
+msgid "or"
+msgstr ""
+
+#. module: account_consolidation
 #: code:addons/account_consolidation/wizard/consolidation_check.py:59
 #: code:addons/account_consolidation/wizard/consolidation_check.py:85
+#: code:addons/account_consolidation/wizard/consolidation_check.py:110
 #, python-format
 msgid "%s :"
 msgstr ""
@@ -127,9 +139,9 @@ msgid "Description"
 msgstr ""
 
 #. module: account_consolidation
-#: code:addons/account_consolidation/wizard/consolidation_base.py:328
+#: code:addons/account_consolidation/wizard/consolidation_base.py:300
 #, python-format
-msgid "Invalid charts, please launch the \"Consolidation: Checks\" wizard"
+msgid "Code %s is mapping %s times"
 msgstr ""
 
 #. module: account_consolidation
@@ -165,8 +177,9 @@ msgid "Consolidation"
 msgstr ""
 
 #. module: account_consolidation
-#: view:account.consolidation.check:0
-msgid "Check Charts"
+#: code:addons/account_consolidation/wizard/consolidation_check.py:78
+#, python-format
+msgid "Periods are OK."
 msgstr ""
 
 #. module: account_consolidation
@@ -188,8 +201,14 @@ msgstr ""
 
 #. module: account_consolidation
 #: code:addons/account_consolidation/wizard/consolidation_check.py:90
+#: code:addons/account_consolidation/wizard/consolidation_check.py:115
 #, python-format
 msgid "Invalid periods"
+msgstr ""
+
+#. module: account_consolidation
+#: help:account.consolidation.consolidate,to_period_id:0
+msgid "The consolidation will be done at the very last date of the selected period."
 msgstr ""
 
 #. module: account_consolidation
@@ -233,7 +252,7 @@ msgid "Account"
 msgstr ""
 
 #. module: account_consolidation
-#: code:addons/account_consolidation/wizard/consolidation_base.py:297
+#: code:addons/account_consolidation/wizard/consolidation_base.py:350
 #, python-format
 msgid "No chart of accounts for company %s"
 msgstr ""
@@ -304,9 +323,15 @@ msgid "Account with code %s does not exist on the Holding company."
 msgstr ""
 
 #. module: account_consolidation
-#: code:addons/account_consolidation/wizard/consolidation_base.py:296
-#: code:addons/account_consolidation/wizard/consolidation_base.py:322
-#: code:addons/account_consolidation/wizard/consolidation_base.py:327
+#: code:addons/account_consolidation/wizard/consolidation_base.py:380
+#, python-format
+msgid "Invalid charts, please launch the \"Consolidation: Checks\" wizard"
+msgstr ""
+
+#. module: account_consolidation
+#: code:addons/account_consolidation/wizard/consolidation_base.py:349
+#: code:addons/account_consolidation/wizard/consolidation_base.py:374
+#: code:addons/account_consolidation/wizard/consolidation_base.py:379
 #, python-format
 msgid "Error"
 msgstr ""
@@ -318,14 +343,24 @@ msgid "Subsidiaries to Consolidate"
 msgstr ""
 
 #. module: account_consolidation
+#: view:account.consolidation.check:0
+msgid "Check Charts 1"
+msgstr ""
+
+#. module: account_consolidation
 #: selection:account.account,consolidation_mode:0
 #: selection:account.account.type,consolidation_mode:0
 msgid "YTD"
 msgstr ""
 
 #. module: account_consolidation
-#: view:account.consolidation.consolidate:0
-msgid "Run the consolidation for the selected periods and subsidiaries."
+#: view:account.consolidation.check:0
+msgid "Check Period : Check consistency of accounting periods between subsidiaries and holding company."
+msgstr ""
+
+#. module: account_consolidation
+#: view:account.consolidation.check:0
+msgid "Check Chart 1 : Check consistency between subsidiaries consolidation chart and Holding company chart."
 msgstr ""
 
 #. module: account_consolidation
@@ -372,9 +407,8 @@ msgid "Conso. differences will be affected to this account"
 msgstr ""
 
 #. module: account_consolidation
-#: code:addons/account_consolidation/wizard/consolidation_base.py:141
-#, python-format
-msgid "The fiscal year of the subsidiary company %s does not exists from %s to %s"
+#: view:account.consolidation.check:0
+msgid "Check Charts 2"
 msgstr ""
 
 #. module: account_consolidation
@@ -383,9 +417,9 @@ msgid "Consolidation Checks. Model used for views"
 msgstr ""
 
 #. module: account_consolidation
-#: view:account.consolidation.check:0
-#: view:account.consolidation.consolidate:0
-msgid "or"
+#: code:addons/account_consolidation/wizard/consolidation_base.py:141
+#, python-format
+msgid "The fiscal year of the subsidiary company %s does not exists from %s to %s"
 msgstr ""
 
 #. module: account_consolidation
@@ -397,14 +431,9 @@ msgstr ""
 #. module: account_consolidation
 #: code:addons/account_consolidation/wizard/consolidation_check.py:52
 #: code:addons/account_consolidation/wizard/consolidation_check.py:78
+#: code:addons/account_consolidation/wizard/consolidation_check.py:103
 #, python-format
 msgid "Validation"
-msgstr ""
-
-#. module: account_consolidation
-#: code:addons/account_consolidation/wizard/consolidation_check.py:78
-#, python-format
-msgid "Periods are OK."
 msgstr ""
 
 #. module: account_consolidation
@@ -426,6 +455,12 @@ msgstr ""
 #: view:account.consolidation.check:0
 #: view:account.consolidation.consolidate:0
 msgid "Cancel"
+msgstr ""
+
+#. module: account_consolidation
+#: code:addons/account_consolidation/wizard/consolidation_check.py:103
+#, python-format
+msgid "All account is mapped"
 msgstr ""
 
 #. module: account_consolidation
