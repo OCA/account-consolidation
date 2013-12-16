@@ -286,14 +286,16 @@ class account_consolidation_base(orm.AbstractModel):
                                                   company_id.id),
                                                  ('type',
                                                   'not in',
-                                                  ['consolidation', 'view'])])
+                                                  ['consolidation', 'view'])],
+                                                  context=context)
         consolidated_account_ids = account_obj.search(cr, uid,
                                                       [('company_id',
                                                         '=',
                                                         company_id.id),
                                                        ('type',
                                                         '=',
-                                                        'consolidation')])
+                                                        'consolidation')],
+                                                        context=context)
         consolidate_child_ids = []
         for account_id in consolidated_account_ids:
             consolidate_child_ids=consolidate_child_ids+account_obj._get_children_and_consol(cr, uid, account_id, context=context)
@@ -302,11 +304,10 @@ class account_consolidation_base(orm.AbstractModel):
             cpt_occur = consolidate_child_ids.count(sub_id)
             if cpt_occur == 0 or cpt_occur > 1:
                 ## We read the code of account
-                code = account_obj.read(cr, uid, sub_id, ['code'])['code']
+                code = account_obj.read(cr, uid, sub_id, ['code'], context=context)['code']
                 message = _("Code %s is mapping %s times" % (code, cpt_occur))
                 errors.append(message)
         return errors
-        
 
     def check_subsidiary_chart(self, cr, uid, ids, holding_chart_account_id,
                                subsidiary_chart_account_id, context=None):
