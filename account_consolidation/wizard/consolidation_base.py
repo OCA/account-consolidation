@@ -354,7 +354,7 @@ class account_consolidation_base(orm.AbstractModel):
             if not subsidiary.consolidation_chart_account_id:
                 raise osv.except_osv(
                         _('Error'),
-                        _('No chart of accounts for company %s') % subsidiary)
+                        _('No chart of accounts for company %s') % subsidiary.name)
             invalid_items = self.check_subsidiary_chart(
                     cr, uid,
                     ids,
