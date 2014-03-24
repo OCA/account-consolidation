@@ -85,8 +85,6 @@ class account_account(orm.Model):
             vals['user_type'] = account_vals['user_type']
         if 'active' in account_vals:
             vals['active'] = account_vals['active']
-        if 'centralized' in account_vals:
-            vals['centralized'] = account_vals['centralized']
         if 'parent_id' in account_vals:
             parent_account = self.browse(cr, uid, account_vals['parent_id'], context)
             parent_parallel_acc_id = self._search_parallel_account(
@@ -112,7 +110,6 @@ class account_account(orm.Model):
                     'type': account.type,
                     'user_type': account.user_type and account.user_type.id or False,
                     'active': account.active,
-                    'centralized': account.centralized,
                     })
                 cr.execute("insert into parallel_account_rel(parent_id,child_id) values (%d,%d)"
                     % (account.id, new_id))
@@ -443,8 +440,6 @@ class account_tax_code(orm.Model):
             vals['user_type'] = tax_code_vals['user_type']
         if tax_code_vals.has_key('active'):
             vals['active'] = tax_code_vals['active']
-        if tax_code_vals.has_key('centralized'):
-            vals['centralized'] = tax_code_vals['centralized']
         if tax_code_vals.has_key('parent_id'):
             parent_tax_code = self.browse(cr, uid, tax_code_vals['parent_id'], context)
             parent_parallel_acc_id = self._search_parallel_tax_code(
