@@ -27,7 +27,8 @@ class AccountMoveLine(orm.Model):
 
     def _current_company(self, cursor, uid, ids, name, args, context=None):
         company_id = self.pool['res.company']._company_default_get(cursor, uid)
-        curr_ids = self.search(cursor, uid, [('company_id', '=', company_id)])
+        curr_ids = self.search(cursor, uid, [('company_id', '=', company_id),
+                                             ('id', 'in', ids)])
         res = dict([(tid, tid in curr_ids) for tid in ids])
         return res
 
