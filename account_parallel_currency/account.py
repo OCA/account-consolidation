@@ -455,8 +455,8 @@ class account_tax_code(orm.Model):
         for tax_code in self.browse(cr, SUPERUSER_ID, ids, context):
             for parallel_company in tax_code.company_id.parallel_company_ids:
                 if not tax_code.parent_id:
-                    raise orm.except_orm(_('Error'),_('Tax code %s does not have parent')
-                        % tax_code.code)
+                    # can't do the mapping as it's based on parent tax code
+                    return True
                 existing_ids = self.search(cr, SUPERUSER_ID, [
                     ('code', '=', tax_code.code),
                     ('company_id', '=', parallel_company.id),
