@@ -462,13 +462,14 @@ class account_tax_code(orm.Model):
                     raise orm.except_orm(_('Error'),
                     _('Tax code %s already exists for company %s')
                     % (tax_code.code, parallel_company.name))
-                parent_parallel_tax_code_id = False
                 if tax_code.parent_id:
                     parent_parallel_tax_code_id = (
                         self._search_parallel_tax_code(
                             cr, SUPERUSER_ID, tax_code.parent_id.code,
                             parallel_company, context=context)
                         )
+                else:
+                    parent_parallel_tax_code_id = False
                 new_id = self.create(cr, SUPERUSER_ID,{
                     'company_id': parallel_company.id,
                     'parent_id': parent_parallel_tax_code_id,
