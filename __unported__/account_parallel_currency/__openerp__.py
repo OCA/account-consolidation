@@ -52,5 +52,5 @@ This is achieved keeping the companies separate, so that users of the master com
         'test/customer_invoice.yml',
         ],
     "active": False,
-    "installable": True
+    'installable': False
 }
