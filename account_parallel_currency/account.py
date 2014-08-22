@@ -454,9 +454,6 @@ class account_tax_code(orm.Model):
     def create_parallel_tax_codes(self, cr, uid, ids, context=None):
         for tax_code in self.browse(cr, SUPERUSER_ID, ids, context):
             for parallel_company in tax_code.company_id.parallel_company_ids:
-                if not tax_code.parent_id:
-                    raise orm.except_orm(_('Error'),_('Tax code %s does not have parent')
-                        % tax_code.code)
                 existing_ids = self.search(cr, SUPERUSER_ID, [
                     ('code', '=', tax_code.code),
                     ('company_id', '=', parallel_company.id),
@@ -465,9 +462,14 @@ class account_tax_code(orm.Model):
                     raise orm.except_orm(_('Error'),
                     _('Tax code %s already exists for company %s')
                     % (tax_code.code, parallel_company.name))
-                parent_parallel_tax_code_id = self._search_parallel_tax_code(
-                    cr, SUPERUSER_ID, tax_code.parent_id.code, parallel_company,
-                    context=context)
+                if tax_code.parent_id:
+                    parent_parallel_tax_code_id = (
+                        self._search_parallel_tax_code(
+                            cr, SUPERUSER_ID, tax_code.parent_id.code,
+                            parallel_company, context=context)
+                        )
+                else:
+                    parent_parallel_tax_code_id = False
                 new_id = self.create(cr, SUPERUSER_ID,{
                     'company_id': parallel_company.id,
                     'parent_id': parent_parallel_tax_code_id,
