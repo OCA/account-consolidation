@@ -1,3 +1,3 @@
-import consolidation_base
-import consolidation_check
-import consolidation_consolidate
+from . import consolidation_base
+from . import consolidation_check
+from . import consolidation_consolidate

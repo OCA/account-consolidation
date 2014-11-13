@@ -32,7 +32,6 @@ class AccountMoveLine(orm.Model):
         res = dict([(tid, tid in curr_ids) for tid in ids])
         return res
 
-
     def search_is_current_company(self, cursor, uid, obj, name, args, context=None):
         company_id = self.pool['res.company']._company_default_get(cursor, uid)
         res = self.search(cursor, uid, [('company_id', '=', company_id)])
@@ -42,7 +41,8 @@ class AccountMoveLine(orm.Model):
                                                     relation='res.company',
                                                     type="many2one",
                                                     string='Subsidaries',
-                                                    store=True,  # for the group_by
+                                                    # for the group_by
+                                                    store=True,
                                                     readonly=True),
 
                 'is_current_company': fields.function(_current_company,

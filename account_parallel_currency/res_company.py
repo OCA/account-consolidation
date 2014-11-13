@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
-#    
+#
 #    Copyright (C) 2012-2013 Agile Business Group sagl
 #    (<http://www.agilebg.com>)
 #    Copyright (C) 2012 Domsense srl (<http://www.domsense.com>)
@@ -23,11 +23,11 @@
 from openerp.osv import fields, orm
 from osv import fields
 
+
 class res_company(orm.Model):
     _inherit = "res.company"
 
     _columns = {
-        'parallel_company_ids': fields.many2many('res.company', 'parallel_companies_rel', 'master_id', 
-            'parallel_id', 'Parallel Companies'),
+        'parallel_company_ids': fields.many2many('res.company', 'parallel_companies_rel', 'master_id',
+                                                 'parallel_id', 'Parallel Companies'),
     }
-
