@@ -20,7 +20,7 @@
 ##############################################################################
 {"name": "Account Consolidation",
  "version": "1.0",
- "author": "Camptocamp",
+ "author": "Camptocamp,Odoo Community Association (OCA)",
  "license": "AGPL-3",
  "category": "Generic Modules/Accounting",
  "description": """

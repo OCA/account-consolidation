@@ -34,7 +34,7 @@ A 'Parallel Account Mapping' wizard is provided. It is intended to be run when t
 When posting new journal entries, the system checks the configured parallel accounts and automatically generates the parallel entries.
 This is achieved keeping the companies separate, so that users of the master company don't see secondary company data (e.g. currencies and journals) but the system uses the super user in order to perform the parallel registrations.
 """,
-    'author': 'Agile Business Group',
+    'author': "Agile Business Group,Odoo Community Association (OCA)",
     'website': 'http://www.agilebg.com',
     'license': 'AGPL-3',
     "depends" : ['account'],
