@@ -33,7 +33,7 @@
 {
      "name" : "Account Consolidation",
      "version" : "0.0",
-     "author" : "Camptocamp",
+     "author" : "Camptocamp,Odoo Community Association (OCA)",
      "category" : "Generic Modules/Accounting",
      "description":
 """
