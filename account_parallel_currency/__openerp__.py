@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
-#    
+#
 #    Copyright (C) 2012-2013 Agile Business Group sagl
 #    (<http://www.agilebg.com>)
 #    Copyright (C) 2012 Domsense srl (<http://www.domsense.com>)
@@ -37,20 +37,20 @@ This is achieved keeping the companies separate, so that users of the master com
     'author': "Agile Business Group,Odoo Community Association (OCA)",
     'website': 'http://www.agilebg.com',
     'license': 'AGPL-3',
-    "depends" : ['account'],
-    "data" : [
+    "depends": ['account'],
+    "data": [
         'account_view.xml',
         'company_view.xml',
         'wizard/do_mapping.xml',
         'security/security.xml',
-        ],
-    "demo" : [
+    ],
+    "demo": [
         'account_demo.xml',
-        ],
+    ],
     'test': [
         'test/mapping_parallel_accounts.yml',
         'test/customer_invoice.yml',
-        ],
+    ],
     "active": False,
     "installable": True
 }

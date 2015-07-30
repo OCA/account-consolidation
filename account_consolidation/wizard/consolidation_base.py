@@ -77,7 +77,8 @@ class account_consolidation_base(orm.AbstractModel):
         result = {}
         company = company_obj.browse(cr, uid, company_id, context=context)
         if company.consolidation_chart_account_id:
-            result['main_chart_account_id'] = company.consolidation_chart_account_id.id
+            result[
+                'main_chart_account_id'] = company.consolidation_chart_account_id.id
 
         result['subsidiary_ids'] = [child.id for child in company.child_ids]
 
@@ -116,9 +117,9 @@ class account_consolidation_base(orm.AbstractModel):
 
         # get holding fiscal year and periods
         holding = company_obj.browse(
-                cr, uid, holding_company_id, context=context)
+            cr, uid, holding_company_id, context=context)
         subsidiary = company_obj.browse(
-                cr, uid, subs_company_id, context=context)
+            cr, uid, subs_company_id, context=context)
 
         holding_periods_ids = period_obj.search(
             cr, uid,
@@ -126,7 +127,7 @@ class account_consolidation_base(orm.AbstractModel):
              ('fiscalyear_id', '=', holding_fiscal_year.id)],
             context=context)
         holding_periods = period_obj.browse(
-                cr, uid, holding_periods_ids, context=context)
+            cr, uid, holding_periods_ids, context=context)
 
         # get subsidiary fiscal year and periods
         subsidiary_fiscal_year = fy_obj.search(
@@ -134,25 +135,25 @@ class account_consolidation_base(orm.AbstractModel):
             [('company_id', '=', subsidiary.id),
              ('date_start', '=', holding_fiscal_year.date_start),
              ('date_stop', '=', holding_fiscal_year.date_stop),
-            ],
+             ],
             context=context)
         if not subsidiary_fiscal_year:
             errors.append(
                 _('The fiscal year of the subsidiary company %s '
                   'does not exists from %s to %s') %
-                    (subsidiary.name,
-                    holding_fiscal_year.date_start,
-                    holding_fiscal_year.date_stop))
+                (subsidiary.name,
+                 holding_fiscal_year.date_start,
+                 holding_fiscal_year.date_stop))
         else:
             subsidiary_period_ids = period_obj.search(
                 cr, uid,
                 [('company_id', '=', subsidiary.id),
-                  # 0 because there can be only 1 fiscal year
-                  # on the same dates than the holding
+                 # 0 because there can be only 1 fiscal year
+                 # on the same dates than the holding
                  ('fiscalyear_id', '=', subsidiary_fiscal_year[0])],
                 context=context)
             subsidiary_periods = period_obj.browse(
-                    cr, uid, subsidiary_period_ids, context=context)
+                cr, uid, subsidiary_period_ids, context=context)
 
             # a holding fiscal year may have more periods than a subsidiary
             # (a subsidiary created at the middle of the year for example)
@@ -175,9 +176,9 @@ class account_consolidation_base(orm.AbstractModel):
                     errors.append(
                         _('Period from %s to %s not found '
                           'in holding company %s') %
-                            (subsidiary_period.date_start,
-                            subsidiary_period.date_stop,
-                            holding.name))
+                        (subsidiary_period.date_start,
+                         subsidiary_period.date_stop,
+                         holding.name))
         return errors
 
     def check_all_periods(self, cr, uid, ids, context=None):
@@ -226,7 +227,7 @@ class account_consolidation_base(orm.AbstractModel):
         account_obj = self.pool.get('account.account')
         res = {}
         account_ids = account_obj._get_children_and_consol(
-                cr, uid, chart_account_id, context=context)
+            cr, uid, chart_account_id, context=context)
 
         # do not consolidate chart root
         account_ids.remove(chart_account_id)
@@ -281,14 +282,14 @@ class account_consolidation_base(orm.AbstractModel):
         errors = []
         account_obj = self.pool.get('account.account')
         normal_account_ids = account_obj.search(cr, uid,
-                [('company_id', '=', company_id.id),
-                 ('type', 'not in', ['consolidation', 'view'])],
-                context=context)
+                                                [('company_id', '=', company_id.id),
+                                                 ('type', 'not in', ['consolidation', 'view'])],
+                                                context=context)
         consolidated_account_ids = account_obj.search(
-                cr, uid,
-                [('company_id', '=', company_id.id),
-                 ('type', '=', 'consolidation')],
-                context=context)
+            cr, uid,
+            [('company_id', '=', company_id.id),
+             ('type', '=', 'consolidation')],
+            context=context)
         consolidate_child_ids = []
         for account_id in consolidated_account_ids:
             child_consol_ids = account_obj._get_children_and_consol(
@@ -297,7 +298,7 @@ class account_consolidation_base(orm.AbstractModel):
         for sub_id in normal_account_ids:
             cpt_occur = consolidate_child_ids.count(sub_id)
             if cpt_occur == 0 or cpt_occur > 1:
-                ## We read the code of account
+                # We read the code of account
                 code = account_obj.read(cr, uid, sub_id, ['code'],
                                         context=context)['code']
                 message = _("Code %s is mapping %s times" % (code, cpt_occur))
@@ -324,9 +325,9 @@ class account_consolidation_base(orm.AbstractModel):
             context = {}
         holding_ctx = dict(context, holding_coa=True)
         holding_accounts = self._chart_accounts_data(
-                cr, uid, ids, holding_chart_account_id, context=holding_ctx)
+            cr, uid, ids, holding_chart_account_id, context=holding_ctx)
         subsidiary_accounts = self._chart_accounts_data(
-                cr, uid, ids, subsidiary_chart_account_id, context=context)
+            cr, uid, ids, subsidiary_chart_account_id, context=context)
         # accounts which are configured on the subsidiary
         # Virtual CoA but not on the holding CoA
         spare_accounts = [code for code
@@ -348,14 +349,14 @@ class account_consolidation_base(orm.AbstractModel):
         for subsidiary in form.subsidiary_ids:
             if not subsidiary.consolidation_chart_account_id:
                 raise osv.except_osv(
-                        _('Error'),
-                        _('No chart of accounts for company %s') % subsidiary.name)
+                    _('Error'),
+                    _('No chart of accounts for company %s') % subsidiary.name)
             invalid_items = self.check_subsidiary_chart(
-                    cr, uid,
-                    ids,
-                    form.holding_chart_account_id.id,
-                    subsidiary.consolidation_chart_account_id.id,
-                    context=context)
+                cr, uid,
+                ids,
+                form.holding_chart_account_id.id,
+                subsidiary.consolidation_chart_account_id.id,
+                context=context)
             if any(invalid_items):
                 invalid_items_per_company[subsidiary.id] = invalid_items
 

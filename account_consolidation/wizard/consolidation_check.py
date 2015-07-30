@@ -45,7 +45,7 @@ class account_consolidation_check(orm.TransientModel):
         """
         company_obj = self.pool.get('res.company')
         invalid_items_per_company = super(account_consolidation_check, self).\
-                check_account_charts(cr, uid, ids, context=context)
+            check_account_charts(cr, uid, ids, context=context)
 
         if not invalid_items_per_company:
             raise osv.except_osv(
@@ -55,7 +55,7 @@ class account_consolidation_check(orm.TransientModel):
         err_lines = []
         for company_id, account_codes in invalid_items_per_company.iteritems():
             company = company_obj.browse(
-                    cr, uid, company_id, context=context)
+                cr, uid, company_id, context=context)
             err_lines.append(_("%s :") % company.name)
             for account_code in account_codes:
                 err_lines.append(
@@ -72,7 +72,7 @@ class account_consolidation_check(orm.TransientModel):
         Check the periods and display a report of the errors
         """
         errors_by_company = super(account_consolidation_check, self).\
-                check_all_periods(cr, uid, ids, context=context)
+            check_all_periods(cr, uid, ids, context=context)
 
         if not errors_by_company:
             raise osv.except_osv(_('Validation'), _('Periods are OK.'))
@@ -97,7 +97,7 @@ class account_consolidation_check(orm.TransientModel):
         """
         errors_by_company = super(
             account_consolidation_check, self
-            ).check_subsidiary_mapping_account(cr, uid, ids, context=context)
+        ).check_subsidiary_mapping_account(cr, uid, ids, context=context)
 
         if not errors_by_company:
             raise osv.except_osv(_('Validation'), _('All account is mapped'))
