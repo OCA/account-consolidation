@@ -11,7 +11,7 @@ Unported addons
 ---------------
 addon | version | summary
 --- | --- | ---
-[account_consolidation](__unported__/account_consolidation/) | 1.0 (unported) | Account Consolidation
-[account_parallel_currency](__unported__/account_parallel_currency/) | 0.2 (unported) | Account Parallel Currency
+[account_consolidation](account_consolidation/) | 1.0 (unported) | Account Consolidation
+[account_parallel_currency](account_parallel_currency/) | 0.2 (unported) | Account Parallel Currency
 
 [//]: # (end addons)
