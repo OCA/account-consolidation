@@ -7,4 +7,11 @@ Account Consolidation
 Consolidate chart of accounts on subsidiaries in a virtual chart of accounts of the holding.
 
 [//]: # (addons)
+Unported addons
+---------------
+addon | version | summary
+--- | --- | ---
+[account_consolidation](account_consolidation/) | 1.0 (unported) | Account Consolidation
+[account_parallel_currency](account_parallel_currency/) | 0.2 (unported) | Account Parallel Currency
+
 [//]: # (end addons)
