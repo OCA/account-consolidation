@@ -114,23 +114,6 @@ class account_consolidation_consolidate(orm.TransientModel):
         result['fiscalyear_id'] = from_period.fiscalyear_id.id
         return {'value': result}
 
-    def _currency_rate_type(self, cr, uid, ids, account, context=None):
-        """
-        Returns the currency rate type to use
-
-        :param account: browse_record instance of account.account
-
-        :return: id of the currency rate type to use
-        """
-        if account.consolidation_rate_type_id:
-            return account.consolidation_rate_type_id.id
-
-        elif account.user_type.consolidation_rate_type_id:
-            return account.user_type.consolidation_rate_type_id.id
-
-        else:
-            return False
-
     def _consolidation_mode(self, cr, uid, ids, account, context=None):
         """
         Returns the consolidation mode to use
@@ -277,15 +260,11 @@ class account_consolidation_consolidate(orm.TransientModel):
                 'credit': abs(balance) if balance < 0.0 else 0.0,
             })
         else:
-            currency_rate_type = self._currency_rate_type(cr, uid, ids,
-                                                          holding_account, context=context)
-
             currency_value = currency_obj.compute(cr, uid,
                                                   holding_account.company_currency_id.id,
                                                   subs_account.company_currency_id.id,
                                                   balance,
                                                   currency_rate_type_from=False,  # means spot
-                                                  currency_rate_type_to=currency_rate_type,
                                                   context=context)
             vals.update({
                 'currency_id': subs_account.company_currency_id.id,

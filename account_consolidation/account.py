@@ -26,13 +26,6 @@ class account_account(orm.Model):
     _inherit = 'account.account'
 
     _columns = {
-        'consolidation_rate_type_id': fields.many2one(
-            'res.currency.rate.type',
-            'Consolidation Currency Rate Type',
-            help="Currency rate type used on this account "
-                 "for the consolidation. "
-                 "Leave empty to use the rate type of the account type."),
-
         'consolidation_mode': fields.selection(
             [('ytd', 'YTD'),
              ('period', 'Period Movements')],
@@ -45,13 +38,6 @@ class account_account_type(orm.Model):
     _inherit = 'account.account.type'
 
     _columns = {
-        'consolidation_rate_type_id': fields.many2one(
-            'res.currency.rate.type',
-            'Consolidation Currency Rate Type',
-            help="Currency rate type used on this account type "
-                 "for the consolidation. "
-                 "Leave empty to use the 'spot' rate type."),
-
         'consolidation_mode': fields.selection(
             [('ytd', 'YTD'),
              ('period', 'Period Movements')],
