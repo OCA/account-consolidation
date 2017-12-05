@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!--<record id="view_consolidation_mapper" model="ir.ui.view">-->
+            <!--<field name="name">account.consolidation.mapper.form</field>-->
+            <!--<field name="model">account.consolidation.mapper</field>-->
+            <!--<field name="type">form</field>-->
+            <!--<field name="arch" type="xml">-->
+                <!--<form string="Consolidation: Map accounts">-->
+                <!--</form>-->
+            <!--</field>-->
+        <!--</record>-->
+
+        <record id="action_consolidation_mapper" model="ir.actions.act_window">
+            <field name="name">Consolidation: Map accounts</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.consolidation.mapper</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <record id="view_consolidation_consolidate_form" model="ir.ui.view">
+            <field name="name">account.consolidation.consolidate.form</field>
+            <field name="model">account.consolidation.consolidate</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Consolidation: Consolidate">
+                    <label string="Run the consolidation for the selected periods and subsidiaries."/>
+                    <group>
+                        <field name="company_id"/>
+                        <field name="subsidiaries" widget="many2many_tags"/>
+                        <field name="currency_rate"/>
+                        <field name="period_start"/>
+                        <field name="period_end"/>
+                        <field name="journal_id"/>
+                    </group>
+                    <footer>
+                        <button string='Consolidate' name="run_consolidation" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_consolidation_consolidate" model="ir.actions.act_window">
+            <field name="name">Consolidation: Consolidate</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.consolidation.consolidate</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+         <menuitem
+                name="Consolidation"
+                parent="account.account_account_menu"
+                groups="account_consolidation.consolidation_manager,account_consolidation.consolidation_user"
+                id="menu_consolidation"/>
+
+         <menuitem
+                name="Consolidation: Map"
+                parent="menu_consolidation"
+                action="account_consolidation.action_consolidation_mapper"
+                groups="account_consolidation.consolidation_manager,account_consolidation.consolidation_user"
+                id="menu_consolidation_checks"/>
+
+         <menuitem
+                name="Consolidation: Consolidate"
+                parent="menu_consolidation"
+                action="account_consolidation.action_consolidation_consolidate"
+                groups="account_consolidation.consolidation_manager,account_consolidation.consolidation_user"
+                id="menu_consolidation_consolidate"/>
+
+     </data>
+ </openerp>

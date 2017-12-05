@@ -1,0 +1,24 @@
+<openerp>
+  <data>
+    <record id="consolidation_manager" model="res.groups">
+      <field name="name">Consolidation manager</field>
+      <field name="category_id" ref="base.module_category_accounting_and_finance"/>
+    </record>
+
+    <record id="consolidation_user" model="res.groups">
+      <field name="name">Consolidation user</field>
+      <field name="category_id" ref="base.module_category_accounting_and_finance"/>
+    </record>
+
+    <record id="consolidation_user" model="res.groups">
+      <field name="name">Consolidation user</field>
+      <field name="category_id" ref="base.module_category_accounting_and_finance"/>
+    </record>
+
+    <menuitem action="account.account_tag_action" id="menu_action_account_tag" parent="account.account_account_menu" sequence="0"/>
+
+    <menuitem action="account.action_account_group_tree" id="menu_action_account_group" parent="account.account_account_menu" sequence="0"/>
+
+    <menuitem action="account.action_account_type_form" id="menu_action_account_type_form" parent="account.account_account_menu" sequence="0"/>
+  </data>
+</openerp>
