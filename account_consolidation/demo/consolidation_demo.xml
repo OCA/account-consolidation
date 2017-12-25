@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!-- Subsidiaries -->
+        <record id="subsidiary_a" model="res.company">
+            <field name="name">Subsidiary A</field>
+            <field name="currency_id" ref="base.CHF"/>
+            <field name="parent_id" ref="base.main_company"/>
+        </record>
+
+        <!-- Subsidiaries -->
+        <record id="subsidiary_b" model="res.company">
+            <field name="name">Subsidiary B</field>
+            <field name="currency_id" ref="base.EUR"/>
+            <field name="parent_id" ref="base.main_company"/>
+        </record>
+
+        <!--
+         Add consolidation accounts to Chart for Automated Tests
+        -->
+
+        <record id="chart0_conso_expense" model="account.account">
+            <field name="code">VAE</field>
+            <field name="name">Consolidation Expense Account</field>
+            <field name="user_type_id" ref="account.data_account_type_expenses"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <record id="chart0_conso_income" model="account.account">
+            <field name="code">VAI</field>
+            <field name="name">Consolidation Income Account</field>
+            <field name="user_type_id" ref="account.data_account_type_revenue"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <record id="chart0_conso_current_assets" model="account.account">
+            <field name="code">VACA</field>
+            <field name="name">Consolidation Cussrent Assets Account</field>
+            <field name="user_type_id" ref="account.data_account_type_current_assets"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <record id="chart0_conso_receivable" model="account.account">
+            <field name="code">VAR</field>
+            <field name="name">Consolidation Receivable Account</field>
+            <field name="user_type_id" ref="account.data_account_type_receivable"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="reconcile">True</field>
+        </record>
+
+        <record id="chart0_conso_payable" model="account.account">
+            <field name="code">VAP</field>
+            <field name="name">Consolidation Payable Account</field>
+            <field name="user_type_id" ref="account.data_account_type_payable"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="reconcile">True</field>
+        </record>
+
+        <record id="chart0_conso_current_liabilities" model="account.account">
+            <field name="code">VACL</field>
+            <field name="name">Consolidation Current Liabilities Account</field>
+            <field name="user_type_id" ref="account.data_account_type_current_liabilities"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <record id="account_journal_sale0" model="account.journal">
+            <field name="code">SALE</field>
+            <field name="name">SALE</field>
+            <field name="company_id" ref="account_consolidation.subsidiary_a"/>
+            <field name="type">sale</field>
+        </record>
+
+        <record id="account_journal_sale1" model="account.journal">
+            <field name="code">SALE</field>
+            <field name="name">SALE</field>
+            <field name="company_id" ref="account_consolidation.subsidiary_b"/>
+            <field name="type">sale</field>
+        </record>
+
+    </data>
+</openerp>

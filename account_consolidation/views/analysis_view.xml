@@ -1,0 +1,39 @@
+<openerp>
+  <data>
+
+    <menuitem id="menu_conso_entries"
+              name="Consolidation Entries"
+              parent="account.account_account_menu"
+              sequence="5"
+              groups="account_consolidation.consolidation_manager,account_consolidation.consolidation_user"/>
+
+    <record id="action_account_moves_all_a" model="ir.actions.act_window">
+      <field name="context">{'journal_type':'general'}</field>
+      <field name="name">Journal Items</field>
+      <field name="domain">[('is_current_company', '=', True)]</field>
+      <field name="res_model">account.move.line</field>
+      <field name="view_id" ref="account.view_move_line_tree"/>
+      <field name="view_mode">tree,form</field>
+      <field name="help" type="html">
+        <p class="oe_view_nocontent_create">
+          Select the period and the journal you want to fill.
+          </p><p>
+          This view can be used by accountants in order to quickly record
+          entries in OpenERP. If you want to record a supplier invoice,
+          start by recording the line of the expense account. OpenERP
+          will propose to you automatically the Tax related to this
+          account and the counterpart "Account Payable".
+        </p>
+      </field>
+    </record>
+
+    <menuitem
+        action="action_account_moves_all_a"
+        icon="STOCK_JUSTIFY_FILL"
+        id="menu_action_account_moves_all"
+        parent="menu_conso_entries"
+        sequence="1"
+        groups="account_consolidation.consolidation_manager,account_consolidation.consolidation_user"/>
+
+  </data>
+</openerp>

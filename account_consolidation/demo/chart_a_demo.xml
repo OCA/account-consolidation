@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="xfa_a" model="account.account">
+            <field name="code">XA1000</field>
+            <field name="name">Fixed Asset Account - (test)</field>
+            <field name="user_type_id" ref="account.data_account_type_current_assets"/>
+            <field name="company_id" ref="subsidiary_a"/>
+        </record>
+
+        <record id="stk_a" model="account.account">
+            <field name="code">XA11001</field>
+            <field name="name">Purchased Stocks - (test)</field>
+            <field name="user_type_id" ref="account.data_account_type_current_assets"/>
+            <field name="company_id" ref="subsidiary_a"/>
+        </record>
+
+        <record id="a_recv_a" model="account.account">
+            <field name="code">XA11002</field>
+            <field name="name">Debtors - (test)</field>
+            <field name="user_type_id" ref="account.data_account_type_receivable"/>
+            <field name="company_id" ref="subsidiary_a"/>
+            <field name="reconcile">True</field>
+        </record>
+
+        <record id="ova_a" model="account.account">
+            <field name="code">XA11003</field>
+            <field name="name">Output VAT - (test)</field>
+            <field name="user_type_id" ref="account.data_account_type_current_assets"/>
+            <field name="company_id" ref="subsidiary_a"/>
+        </record>
+
+        <record id="bnk_a" model="account.account">
+            <field name="code">XA11004</field>
+            <field name="name">Bank Current Account - (test)</field>
+            <field name="user_type_id" ref="account.data_account_type_current_assets"/>
+            <field name="company_id" ref="subsidiary_a"/>
+        </record>
+
+        <record id="cash_a" model="account.account">
+            <field name="code">XA11005</field>
+            <field name="name">Cash - (test)</field>
+            <field name="user_type_id" ref="account.data_account_type_current_assets"/>
+            <field name="company_id" ref="subsidiary_a"/>
+        </record>
+
+        <record id="o_income_a" model="account.account">
+            <field name="code">XA11006</field>
+            <field name="name">Opening Income - (test)</field>
+            <field name="user_type_id" ref="account.data_account_type_revenue"/>
+            <field name="company_id" ref="subsidiary_a"/>
+        </record>
+
+        <record id="a_pay_a" model="account.account">
+            <field name="code">XA1111</field>
+            <field name="name">Creditors - (test)</field>
+            <field name="user_type_id" ref="account.data_account_type_payable"/>
+            <field name="company_id" ref="subsidiary_a"/>
+            <field name="reconcile">True</field>
+        </record>
+
+        <record id="iva_a" model="account.account">
+            <field name="code">XA1112</field>
+            <field name="name">Input VAT - (test)</field>
+            <field name="user_type_id" ref="account.data_account_type_current_liabilities"/>
+            <field name="company_id" ref="subsidiary_a"/>
+        </record>
+
+        <record id="rsa_a" model="account.account">
+            <field name="code">XA1113</field>
+            <field name="name">Reserve and Profit/Loss - (test)</field>
+            <field name="user_type_id" ref="account.data_account_type_current_liabilities"/>
+            <field name="company_id" ref="subsidiary_a"/>
+        </record>
+
+        <record id="o_expense_a" model="account.account">
+            <field name="code">XA1114</field>
+            <field name="name">Opening Expense - (test)</field>
+            <field name="user_type_id" ref="account.data_account_type_expenses"/>
+            <field name="company_id" ref="subsidiary_a"/>
+        </record>
+
+        <record model="account.account" id="income_fx_income_a">
+            <field name="name">Foreign Exchange Gain - (test)</field>
+            <field name="code">XA201</field>
+            <field name="user_type_id" ref="account.data_account_type_revenue"/>
+            <field name="company_id" ref="subsidiary_a"/>
+        </record>
+
+        <record id="a_sale_a" model="account.account">
+            <field name="code">XA2001</field>
+            <field name="name">Product Sales - (test)</field>
+            <field name="user_type_id" ref="account.data_account_type_revenue"/>
+            <field name="company_id" ref="subsidiary_a"/>
+        </record>
+
+        <record id="cog_a" model="account.account">
+            <field name="code">XA2100</field>
+            <field name="name">Cost of Goods Sold - (test)</field>
+            <field name="user_type_id" ref="account.data_account_type_expenses"/>
+            <field name="company_id" ref="subsidiary_a"/>
+        </record>
+
+        <record id="a_expense_a" model="account.account">
+            <field name="code">XA2110</field>
+            <field name="name">Expenses - (test)</field>
+            <field name="user_type_id" ref="account.data_account_type_expenses"/>
+            <field name="company_id" ref="subsidiary_a"/>
+        </record>
+
+        <record model="account.account" id="income_fx_expense_a">
+            <field name="name">Foreign Exchange Loss - (test)</field>
+            <field name="code">XA2111</field>
+            <field name="user_type_id" ref="account.data_account_type_expenses"/>
+            <field name="company_id" ref="subsidiary_a"/>
+        </record>
+
+        <record id="a_salary_expense_a" model="account.account">
+            <field name="code">XA2112</field>
+            <field name="name">Salary Expenses - (test)</field>
+            <field name="user_type_id" ref="account.data_account_type_expenses"/>
+            <field name="company_id" ref="subsidiary_a"/>
+        </record>
+
+    </data>
+</openerp>
