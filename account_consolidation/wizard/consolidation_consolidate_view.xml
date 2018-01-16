@@ -1,61 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
-    <data>
+<odoo>
 
-        <record id="view_consolidation_consolidate_form" model="ir.ui.view">
-            <field name="name">account.consolidation.consolidate.form</field>
-            <field name="model">account.consolidation.consolidate</field>
-            <field name="type">form</field>
-            <field name="arch" type="xml">
-                <form string="Consolidation: Consolidate" version="7.0">
-                    <label string="Run the consolidation for the selected periods and subsidiaries."/>
-                    <group>
-                        <field name="company_id"
-                            on_change="on_change_company_id(company_id)"
-                            invisible="True"/>
-                        <field name="fiscalyear_id" invisible="True"/>
-                        <field name="from_period_id"
-                            on_change="on_change_from_period_id(from_period_id, to_period_id)"
-                            domain="[('company_id', '=', company_id)]"/>
-                        <field name="to_period_id"
-                            domain="[('company_id', '=', company_id)]"/>
-                        <field name="journal_id"
-                            domain="[('company_id', '=', company_id)]"/>
-                        <field name="target_move"/>
-                        <separator string="Holding Chart of Accounts" colspan="4"/>
-                        <field name="holding_chart_account_id"
-                            domain="[('company_id', '=', company_id), ('parent_id', '=', False)]"/>
+    <record id="view_consolidation_consolidate_form" model="ir.ui.view">
+        <field name="name">account.consolidation.consolidate.form</field>
+        <field name="model">account.consolidation.consolidate</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Consolidation: Consolidate">
+                <label string="Run the Year-To-Date consolidation until the selected period for the defined subsidiaries."/>
+                <p>Balance sheet accounts are consolidated using standard currency rates.</p>
+                <p>Profit and Loss accounts are consolidated using monthly currency rates.</p>
+                <group>
+                    <field name="company_id" />
+                    <field name="year" />
+                    <field name="month" />
+                    <field name="journal_id" domain="[('company_id', '=', company_id)]"/>
+                    <field name="target_move"/>
+                    <field name="consolidation_profile_ids" />
+                </group>
+                <footer>
+                    <button name="run_consolidation"
+                        string="Consolidate"
+                        type="object"
+                        class="oe_highlight"/>
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
 
-                        <separator string="Subsidiaries to Consolidate" colspan="4"/>
-                        <field name="subsidiary_ids" colspan="4"
-                            nolabel="1" required="True">
-                            <tree>
-                                <field name="name"/>
-                                <field name="consolidation_chart_account_id"/>
-                            </tree>
-                        </field>
-                    </group>
-                    <separator colspan="4"/>
-                    <footer>
-                        <button name="run_consolidation"
-                            string="Consolidate"
-                            type="object"
-                            class="oe_highlight"/>
-                        or
-                        <button string="Cancel" class="oe_link" special="cancel"/>
-                    </footer>
-                </form>
-            </field>
-        </record>
+    <record id="action_consolidation_consolidate" model="ir.actions.act_window">
+        <field name="name">Consolidation: Consolidate</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">account.consolidation.consolidate</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
 
-        <record id="action_consolidation_consolidate" model="ir.actions.act_window">
-            <field name="name">Consolidation: Consolidate</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">account.consolidation.consolidate</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">form</field>
-            <field name="target">new</field>
-        </record>
-
-    </data>
-</openerp>
+</odoo>

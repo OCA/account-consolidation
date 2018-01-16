@@ -1,116 +1,95 @@
-# -*- coding: utf-8 -*-
-##############################################################################
-#
-#    Author: Guewen Baconnier
-#    Copyright 2011-2013 Camptocamp SA
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-##############################################################################
+# Copyright 2011-2018 Camptocamp SA
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from openerp.osv import osv, orm, fields
-from openerp.tools.translate import _
+from odoo import models, fields, _
 
 
-class account_consolidation_check(orm.TransientModel):
+class AccountConsolidationCheck(models.TransientModel):
     _name = 'account.consolidation.check'
     _inherit = 'account.consolidation.base'
     _description = 'Consolidation Checks. Model used for views'
 
-    _columns = {
-        'subsidiary_ids': fields.many2many(
-            'res.company',
-            'account_conso_check_comp_rel',
-            'conso_id',
-            'company_id',
-            'Subsidiaries',
-            required=True),
-    }
+    message = fields.Html(readonly=True)
+    state = fields.Selection(
+        [('open', 'Open'),
+         ('error', 'Error'),
+         ('ok', 'Checks ok')],
+        default='open'
+    )
 
-    def check_account_charts(self, cr, uid, ids, context=None):
-        """
-        Action launched with the button on the view.
-        Check the account charts and display a report of the errors
-        """
-        company_obj = self.pool.get('res.company')
-        invalid_items_per_company = super(account_consolidation_check, self).\
-                check_account_charts(cr, uid, ids, context=context)
-
-        if not invalid_items_per_company:
-            raise osv.except_osv(
-                _('Validation'),
-                _('Chart of Accounts are OK.'))
+    def check_account_mapping(self):
+        """Convert errors message to a HTML list of errors."""
+        invalid_items_per_company = super(AccountConsolidationCheck,
+                                          self).check_account_mapping()
 
         err_lines = []
-        for company_id, account_codes in invalid_items_per_company.iteritems():
-            company = company_obj.browse(
-                    cr, uid, company_id, context=context)
-            err_lines.append(_("%s :") % company.name)
-            for account_code in account_codes:
+        for company, account_errors in invalid_items_per_company.items():
+            err_lines.append("<div><ul><li>%s :</li><ul>" % company.name)
+            for account, error in account_errors.items():
+                err_lines.append("<li>%s (%s) : %s</li>" % (
+                    account.code, account.name, ', '.join(error)))
+            err_lines.append('</ul></ul></div>')
+
+        return err_lines
+
+    def check_interco_partner(self):
+        """Convert errors message to a HTML list of errors."""
+        invalid_partners = super(AccountConsolidationCheck,
+                                 self).check_interco_partner()
+        err_lines = []
+        if invalid_partners:
+            err_lines.append('<div><ul>')
+            for partner, company in invalid_partners.items():
+                err_lines.append('<li>%s : %s</li>' % (partner.name,
+                                                       company.name))
+            err_lines.append('</ul></div>')
+        return err_lines
+
+    def check_companies_allowed(self):
+        """Convert errors message to a HTML list of errors."""
+        unallowed_companies = super().check_companies_allowed()
+        err_lines = []
+        if unallowed_companies:
+            err_lines.append('<div><ul>')
+            for comp in unallowed_companies:
                 err_lines.append(
-                    _("Account with code %s does not exist on the "
-                      "Holding company.") % account_code)
-            err_lines.append('')
+                    '<li>%s : User has no access to this company.</li>' % (
+                        comp.name)
+                )
+            err_lines.append('</ul></div>')
+        return err_lines
 
-        raise osv.except_osv(
-            _('Invalid charts'), '\n'.join(err_lines))
+    def check_configuration(self):
+        """Action launched with the button on the view.
 
-    def check_all_periods(self, cr, uid, ids, context=None):
+        Calls the checks and display the result as HTML
         """
-        Action launched with the button on the view.
-        Check the periods and display a report of the errors
-        """
-        errors_by_company = super(account_consolidation_check, self).\
-                check_all_periods(cr, uid, ids, context=context)
+        mapping_errors = self.check_account_mapping()
+        partner_errors = self.check_interco_partner()
+        company_allowed_errors = self.check_companies_allowed()
+        messages = []
+        if mapping_errors:
+            messages.append(_('<h3>Invalid account mapping</h3>') + ''.join(
+                mapping_errors))
+        if partner_errors:
+            messages.append(_(
+                '<h3>Company defined on intercompany partners</h3>') + ''.join(
+                partner_errors))
+        if company_allowed_errors:
+            messages.append(_(
+                '<h3>Company access not allowed</h3>') + ''.join(
+                company_allowed_errors))
 
-        if not errors_by_company:
-            raise osv.except_osv(_('Validation'), _('Periods are OK.'))
-
-        company_obj = self.pool.get('res.company')
-
-        err_lines = []
-        for company_id, errors in errors_by_company.iteritems():
-            company = company_obj.browse(cr, uid, company_id, context=context)
-            err_lines.append(_("%s :") % company.name)
-            for error in errors:
-                err_lines.append(error)
-            err_lines.append('')
-
-        raise osv.except_osv(_('Invalid periods'),
-                             '\n'.join(err_lines))
-
-    def check_subsidiary_mapping_account(self, cr, uid, ids, context=None):
-        """
-        Action launched with the button on the view.
-        Check the periods and display a report of the errors
-        """
-        errors_by_company = super(
-            account_consolidation_check, self
-            ).check_subsidiary_mapping_account(cr, uid, ids, context=context)
-
-        if not errors_by_company:
-            raise osv.except_osv(_('Validation'), _('All account is mapped'))
-
-        company_obj = self.pool.get('res.company')
-
-        err_lines = []
-        for company_id, errors in errors_by_company.iteritems():
-            company = company_obj.browse(cr, uid, company_id, context=context)
-            err_lines.append(_("%s :") % company.name)
-            for error in errors:
-                err_lines.append(error)
-            err_lines.append('')
-
-        raise osv.except_osv(_('Invalid accounts'),
-                             '\n'.join(err_lines))
+        if messages:
+            self.message = _(
+                '<h2>Consolidation configuration errors</h2>') + ''.join(
+                messages)
+            self.state = 'error'
+        else:
+            self.message = _(
+                '<h2>No configuration error detected ! '
+                'You can now proceed with the consolidation.</h2>')
+            self.state = 'ok'
+        return {
+            "type": "ir.actions.do_nothing",
+        }
