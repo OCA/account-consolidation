@@ -1,314 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
-    <data>
-
-        <!-- Subsidiaries -->
-        <record id="subsidiary_a" model="res.company">
-            <field name="name">Subsidiary A</field>
-            <field name="currency_id" ref="base.CHF"/>
-            <field name="parent_id" ref="base.main_company"/>
-            <!--<field name="consolidation_chart_account_id" ref=""/>-->
-        </record>
-
-        <!-- Subsidiaries -->
-        <record id="subsidiary_b" model="res.company">
-            <field name="name">Subsidiary B</field>
-            <field name="currency_id" ref="base.EUR"/>
-            <field name="parent_id" ref="base.main_company"/>
-            <!--<field name="consolidation_chart_account_id" ref=""/>-->
-        </record>
-
-
-        <!--
-         Add consolidation accounts to Chart for Automated Tests
-        -->
-
-        <record id="chart0_consolidation" model="account.account">
-            <field name="code">CONSO</field>
-            <field name="name">Consolidation Account</field>
-            <field ref="account.chart0" name="parent_id"/>
-            <field name="type">view</field>
-            <field name="user_type" ref="account.data_account_type_view"/>
-            <field name="company_id" ref="base.main_company"/>
-        </record>
-
-        <record id="chart0_conso_expense" model="account.account">
-            <field name="code">VAE</field>
-            <field name="name">Consolidation Expense Account</field>
-            <field ref="chart0_consolidation" name="parent_id"/>
-            <field name="type">other</field>
-            <field name="user_type" ref="account.data_account_type_expense"/>
-            <field name="company_id" ref="base.main_company"/>
-        </record>
-
-        <record id="chart0_conso_income" model="account.account">
-            <field name="code">VAI</field>
-            <field name="name">Consolidation Income Account</field>
-            <field ref="chart0_consolidation" name="parent_id"/>
-            <field name="type">other</field>
-            <field name="user_type" ref="account.data_account_type_income"/>
-            <field name="company_id" ref="base.main_company"/>
-        </record>
-
-        <!--
-        Fiscal years
-        -->
-
-        <record id="data_fiscalyear_a" model="account.fiscalyear">
-            <field eval="'Subsidiary A Fiscal Year '+time.strftime('%Y')" name="name"/>
-            <field eval="'FY'+time.strftime('%Y')" name="code"/>
-            <field eval="time.strftime('%Y')+'-01-01'" name="date_start"/>
-            <field eval="time.strftime('%Y')+'-12-31'" name="date_stop"/>
-            <field name="company_id" ref="subsidiary_a"/>
-        </record>
-
-        <record id="data_fiscalyear_b" model="account.fiscalyear">
-            <field eval="'Subsidiary B Fiscal Year '+time.strftime('%Y')" name="name"/>
-            <field eval="'FY'+time.strftime('%Y')" name="code"/>
-            <field eval="time.strftime('%Y')+'-01-01'" name="date_start"/>
-            <field eval="time.strftime('%Y')+'-12-31'" name="date_stop"/>
-            <field name="company_id" ref="subsidiary_b"/>
-        </record>
-
-        <!--
-        Fiscal Periods
-        -->
-
-        <record id="period_a_1" model="account.period">
-            <field eval="'01/'+time.strftime('%Y')" name="code"/>
-            <field eval="'01/'+time.strftime('%Y')" name="name"/>
-            <field eval="True" name="special"/>
-            <field name="fiscalyear_id" ref="data_fiscalyear_a"/>
-            <field eval="time.strftime('%Y')+'-01-01'" name="date_start"/>
-            <field eval="time.strftime('%Y')+'-01-31'" name="date_stop"/>
-            <field name="company_id" ref="subsidiary_a"/>
-        </record>
-        <record id="period_a_2" model="account.period">
-            <field eval="'02/'+time.strftime('%Y')" name="code"/>
-            <field eval="'02/'+time.strftime('%Y')" name="name"/>
-            <field eval="True" name="special"/>
-            <field name="fiscalyear_id" ref="data_fiscalyear_a"/>
-            <field eval="time.strftime('%Y')+'-02-01'" name="date_start"/>
-            <field eval="time.strftime('%Y')+'-02-28'" name="date_stop"/>
-            <field name="company_id" ref="subsidiary_a"/>
-        </record>
-        <record id="period_a_3" model="account.period">
-            <field eval="'03/'+time.strftime('%Y')" name="code"/>
-            <field eval="'03/'+time.strftime('%Y')" name="name"/>
-            <field eval="True" name="special"/>
-            <field name="fiscalyear_id" ref="data_fiscalyear_a"/>
-            <field eval="time.strftime('%Y')+'-03-01'" name="date_start"/>
-            <field eval="time.strftime('%Y')+'-03-31'" name="date_stop"/>
-            <field name="company_id" ref="subsidiary_a"/>
-        </record>
-        <record id="period_a_4" model="account.period">
-            <field eval="'04/'+time.strftime('%Y')" name="code"/>
-            <field eval="'04/'+time.strftime('%Y')" name="name"/>
-            <field eval="True" name="special"/>
-            <field name="fiscalyear_id" ref="data_fiscalyear_a"/>
-            <field eval="time.strftime('%Y')+'-04-01'" name="date_start"/>
-            <field eval="time.strftime('%Y')+'-04-30'" name="date_stop"/>
-            <field name="company_id" ref="subsidiary_a"/>
-        </record>
-        <record id="period_a_5" model="account.period">
-            <field eval="'05/'+time.strftime('%Y')" name="code"/>
-            <field eval="'05/'+time.strftime('%Y')" name="name"/>
-            <field eval="True" name="special"/>
-            <field name="fiscalyear_id" ref="data_fiscalyear_a"/>
-            <field eval="time.strftime('%Y')+'-05-01'" name="date_start"/>
-            <field eval="time.strftime('%Y')+'-05-31'" name="date_stop"/>
-            <field name="company_id" ref="subsidiary_a"/>
-        </record>
-        <record id="period_a_6" model="account.period">
-            <field eval="'06/'+time.strftime('%Y')" name="code"/>
-            <field eval="'06/'+time.strftime('%Y')" name="name"/>
-            <field name="fiscalyear_id" ref="data_fiscalyear_a"/>
-            <field eval="True" name="special"/>
-            <field eval="time.strftime('%Y')+'-06-01'" name="date_start"/>
-            <field eval="time.strftime('%Y')+'-06-30'" name="date_stop"/>
-            <field name="company_id" ref="subsidiary_a"/>
-        </record>
-        <record id="period_a_7" model="account.period">
-            <field eval="'07/'+time.strftime('%Y')" name="code"/>
-            <field eval="'07/'+time.strftime('%Y')" name="name"/>
-            <field eval="True" name="special"/>
-            <field name="fiscalyear_id" ref="data_fiscalyear_a"/>
-            <field eval="time.strftime('%Y')+'-07-01'" name="date_start"/>
-            <field eval="time.strftime('%Y')+'-07-31'" name="date_stop"/>
-            <field name="company_id" ref="subsidiary_a"/>
-        </record>
-        <record id="period_a_8" model="account.period">
-            <field eval="'08/'+time.strftime('%Y')" name="code"/>
-            <field eval="'08/'+time.strftime('%Y')" name="name"/>
-            <field eval="True" name="special"/>
-            <field name="fiscalyear_id" ref="data_fiscalyear_a"/>
-            <field eval="time.strftime('%Y')+'-08-01'" name="date_start"/>
-            <field eval="time.strftime('%Y')+'-08-31'" name="date_stop"/>
-            <field name="company_id" ref="subsidiary_a"/>
-        </record>
-        <record id="period_a_9" model="account.period">
-            <field eval="'09/'+time.strftime('%Y')" name="code"/>
-            <field eval="'09/'+time.strftime('%Y')" name="name"/>
-            <field eval="True" name="special"/>
-            <field name="fiscalyear_id" ref="data_fiscalyear_a"/>
-            <field eval="time.strftime('%Y')+'-09-01'" name="date_start"/>
-            <field eval="time.strftime('%Y')+'-09-30'" name="date_stop"/>
-            <field name="company_id" ref="subsidiary_a"/>
-        </record>
-        <record id="period_a_10" model="account.period">
-            <field eval="'10/'+time.strftime('%Y')" name="code"/>
-            <field eval="'10/'+time.strftime('%Y')" name="name"/>
-            <field eval="True" name="special"/>
-            <field name="fiscalyear_id" ref="data_fiscalyear_a"/>
-            <field eval="time.strftime('%Y')+'-10-01'" name="date_start"/>
-            <field eval="time.strftime('%Y')+'-10-31'" name="date_stop"/>
-            <field name="company_id" ref="subsidiary_a"/>
-        </record>
-        <record id="period_a_11" model="account.period">
-            <field eval="'11/'+time.strftime('%Y')" name="code"/>
-            <field eval="'11/'+time.strftime('%Y')" name="name"/>
-            <field eval="True" name="special"/>
-            <field name="fiscalyear_id" ref="data_fiscalyear_a"/>
-            <field eval="time.strftime('%Y')+'-11-01'" name="date_start"/>
-            <field eval="time.strftime('%Y')+'-11-30'" name="date_stop"/>
-            <field name="company_id" ref="subsidiary_a"/>
-        </record>
-        <record id="period_a_12" model="account.period">
-            <field eval="'12/'+time.strftime('%Y')" name="code"/>
-            <field eval="'12/'+time.strftime('%Y')" name="name"/>
-            <field eval="True" name="special"/>
-            <field name="fiscalyear_id" ref="data_fiscalyear_a"/>
-            <field eval="time.strftime('%Y')+'-12-01'" name="date_start"/>
-            <field eval="time.strftime('%Y')+'-12-31'" name="date_stop"/>
-            <field name="company_id" ref="subsidiary_a"/>
-        </record>
-
-        <record id="period_b_1" model="account.period">
-            <field eval="'01/'+time.strftime('%Y')" name="code"/>
-            <field eval="'01/'+time.strftime('%Y')" name="name"/>
-            <field eval="True" name="special"/>
-            <field name="fiscalyear_id" ref="data_fiscalyear_b"/>
-            <field eval="time.strftime('%Y')+'-01-01'" name="date_start"/>
-            <field eval="time.strftime('%Y')+'-01-31'" name="date_stop"/>
-            <field name="company_id" ref="subsidiary_b"/>
-        </record>
-        <record id="period_b_2" model="account.period">
-            <field eval="'02/'+time.strftime('%Y')" name="code"/>
-            <field eval="'02/'+time.strftime('%Y')" name="name"/>
-            <field eval="True" name="special"/>
-            <field name="fiscalyear_id" ref="data_fiscalyear_b"/>
-            <field eval="time.strftime('%Y')+'-02-01'" name="date_start"/>
-            <field eval="time.strftime('%Y')+'-02-28'" name="date_stop"/>
-            <field name="company_id" ref="subsidiary_b"/>
-        </record>
-        <record id="period_b_3" model="account.period">
-            <field eval="'03/'+time.strftime('%Y')" name="code"/>
-            <field eval="'03/'+time.strftime('%Y')" name="name"/>
-            <field eval="True" name="special"/>
-            <field name="fiscalyear_id" ref="data_fiscalyear_b"/>
-            <field eval="time.strftime('%Y')+'-03-01'" name="date_start"/>
-            <field eval="time.strftime('%Y')+'-03-31'" name="date_stop"/>
-            <field name="company_id" ref="subsidiary_b"/>
-        </record>
-        <record id="period_b_4" model="account.period">
-            <field eval="'04/'+time.strftime('%Y')" name="code"/>
-            <field eval="'04/'+time.strftime('%Y')" name="name"/>
-            <field eval="True" name="special"/>
-            <field name="fiscalyear_id" ref="data_fiscalyear_b"/>
-            <field eval="time.strftime('%Y')+'-04-01'" name="date_start"/>
-            <field eval="time.strftime('%Y')+'-04-30'" name="date_stop"/>
-            <field name="company_id" ref="subsidiary_b"/>
-        </record>
-        <record id="period_b_5" model="account.period">
-            <field eval="'05/'+time.strftime('%Y')" name="code"/>
-            <field eval="'05/'+time.strftime('%Y')" name="name"/>
-            <field eval="True" name="special"/>
-            <field name="fiscalyear_id" ref="data_fiscalyear_b"/>
-            <field eval="time.strftime('%Y')+'-05-01'" name="date_start"/>
-            <field eval="time.strftime('%Y')+'-05-31'" name="date_stop"/>
-            <field name="company_id" ref="subsidiary_b"/>
-        </record>
-        <record id="period_b_6" model="account.period">
-            <field eval="'06/'+time.strftime('%Y')" name="code"/>
-            <field eval="'06/'+time.strftime('%Y')" name="name"/>
-            <field name="fiscalyear_id" ref="data_fiscalyear_b"/>
-            <field eval="True" name="special"/>
-            <field eval="time.strftime('%Y')+'-06-01'" name="date_start"/>
-            <field eval="time.strftime('%Y')+'-06-30'" name="date_stop"/>
-            <field name="company_id" ref="subsidiary_b"/>
-        </record>
-        <record id="period_b_7" model="account.period">
-            <field eval="'07/'+time.strftime('%Y')" name="code"/>
-            <field eval="'07/'+time.strftime('%Y')" name="name"/>
-            <field eval="True" name="special"/>
-            <field name="fiscalyear_id" ref="data_fiscalyear_b"/>
-            <field eval="time.strftime('%Y')+'-07-01'" name="date_start"/>
-            <field eval="time.strftime('%Y')+'-07-31'" name="date_stop"/>
-            <field name="company_id" ref="subsidiary_b"/>
-        </record>
-        <record id="period_b_8" model="account.period">
-            <field eval="'08/'+time.strftime('%Y')" name="code"/>
-            <field eval="'08/'+time.strftime('%Y')" name="name"/>
-            <field eval="True" name="special"/>
-            <field name="fiscalyear_id" ref="data_fiscalyear_b"/>
-            <field eval="time.strftime('%Y')+'-08-01'" name="date_start"/>
-            <field eval="time.strftime('%Y')+'-08-31'" name="date_stop"/>
-            <field name="company_id" ref="subsidiary_b"/>
-        </record>
-        <record id="period_b_9" model="account.period">
-            <field eval="'09/'+time.strftime('%Y')" name="code"/>
-            <field eval="'09/'+time.strftime('%Y')" name="name"/>
-            <field eval="True" name="special"/>
-            <field name="fiscalyear_id" ref="data_fiscalyear_b"/>
-            <field eval="time.strftime('%Y')+'-09-01'" name="date_start"/>
-            <field eval="time.strftime('%Y')+'-09-30'" name="date_stop"/>
-            <field name="company_id" ref="subsidiary_b"/>
-        </record>
-        <record id="period_b_10" model="account.period">
-            <field eval="'10/'+time.strftime('%Y')" name="code"/>
-            <field eval="'10/'+time.strftime('%Y')" name="name"/>
-            <field eval="True" name="special"/>
-            <field name="fiscalyear_id" ref="data_fiscalyear_b"/>
-            <field eval="time.strftime('%Y')+'-10-01'" name="date_start"/>
-            <field eval="time.strftime('%Y')+'-10-31'" name="date_stop"/>
-            <field name="company_id" ref="subsidiary_b"/>
-        </record>
-        <record id="period_b_11" model="account.period">
-            <field eval="'11/'+time.strftime('%Y')" name="code"/>
-            <field eval="'11/'+time.strftime('%Y')" name="name"/>
-            <field eval="True" name="special"/>
-            <field name="fiscalyear_id" ref="data_fiscalyear_b"/>
-            <field eval="time.strftime('%Y')+'-11-01'" name="date_start"/>
-            <field eval="time.strftime('%Y')+'-11-30'" name="date_stop"/>
-            <field name="company_id" ref="subsidiary_b"/>
-        </record>
-        <record id="period_b_12" model="account.period">
-            <field eval="'12/'+time.strftime('%Y')" name="code"/>
-            <field eval="'12/'+time.strftime('%Y')" name="name"/>
-            <field eval="True" name="special"/>
-            <field name="fiscalyear_id" ref="data_fiscalyear_b"/>
-            <field eval="time.strftime('%Y')+'-12-01'" name="date_start"/>
-            <field eval="time.strftime('%Y')+'-12-31'" name="date_stop"/>
-            <field name="company_id" ref="subsidiary_b"/>
-        </record>
-
-        <record id="account_journal_sale0" model="account.journal">
-            <field name="code">SALE</field>
-            <field name="name">SALE</field>
-            <field name="company_id" ref="account_consolidation.subsidiary_a"/>
-            <field name="sequence_id" ref="account.sequence_sale_journal"/>
-            <field eval="1" name="allow_date"/>
-            <field name="type">sale</field>
-        </record>
-
-        <record id="account_journal_sale1" model="account.journal">
-            <field name="code">SALE</field>
-            <field name="name">SALE</field>
-            <field name="company_id" ref="account_consolidation.subsidiary_b"/>
-            <field name="sequence_id" ref="account.sequence_sale_journal"/>
-            <field eval="1" name="allow_date"/>
-            <field name="type">sale</field>
-        </record>
-
-    </data>
-</openerp>
+<odoo>
+    <record id="conso_exp1" model="account.account">
+        <field name="code">EXP1</field>
+        <field name="name">Expenses 1</field>
+        <field name="user_type_id" ref="account.data_account_type_expenses" />
+        <field name="company_id" ref="consolidation_company"/>
+    </record>
+    <record id="conso_exp2" model="account.account">
+        <field name="code">EXP2</field>
+        <field name="name">Expenses 2</field>
+        <field name="user_type_id" ref="account.data_account_type_expenses" />
+        <field name="company_id" ref="consolidation_company"/>
+    </record>
+    <record id="conso_exp3" model="account.account">
+        <field name="code">EXP3</field>
+        <field name="name">Expenses 3</field>
+        <field name="user_type_id" ref="account.data_account_type_expenses" />
+        <field name="company_id" ref="consolidation_company"/>
+    </record>
+    <record id="conso_rev1" model="account.account">
+        <field name="code">REV1</field>
+        <field name="name">Revenue 1</field>
+        <field name="user_type_id" ref="account.data_account_type_revenue" />
+        <field name="company_id" ref="consolidation_company"/>
+    </record>
+    <record id="conso_rev2" model="account.account">
+        <field name="code">REV2</field>
+        <field name="name">Revenue 2</field>
+        <field name="user_type_id" ref="account.data_account_type_revenue" />
+        <field name="company_id" ref="consolidation_company"/>
+    </record>
+    <record id="conso_ass1" model="account.account">
+        <field name="code">ASS1</field>
+        <field name="name">Assets 1</field>
+        <field name="user_type_id" ref="account.data_account_type_current_assets" />
+        <field name="company_id" ref="consolidation_company"/>
+    </record>
+    <record id="conso_lia1" model="account.account">
+        <field name="code">LIA1</field>
+        <field name="name">Liabilities 1</field>
+        <field name="user_type_id" ref="account.data_account_type_current_liabilities" />
+        <field name="company_id" ref="consolidation_company"/>
+    </record>
+    <record id="conso_lia2" model="account.account">
+        <field name="code">LIA2</field>
+        <field name="name">Liabilities 2</field>
+        <field name="user_type_id" ref="account.data_account_type_current_liabilities" />
+        <field name="company_id" ref="consolidation_company"/>
+    </record>
+    <record id="conso_lia3" model="account.account">
+        <field name="code">LIA3</field>
+        <field name="name">Liabilities 3</field>
+        <field name="user_type_id" ref="account.data_account_type_current_liabilities" />
+        <field name="company_id" ref="consolidation_company"/>
+    </record>
+    <record id="conso_rec1" model="account.account">
+        <field name="code">REC1</field>
+        <field name="name">Receivable 1</field>
+        <field name="user_type_id" ref="account.data_account_type_receivable" />
+        <field name="company_id" ref="consolidation_company"/>
+        <field name="reconcile" eval="True" />
+    </record>
+    <record id="conso_pay1" model="account.account">
+        <field name="code">PAY1</field>
+        <field name="name">Payable 1</field>
+        <field name="user_type_id" ref="account.data_account_type_payable" />
+        <field name="company_id" ref="consolidation_company"/>
+        <field name="reconcile" eval="True" />
+    </record>
+    <record id="conso_exch_diff" model="account.account">
+        <field name="code">CED</field>
+        <field name="name">Consolidation Exchange Differences</field>
+        <field name="user_type_id" ref="account.data_account_type_expenses" />
+        <field name="company_id" ref="consolidation_company"/>
+    </record>
+    <record id="conso_consolidation_journal" model="account.journal" >
+        <field name="name">Consolidation journal</field>
+        <field name="code">CONSO</field>
+        <field name="type">general</field>
+        <field name="company_id" ref="consolidation_company"/>
+    </record>
+    <record id="consolidation_company" model="res.company">
+        <field name="consolidation_diff_account_id" ref="conso_exch_diff" />
+        <field name="consolidation_default_journal_id" ref="conso_consolidation_journal" />
+    </record>
+    <record id="consolidation_manager_partner" model="res.partner">
+        <field name="name">Consolidation Manager</field>
+        <field name="company_id" ref="consolidation_company"/>
+        <field name="customer" eval="False"/>
+    </record>
+    <record id="consolidation_manager_user" model="res.users">
+        <field name="partner_id" ref="consolidation_manager_partner"/>
+        <field name="login">consolidation</field>
+        <field name="password">consolidation</field>
+        <field name="company_id" ref="consolidation_company"/>
+        <field name="company_ids" eval="[(6,0,[ref('account_consolidation.consolidation_company'), ref('account_consolidation.subsidiary_a'), ref('account_consolidation.subsidiary_b')])]"/>
+        <field name="groups_id" eval="[(6,0,[ref('base.group_user'), ref('account_consolidation.group_consolidation_manager'), ref('base.group_system')])]"/>
+    </record>
+</odoo>

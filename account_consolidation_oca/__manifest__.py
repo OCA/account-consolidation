@@ -1,72 +1,37 @@
-# -*- coding: utf-8 -*-
-##############################################################################
-#
-#    Author: Guewen Baconnier
-#    Copyright 2011-2013 Camptocamp SA
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-##############################################################################
-{"name": "Account Consolidation",
- "version": "1.0",
- "author": "Camptocamp,Odoo Community Association (OCA)",
- "license": "AGPL-3",
- "category": "Generic Modules/Accounting",
- "description": """
-Account consolidation
-=====================
+# Copyright 2011-2018 Camptocamp SA
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-Introduction
-------------
-
-Consolidate chart of accounts on subsidiaries
-in a virtual chart of accounts of the holding.
-
-Installation
-------------
-The `account_reversal` module is required,
-it can be found on the account-financial-tools_
-project
-
-.. _account-financial-tools: https://launchpad.net/account-financial-tools""",
-
- "website": "http://www.camptocamp.com",
- "depends": ['base',
-             'account',
-             'account_reversal',  # TODO check account_constraints compat.
-             ],
-
- "demo_xml": ['demo/consolidation_demo.xml',
-              'demo/chart_a_demo.xml',
-              'demo/chart_b_demo.xml',
-              ],
-
- "data": ['data.xml',
-          'account_move_line_view.xml',
-          'company_view.xml',
-          'account_view.xml',
-          'wizard/consolidation_check_view.xml',
-          'wizard/consolidation_consolidate_view.xml',
-          'consolidation_menu.xml',
-          'analysis_view.xml'
-          ],
-
- "test": ['test/test_data.yml',
-          'test/consolidation_checks.yml',
-          'test/consolidation_consolidate.yml',
-          ],
-
- "active": False,
- 'installable': False,
- }
+{
+    "name": "Account Consolidation",
+    "version": "11.0.1.0.0",
+    "author": "Camptocamp, Odoo Community Association (OCA)",
+    "license": "AGPL-3",
+    "category": "Generic Modules/Accounting",
+    "website": "https://github.com/OCA/account-consolidation",
+    "depends": [
+        'account_reversal',
+        'currency_monthly_rate',
+        'l10n_generic_coa',
+    ],
+    "data": [
+        'security/res_groups.xml',
+        'security/account_consolidation_security.yml',
+        'security/account_consolidation_security.xml',
+        'security/ir.model.access.csv',
+        'views/account_move_line_view.xml',
+        'views/res_config_settings.xml',
+        'views/account_view.xml',
+        'views/company_consolidation_profile.xml',
+        'wizard/consolidation_check_view.xml',
+        'wizard/consolidation_consolidate_view.xml',
+        'views/consolidation_menu.xml',
+    ],
+    "demo": [
+        'demo/company_demo.xml',
+        'demo/currency_demo.xml',
+        'demo/consolidation_demo.xml',
+        'demo/company_a_demo.xml',
+        'demo/company_b_demo.xml',
+    ],
+    "installable": True,
+}
