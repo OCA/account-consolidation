@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.account.consolidation</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="account.res_config_settings_view_form"/>
+        <field name="groups_id" eval="[(4,ref('account_consolidation.group_consolidation_manager'))]"/>
+        <field name="arch" type="xml">
+            <div id="invoicing_settings" position="after">
+                <h2>Consolidation</h2>
+                <div class="row mt16 o_settings_container">
+                    <div class="col-xs-12 col-md-6 o_setting_box">
+                        <div class="o_setting_left_pane">
+                            <field name="is_consolidation" />
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label string="Consolidation company"/>
+                            <span class="fa fa-lg fa-building-o" title="Values set here are company-specific." groups="base.group_multi_company"/>
+                            <div class="text-muted">
+                                Use this company as consolidation company
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-6 o_setting_box" attrs="{'invisible': [('is_consolidation', '=', False)]}">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <label string="Consolidation journal"/>
+                            <span class="fa fa-lg fa-building-o" title="Values set here are company-specific." groups="base.group_multi_company"/>
+                            <div class="text-muted">
+                                Default consolidation journal
+                            </div>
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="consolidation_default_journal_id" class="col-md-3 o_light_label"/>
+                                    <field name="consolidation_default_journal_id" options="{'no_create_edit': True, 'no_open': True}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-6 o_setting_box" attrs="{'invisible': [('is_consolidation', '=', False)]}">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <label string="Consolidation differences"/>
+                            <span class="fa fa-lg fa-building-o" title="Values set here are company-specific." groups="base.group_multi_company"/>
+                            <div class="text-muted">
+                                Default consolidation differences account
+                            </div>
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="consolidation_diff_account_id" class="col-md-3 o_light_label"/>
+                                    <field name="consolidation_diff_account_id" options="{'no_create_edit': True, 'no_open': True}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-6 o_setting_box" attrs="{'invisible': [('is_consolidation', '=', False)]}">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <label for="consolidation_profile_ids" />
+                            <span class="fa fa-lg fa-building-o" title="Values set here are company-specific." groups="base.group_multi_company"/>
+                            <div class="text-muted">
+                                Define the subsidiaries to consolidate
+                            </div>
+                            <div class="content-group">
+                                <field name="consolidation_profile_ids" style="width: 100%;" nolabel="1" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </field>
+    </record>
+</odoo>
