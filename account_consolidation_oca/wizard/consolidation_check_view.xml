@@ -1,64 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
-    <data>
+<odoo>
 
-        <record id="view_consolidation_check_form" model="ir.ui.view">
-            <field name="name">account.consolidation.check.form</field>
-            <field name="model">account.consolidation.check</field>
-            <field name="type">form</field>
-            <field name="arch" type="xml">
-                <form string="Consolidation: Checks" version="7.0">
-                    <label string="Prepare your consolidation and make sure that your consolidation will be correct by proceeding with the checks. The 'Check Periods' verify if fiscal year exists for each subsidiary, and if the periods have the same beginning and ending dates. The 'Check Charts' verify if subsidiary accounts are missing in the Holding's Chart of Accounts."/>
-                    <group>
-                        <field name="company_id"
-                            on_change="on_change_company_id(company_id)"
-                            invisible="True"/>
-                        <field name="fiscalyear_id"
-                            domain="[('company_id', '=', company_id)]"/>
-                        <newline/>
-                        <field name="holding_chart_account_id"
-                            domain="[('company_id', '=', company_id), ('parent_id', '=', False)]"/>
-                        <separator string="Subsidiaries to Consolidate" colspan="4"/>
-                        <field name="subsidiary_ids" colspan="4" nolabel="1"
-                            required="True"
-                            domain="[('parent_id', '=', company_id)]">
-                            <tree>
-                                <field name="name"/>
-                                <field name="consolidation_chart_account_id"/>
-                            </tree>
-                        </field>
+    <record id="view_consolidation_check_form" model="ir.ui.view">
+        <field name="name">account.consolidation.check.form</field>
+        <field name="model">account.consolidation.check</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Consolidation: Checks">
+                <field name="state" invisible="True" />
+                <div states="open">
+                    <label string="Prepare your consolidation and make sure that your consolidation will be correct by proceeding with the checks." />
+                    <group name="company">
+                        <field name="company_id" />
                     </group>
-                    <footer>
-                        <button name="check_all_periods"
-                            string="Check Periods" type="object"
-                            class="oe_highlight"/>
-                        or
-                        <button name="check_account_charts"
-                            string="Check Charts 1" type="object"
-                            class="oe_highlight"/>
-                        or
-                        <button name="check_subsidiary_mapping_account"
-                            string="Check Charts 2" type="object"
-                            class="oe_highlight"/>
-                        <button string="Cancel" class="oe_link" special="cancel"/>
-                    </footer>
-                    <group>
-                    <label string="Check Period : Check consistency of accounting periods between subsidiaries and holding company." />
-                    <label string="Check Chart 1 : Check consistency between subsidiaries consolidation chart and Holding company chart." />
-                    <label string="Check  Chart 2 : For each subsidiary, check consistency between the regular chart of accounts and the consolidation chart." />
+                    <group name="checks">
+                        <label string="Checks" />
+                        <ul class="list-unstyled">
+                            <li><strong>Accounts:</strong> Check consistency between subsidiaries accounts and Holding company consolidation accounts.</li>
+                            <li><strong>Partners:</strong> Check that partners linked to subsidiaries have no company defined.</li>
+                            <li><strong>Companies allowed:</strong> Check that user has access to subsidiaries.</li>
+                        </ul>
                     </group>
-                </form>
-            </field>
-        </record>
+                </div>
+                <div states="error,ok">
+                    <field name="message" nolabel="1" class="alert alert-danger" states="error"/>
+                    <field name="message" nolabel="1" class="alert alert-success" states="ok"/>
+                </div>
+                <footer>
+                    <button name="check_configuration"
+                        string="Check configuration " type="object"
+                        class="oe_highlight" states="open"/>
+                    <button string="OK" class="oe_link" special="cancel" states="error,ok"/>
+                    <button string="Cancel" class="oe_link" special="cancel" states="open"/>
+                </footer>
+            </form>
+        </field>
+    </record>
 
-        <record id="action_consolidation_checks" model="ir.actions.act_window">
-            <field name="name">Consolidation: Checks</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">account.consolidation.check</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">form</field>
-            <field name="target">new</field>
-        </record>
+    <record id="action_consolidation_checks" model="ir.actions.act_window">
+        <field name="name">Consolidation: Checks</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">account.consolidation.check</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
 
-    </data>
-</openerp>
+</odoo>
