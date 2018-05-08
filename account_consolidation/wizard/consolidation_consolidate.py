@@ -279,10 +279,10 @@ class account_consolidation_consolidate(orm.TransientModel):
         else:
             currency_rate_type = self._currency_rate_type(cr, uid, ids,
                                                           holding_account, context=context)
-
+            context.update({'date': move.period_id.date_stop})
             currency_value = currency_obj.compute(cr, uid,
-                                                  holding_account.company_currency_id.id,
                                                   subs_account.company_currency_id.id,
+                                                  holding_account.company_currency_id.id,
                                                   balance,
                                                   currency_rate_type_from=False,  # means spot
                                                   currency_rate_type_to=currency_rate_type,
