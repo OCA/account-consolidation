@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="consolidation_company" model="res.company">
+        <field name="name">Consolidation company</field>
+        <field name="currency_id" ref="base.EUR" />
+        <field name="country_id" ref="base.fr" />
+        <field name="is_consolidation">True</field>
+    </record>
+    <record id="subsidiary_a" model="res.company">
+        <field name="name">Subsidiary A</field>
+        <field name="currency_id" ref="base.EUR" />
+        <field name="country_id" ref="base.fr" />
+    </record>
+    <record id="subsidiary_b" model="res.company">
+        <field name="name">Subsidiary B</field>
+        <field name="currency_id" ref="base.USD" />
+        <field name="country_id" ref="base.us" />
+    </record>
+    <record id="conso_sub_a" model="company.consolidation.profile">
+        <field name="company_id" ref="consolidation_company" />
+        <field name="sub_company_id" ref="subsidiary_a" />
+        <field name="consolidation_percentage">100.0</field>
+    </record>
+    <record id="conso_sub_b" model="company.consolidation.profile">
+        <field name="company_id" ref="consolidation_company" />
+        <field name="sub_company_id" ref="subsidiary_b" />
+        <field name="consolidation_percentage">100.0</field>
+    </record>
+</odoo>

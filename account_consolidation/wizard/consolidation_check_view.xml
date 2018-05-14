@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_consolidation_check_form" model="ir.ui.view">
+        <field name="name">account.consolidation.check.form</field>
+        <field name="model">account.consolidation.check</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Consolidation: Checks">
+                <field name="state" invisible="True" />
+                <div states="open">
+                    <label string="Prepare your consolidation and make sure that your consolidation will be correct by proceeding with the checks." />
+                    <group name="company">
+                        <field name="company_id" />
+                    </group>
+                    <group name="checks">
+                        <label string="Checks" />
+                        <ul class="list-unstyled">
+                            <li><strong>Accounts:</strong> Check consistency between subsidiaries accounts and Holding company consolidation accounts.</li>
+                            <li><strong>Partners:</strong> Check that partners linked to subsidiaries have no company defined.</li>
+                            <li><strong>Companies allowed:</strong> Check that user has access to subsidiaries.</li>
+                        </ul>
+                    </group>
+                </div>
+                <div states="error,ok">
+                    <field name="message" nolabel="1" class="alert alert-danger" states="error"/>
+                    <field name="message" nolabel="1" class="alert alert-success" states="ok"/>
+                </div>
+                <footer>
+                    <button name="check_configuration"
+                        string="Check configuration " type="object"
+                        class="oe_highlight" states="open"/>
+                    <button string="OK" class="oe_link" special="cancel" states="error,ok"/>
+                    <button string="Cancel" class="oe_link" special="cancel" states="open"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_consolidation_checks" model="ir.actions.act_window">
+        <field name="name">Consolidation: Checks</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">account.consolidation.check</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>
