@@ -1,0 +1,5 @@
+-
+   Set the default ir.rule on operating.unit for multi-company to inactive
+-
+  !python {model: ir.rule, id: operating_unit.operating_unit_comp_rule}:
+      self.active = False
