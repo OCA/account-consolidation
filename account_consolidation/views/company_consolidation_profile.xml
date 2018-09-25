@@ -14,6 +14,8 @@
                     <group>
                         <field name="company_id" invisible="1"/>
                         <field name="consolidation_percentage" />
+                        <field name="distinct_interco_partners" />
+                        <field name="distinct_analytic_accounts" groups="analytic.group_analytic_accounting" />
                     </group>
                 </sheet>
             </form>

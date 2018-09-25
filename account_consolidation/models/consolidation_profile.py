@@ -1,6 +1,6 @@
 # Copyright 2018 Camptocamp SA
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
-
+from itertools import combinations
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
@@ -32,6 +32,17 @@ class CompanyConsolidationProfile(models.Model):
         required=True,
         string='Subsidiary'
     )
+    distinct_interco_partners = fields.Boolean(
+        string="Distinct inter-company partners",
+        default=True,
+        help="Check this box if you do not want to group move lines from "
+             "inter-company partners."
+    )
+    distinct_analytic_accounts = fields.Boolean(
+        string="Distinct analytic accounts",
+        help="Check this box if you do not want to group move lines from "
+             "different analytic accounts."
+    )
 
     @api.constrains('consolidation_percentage')
     def _check_consolidation_percentage(self):
@@ -62,3 +73,27 @@ class CompanyConsolidationProfile(models.Model):
                  "%s (%s %%)" % (record.sub_company_id.name,
                                  record.consolidation_percentage)
                  ) for record in self]
+
+    @api.model
+    def _distinction_fields(self):
+        """Return a list of possible distinction to apply on consolidation.
+
+        Each element must match a field on consolidation profile using
+        distinct_* ."""
+        return ['analytic_accounts', 'interco_partners']
+
+    @api.multi
+    def get_distinctions(self):
+        """Return a list of all possible distinctions combinations according
+        to the activated flags distinct_* """
+        self.ensure_one()
+        res = []
+        distinctions = self._distinction_fields()
+        for L in range(0, len(distinctions) + 1):
+            for subset in combinations(distinctions, L):
+                if all(
+                    [getattr(self, 'distinct_%s' % s, False)
+                     for s in subset if s]
+                ):
+                    res.append(subset)
+        return sorted(res, key=lambda d: len(d), reverse=True)
