@@ -50,6 +50,13 @@ class TestAccountConsolidation(TransactionCase):
 
         entries = [opening_entries, p1_entries, p2_entries]
 
+        self.holding = self.env.ref(
+            'account_consolidation.consolidation_company')
+
+        self.env.user.write({
+            'company_ids': [(4, self.holding.id, False)]
+        })
+
         for sub in subsidiaries:
             company = self.env.ref('account_consolidation.%s' % sub[0])
             company.partner_id.company_id = False
@@ -100,8 +107,7 @@ class TestAccountConsolidation(TransactionCase):
                 if sub[0] == 'subsidiary_b':
                     move.post()
 
-        self.holding = self.env.ref(
-            'account_consolidation.consolidation_company')
+        self.env.user.company_id = self.holding
 
         self.consolidation_manager = self.env['res.users'].create({
             'name': 'Consolidation manager',
@@ -116,9 +122,6 @@ class TestAccountConsolidation(TransactionCase):
                 self.holding.id, self.subsidiary_a.id, self.subsidiary_b.id])],
             'company_id': self.holding.id
         })
-        # Definition of company on the user should be done after creating
-        # consolidation user as this create() switches self.env.user's company
-        self.env.user.company_id = self.holding
 
     def test_default_values(self):
         wizard = self.env['account.consolidation.consolidate'].create({})
@@ -367,3 +370,105 @@ class TestAccountConsolidation(TransactionCase):
             acc = line.account_id.code.lower()
 
             self.assertEqual(line.balance, conso_results[conso_comp][acc])
+
+    def test_consolidation_jan_with_analytic(self):
+        # Create analytic accounts
+        analytic_model = self.env['account.analytic.account']
+        self.analytic_alpha = analytic_model.create({
+            'name': 'Alpha',
+            'company_id': self.subsidiary_a.id
+        })
+        self.analytic_beta = analytic_model.create({
+            'name': 'Beta',
+            'company_id': self.subsidiary_a.id
+        })
+        self.analytic_gamma = analytic_model.create({
+            'name': 'Gamma',
+            'company_id': self.subsidiary_b.id
+        })
+        # Activate analytic distinction on subsidiary A
+        subA_profile = self.env.ref('account_consolidation.conso_sub_a')
+        subA_profile.distinct_analytic_accounts = True
+        self.env['account.move'].create({
+            'journal_id': self.op_journal_subsidiary_a.id,
+            'company_id': self.subsidiary_a.id,
+            'ref': '/',
+            'date': fields.Date.from_string('%s-01-26' % time.strftime('%Y')),
+            'line_ids': [
+                (0, 0, {
+                    'account_id': self.env.ref(
+                        'account_consolidation.subA_rec1').id,
+                    'company_id': self.subsidiary_a.id,
+                    'debit': 100,
+                    'credit': 0,
+                    'analytic_account_id': self.analytic_alpha.id
+                }), (0, 0, {
+                    'account_id': self.env.ref(
+                        'account_consolidation.subA_rev1').id,
+                    'company_id': self.subsidiary_a.id,
+                    'debit': 0,
+                    'credit': 100,
+                    'analytic_account_id': self.analytic_beta.id
+                })
+            ]
+        })
+
+        self.env['account.move'].create({
+            'journal_id': self.op_journal_subsidiary_b.id,
+            'company_id': self.subsidiary_b.id,
+            'ref': '/',
+            'date': fields.Date.from_string('%s-01-26' % time.strftime('%Y')),
+            'currency_id': self.env.ref('base.EUR').id,
+            'line_ids': [
+                (0, 0, {
+                    'account_id': self.env.ref(
+                        'account_consolidation.subB_exp1').id,
+                    'company_id': self.subsidiary_b.id,
+                    'currency_id': self.env.ref('base.EUR').id,
+                    'amount_currency': 100,
+                    'debit': 180,
+                    'credit': 0,
+                    'analytic_account_id': self.analytic_gamma.id,
+                }), (0, 0, {
+                    'account_id': self.env.ref(
+                        'account_consolidation.subB_pay1').id,
+                    'company_id': self.subsidiary_b.id,
+                    'currency_id': self.env.ref('base.EUR').id,
+                    'amount_currency': -100,
+                    'debit': 0,
+                    'credit': 180,
+                })
+            ]
+        }).post()
+
+        # Run consolidation
+        wizard = self.env['account.consolidation.consolidate'].create({
+            'month': '01',
+            'target_move': 'all'
+        })
+        res = wizard.run_consolidation()
+        line_ids = res['domain'][0][2]
+        conso_move_lines = self.env['account.move.line'].browse(line_ids)
+
+        analytic_accounts = (
+            self.analytic_alpha | self.analytic_beta | self.analytic_gamma
+        )
+
+        analytic_conso_move_lines = conso_move_lines.filtered(
+            lambda l: l.consol_analytic_account_id in analytic_accounts)
+        # import pdb; pdb.set_trace()
+        # As we didn't activate distinct_analytic_accounts on subB, all results
+        # are from subA
+
+        self.assertFalse(analytic_conso_move_lines.filtered(
+            lambda l: l.consol_company_id == self.subsidiary_b
+        ))
+
+        for line in analytic_conso_move_lines:
+            self.assertEqual(line.consol_company_id, self.subsidiary_a)
+            if line.account_id.code.lower() == 'rec1':
+                self.assertEqual(line.consol_analytic_account_id,
+                                 self.analytic_alpha)
+            elif line.account_id.code.lower() == 'rev1':
+                self.assertEqual(line.consol_analytic_account_id,
+                                 self.analytic_beta)
