@@ -169,6 +169,22 @@ class TestAccountConsolidation(SavepointCase):
         wizard.check_configuration()
         self.assertEqual(wizard.state, 'error')
 
+    def test_profile_get_distinctions(self):
+        profile_a = self.env.ref('account_consolidation.conso_sub_a')
+        # Check default values
+        self.assertTrue(profile_a.distinct_interco_partners)
+        self.assertFalse(profile_a.distinct_analytic_accounts)
+        res = [('interco_partners',), (), ]
+        self.assertEqual(profile_a.get_distinctions(), res)
+        profile_a.distinct_analytic_accounts = True
+        res = [
+            ('analytic_accounts', 'interco_partners',),
+            ('analytic_accounts',),
+            ('interco_partners',),
+            ()
+        ]
+        self.assertEqual(profile_a.get_distinctions(), res)
+
     def test_consolidation_jan_all_conso_user(self):
         wizard = self.env['account.consolidation.consolidate'].sudo(
             self.consolidation_manager).create({
