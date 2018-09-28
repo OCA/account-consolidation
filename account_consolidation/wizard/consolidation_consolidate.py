@@ -359,13 +359,13 @@ class AccountConsolidationConsolidate(models.TransientModel):
 
     def _get_prepare_function(self, distinctions):
         # TODO improve me ?
-        if 'interco_partners' in distinctions:
-            if 'analytic_accounts' in distinctions:
+        if 'distinct_interco_partners' in distinctions:
+            if 'distinct_analytic_accounts' in distinctions:
                 return self._prepare_ml_partner_analytic
             else:
                 return self._prepare_ml_partner
         else:
-            if 'analytic_accounts' in distinctions:
+            if 'distinct_analytic_accounts' in distinctions:
                 return self._prepare_ml_analytic
             else:
                 return self._prepare_ml_generic

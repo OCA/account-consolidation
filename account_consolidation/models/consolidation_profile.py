@@ -80,20 +80,29 @@ class CompanyConsolidationProfile(models.Model):
 
         Each element must match a field on consolidation profile using
         distinct_* ."""
-        return ['analytic_accounts', 'interco_partners']
+        return [
+            field_name for field_name in list(
+                self.env['company.consolidation.profile']._fields
+            ) if field_name.startswith('distinct')]
 
     @api.multi
     def get_distinctions(self):
-        """Return a list of all possible distinctions combinations according
-        to the activated flags distinct_* """
+        """Return a list of all possible distinctions combinations as tuples
+        according to the activated flags distinct_*.
+
+        Example : if distinct_analytic_accounts AND distinct_interco_partners
+        are both marked, we want to get all the combinations of any length,
+        (i.e including the empty one) ordered by their length reversed:
+        [('distinct_analytic_accounts', 'distinct_interco_partners'),
+         ('distinct_interco_partners'),
+         ('distinct_analytic_accounts'),
+         ()]"""
         self.ensure_one()
         res = []
         distinctions = self._distinction_fields()
-        for L in range(0, len(distinctions) + 1):
-            for subset in combinations(distinctions, L):
-                if all(
-                    [getattr(self, 'distinct_%s' % s, False)
-                     for s in subset if s]
-                ):
+        values = self.read(distinctions)[0]
+        for length in range(0, len(distinctions) + 1):
+            for subset in combinations(distinctions, length):
+                if all([values.get(s) for s in subset if s]):
                     res.append(subset)
         return sorted(res, key=lambda d: len(d), reverse=True)
