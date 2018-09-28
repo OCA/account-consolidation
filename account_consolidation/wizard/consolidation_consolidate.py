@@ -302,13 +302,13 @@ class AccountConsolidationConsolidate(models.TransientModel):
         mls_to_generate = []
         intercompany_partners = self._get_intercompany_partners(
             profile.sub_company_id)
+        analytic_accounts = self.env['account.analytic.account'].search([
+            ('company_id', '=', profile.sub_company_id.id)
+        ])
         for partner in intercompany_partners:
-            domain = [('partner_id', '=', partner.id)]
-            analytic_accounts = self.env['account.analytic.account'].search([
-                ('company_id', '=', profile.sub_company_id.id)
-            ])
             for analytic in analytic_accounts:
-                domain.append(('analytic_account_id', '=', analytic.id))
+                domain = [('partner_id', '=', partner.id),
+                          ('analytic_account_id', '=', analytic.id)]
                 ml_vals = self._prepare_consolidate_account(account, profile,
                                                             base_domain=domain)
                 if ml_vals:
