@@ -6,13 +6,17 @@ from datetime import date
 from dateutil.relativedelta import relativedelta
 
 from odoo import fields
-from odoo.tests.common import TransactionCase
+from odoo.tests.common import SavepointCase
 
 
-class TestAccountConsolidation(TransactionCase):
+class TestAccountConsolidation(SavepointCase):
 
-    def setUp(self):
-        super().setUp()
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
+        # disable tracking test suite wise
+        cls.env = cls.env(context=dict(cls.env.context, tracking_disable=True))
 
         subsidiaries = [('subsidiary_a', 'subA'), ('subsidiary_b', 'subB')]
 
@@ -50,32 +54,32 @@ class TestAccountConsolidation(TransactionCase):
 
         entries = [opening_entries, p1_entries, p2_entries]
 
-        self.holding = self.env.ref(
+        cls.holding = cls.env.ref(
             'account_consolidation.consolidation_company')
 
-        self.env.user.write({
-            'company_ids': [(4, self.holding.id, False)]
+        cls.env.user.write({
+            'company_ids': [(4, cls.holding.id, False)]
         })
 
         for sub in subsidiaries:
-            company = self.env.ref('account_consolidation.%s' % sub[0])
+            company = cls.env.ref('account_consolidation.%s' % sub[0])
             company.partner_id.company_id = False
 
-            setattr(self, sub[0], company)
+            setattr(cls, sub[0], company)
 
-            self.env.user.write({
+            cls.env.user.write({
                 'company_ids': [(4, company.id, False)]
             })
-            self.env.user.company_id = company
+            cls.env.user.company_id = company
 
-            journal = self.env.ref('account_consolidation.%s_op_journal' %
+            journal = cls.env.ref('account_consolidation.%s_op_journal' %
                                    sub[1])
-            setattr(self, 'op_journal_%s' % sub[0], journal)
+            setattr(cls, 'op_journal_%s' % sub[0], journal)
 
             for entry in entries:
                 lines_list = []
                 for move_tuple in entry[sub[1]]:
-                    account = self.env.ref('account_consolidation.%s_%s' %
+                    account = cls.env.ref('account_consolidation.%s_%s' %
                                            (sub[1], move_tuple[0]))
                     line_vals = {
                         'name': entry['label'],
@@ -101,26 +105,28 @@ class TestAccountConsolidation(TransactionCase):
                     'date': fields.Date.from_string(entry['date']),
                     'line_ids': lines_vals
                 }
-                move = self.env['account.move'].create(move_vals)
+                move = cls.env['account.move'].create(move_vals)
 
                 # Post only moves of subisdiary B
                 if sub[0] == 'subsidiary_b':
                     move.post()
 
-        self.env.user.company_id = self.holding
+        cls.env.user.company_id = cls.holding
 
-        self.consolidation_manager = self.env['res.users'].create({
+        cls.consolidation_manager = cls.env['res.users'].with_context(
+            no_reset_password=True
+        ).create({
             'name': 'Consolidation manager',
             'login': 'Consolidation manager',
             'email': 'consolidation@manager.com',
             'groups_id': [(6, 0, [
-                self.env.ref(
+                cls.env.ref(
                     'account_consolidation.group_consolidation_manager').id,
-                self.env.ref('base.group_user').id
+                cls.env.ref('base.group_user').id
             ])],
             'company_ids': [(6, 0, [
-                self.holding.id, self.subsidiary_a.id, self.subsidiary_b.id])],
-            'company_id': self.holding.id
+                cls.holding.id, cls.subsidiary_a.id, cls.subsidiary_b.id])],
+            'company_id': cls.holding.id
         })
 
     def test_default_values(self):
