@@ -100,12 +100,12 @@ class AccountConsolidationBase(models.AbstractModel):
 
         invalid_partners = {}
 
-        conso_profiles = self.company_id.consolidation_profile_ids
-        for subsidiary in conso_profiles.mapped('sub_company_id'):
-            partner = subsidiary.partner_id
-            if partner.company_id:
-                invalid_partners[partner] = partner.company_id
-
+        if self.env.ref('base.res_partner_rule').sudo().active:
+            conso_profiles = self.company_id.consolidation_profile_ids
+            for subsidiary in conso_profiles.mapped('sub_company_id'):
+                partner = subsidiary.partner_id
+                if partner.company_id:
+                    invalid_partners[partner] = partner.company_id
         return invalid_partners
 
     def check_companies_allowed(self):

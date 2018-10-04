@@ -156,9 +156,15 @@ class TestAccountConsolidation(SavepointCase):
 
     def test_consolidation_checks_error_company_partner(self):
         self.subsidiary_a.partner_id.company_id = self.subsidiary_a
+        share_partners_rule = self.env.ref('base.res_partner_rule')
+        share_partners_rule.active = True
         wizard = self.env['account.consolidation.check'].create({})
         wizard.check_configuration()
         self.assertEqual(wizard.state, 'error')
+        share_partners_rule.active = False
+        wizard = self.env['account.consolidation.check'].create({})
+        wizard.check_configuration()
+        self.assertEqual(wizard.state, 'ok')
 
     def test_consolidation_checks_error_unallowed_company(self):
         self.env.user.write({
