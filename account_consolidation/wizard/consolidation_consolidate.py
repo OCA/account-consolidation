@@ -317,7 +317,8 @@ class AccountConsolidationConsolidate(models.TransientModel):
                         # FIXME define field and security rules
                         'consol_analytic_account_id': analytic.id,
                     })
-                    mls_to_generate.append(self._finish_ml_preparation(ml_vals))
+                    mls_to_generate.append(self._finish_ml_preparation(
+                        ml_vals))
 
         return mls_to_generate
 

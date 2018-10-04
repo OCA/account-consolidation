@@ -73,14 +73,14 @@ class TestAccountConsolidation(SavepointCase):
             cls.env.user.company_id = company
 
             journal = cls.env.ref('account_consolidation.%s_op_journal' %
-                                   sub[1])
+                                  sub[1])
             setattr(cls, 'op_journal_%s' % sub[0], journal)
 
             for entry in entries:
                 lines_list = []
                 for move_tuple in entry[sub[1]]:
                     account = cls.env.ref('account_consolidation.%s_%s' %
-                                           (sub[1], move_tuple[0]))
+                                          (sub[1], move_tuple[0]))
                     line_vals = {
                         'name': entry['label'],
                         'account_id': account.id,
