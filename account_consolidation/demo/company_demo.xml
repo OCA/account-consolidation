@@ -26,4 +26,7 @@
         <field name="sub_company_id" ref="subsidiary_b" />
         <field name="consolidation_percentage">100.0</field>
     </record>
+    <record model="res.users" id="base.user_root">
+        <field name="company_ids" eval="[(4, ref('consolidation_company')), (4, ref('subsidiary_a')), (4, ref('subsidiary_b'))]"/>
+    </record>
 </odoo>
