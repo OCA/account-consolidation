@@ -1,4 +1,5 @@
 # list the OCA project dependencies, one per line
 # add a github url if you need a forked version
-account-financial-tools https://github.com/OCA/account-financial-tools 11.0
-currency https://github.com/OCA/currency 11.0
+account-financial-tools
+currency
+operating-unit https://github.com/grindtildeath/operating-unit 11.0-mig-account_operating_unit
