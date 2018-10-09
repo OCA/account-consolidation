@@ -47,7 +47,6 @@ class TestAnalyticMulticompany(SavepointCase):
             self.conso_user).search([])
         self.assertIn(self.analytic_test_a, analytic_accounts)
         self.assertIn(self.analytic_test_b, analytic_accounts)
-        # TODO WTH do we get this record in analytic_accounts ?!
         self.assertNotIn(self.analytic_internal, analytic_accounts)
 
     def test_analytic_conso_company(self):
