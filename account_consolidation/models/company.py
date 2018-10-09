@@ -35,6 +35,13 @@ class ResCompany(models.Model):
         comodel_name='company.consolidation.profile',
         inverse_name='company_id'
     )
+    # This field is used only on subsidiaries and is the only way to get to the
+    # profile from a record part of a subsidiary
+    # It's the inverse field of sub_company_id on company.consolidation.profile
+    sub_consolidation_profile_id = fields.Many2one(
+        comodel_name='company.consolidation.profile',
+        readonly=True,
+    )
     consolidation_percentage = fields.Float(
         compute=lambda self: self._compute_conso_percentage()
     )

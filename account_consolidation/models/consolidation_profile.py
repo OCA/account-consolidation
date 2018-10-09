@@ -106,3 +106,21 @@ class CompanyConsolidationProfile(models.Model):
                 if all([values.get(s) for s in subset if s]):
                     res.append(subset)
         return sorted(res, key=lambda d: len(d), reverse=True)
+
+    @api.model
+    def create(self, vals):
+        """Ensure inverse relation to sub_company_id
+        (sub_consolidation_profile_id) is defined on the subsidiary company."""
+        profile = super().create(vals)
+        profile.sub_company_id.sub_consolidation_profile_id = profile.id
+        return profile
+
+    @api.multi
+    def write(self, vals):
+        """Ensure inverse relation to sub_company_id
+        (sub_consolidation_profile_id) is up to date on the subsidiary
+        company."""
+        res = super().write(vals)
+        if vals.get('sub_company_id'):
+            self.sub_company_id.sub_consolidation_profile_id = self.id
+        return res
