@@ -84,7 +84,7 @@ class TestPartnerMulticompany(SavepointCase):
         self.subsidiary_b.partner_id.company_id = None
 
         conso_journal = self.env.ref(
-                'account_consolidation.conso_consolidation_journal')
+            'account_consolidation.conso_consolidation_journal')
         test_conso_move = self.env['account.move'].create({
             'company_id': self.conso_company.id,
             'journal_id': conso_journal.id,
