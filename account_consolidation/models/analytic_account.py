@@ -6,4 +6,6 @@ from odoo import models
 class AnalyticAccount(models.Model):
 
     _name = 'account.analytic.account'
-    _inherit = ['account.analytic.account', 'consolidation.reference.mixin']
+    _inherit = [
+        'account.analytic.account', 'account.consolidation.reference.mixin'
+    ]
