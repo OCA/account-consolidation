@@ -9,18 +9,6 @@ class ResCompany(models.Model):
 
     _inherit = 'res.company'
 
-    @api.depends('consolidation_profile_ids')
-    def _compute_conso_percentage(self):
-        """Computes conso percentage from sub company consolidation profile."""
-        for company in self:
-            profile = self.env['company.consolidation.profile'].search(
-                [('sub_company_id', '=', company.id)])
-            if profile:
-                company.consolidation_percentage = (
-                    profile.consolidation_percentage)
-            else:
-                company.consolidation_percentage = 0
-
     consolidation_diff_account_id = fields.Many2one(
         comodel_name='account.account',
         string='Consolidation difference account',
@@ -43,7 +31,8 @@ class ResCompany(models.Model):
         readonly=True,
     )
     consolidation_percentage = fields.Float(
-        compute=lambda self: self._compute_conso_percentage()
+        related='sub_consolidation_profile_id.consolidation_percentage',
+        readonly=True,
     )
     is_consolidation = fields.Boolean(string='Consolidation company')
 
