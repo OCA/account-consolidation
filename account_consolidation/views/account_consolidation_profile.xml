@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="view_company_consolidation_profile_form" model="ir.ui.view">
-        <field name="name">company.consolidation.profile.view</field>
-        <field name="model">company.consolidation.profile</field>
+    <record id="view_account_consolidation_profile_form" model="ir.ui.view">
+        <field name="name">account.consolidation.profile.view</field>
+        <field name="model">account.consolidation.profile</field>
         <field name="type">form</field>
         <field name="arch" type="xml">
             <form>

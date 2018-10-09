@@ -11,7 +11,7 @@ class AccountAccount(models.Model):
     def _compute_conso_company(self):
         """Computes the consolidation company of the account's company."""
         for acc in self:
-            profile = self.env['company.consolidation.profile'].search(
+            profile = self.env['account.consolidation.profile'].search(
                 [('sub_company_id', '=', acc.company_id.id)])
             if profile:
                 acc.consolidation_company_id = profile.company_id

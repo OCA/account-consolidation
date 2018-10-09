@@ -22,14 +22,14 @@ class ResCompany(models.Model):
     # This field is used to link which companies are subsidiaries to
     # consolidate and is only populated if is_consolidation=True
     consolidation_profile_ids = fields.One2many(
-        comodel_name='company.consolidation.profile',
+        comodel_name='account.consolidation.profile',
         inverse_name='company_id'
     )
     # This field is used only on subsidiaries and is the only way to get to the
     # profile from a record part of a subsidiary
-    # It's the inverse field of sub_company_id on company.consolidation.profile
+    # It's the inverse field of sub_company_id on account.consolidation.profile
     sub_consolidation_profile_id = fields.Many2one(
-        comodel_name='company.consolidation.profile',
+        comodel_name='account.consolidation.profile',
         readonly=True,
     )
     consolidation_percentage = fields.Float(

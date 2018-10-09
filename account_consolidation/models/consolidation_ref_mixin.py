@@ -3,9 +3,9 @@
 from odoo import models, fields, api
 
 
-class ConsolidationReferenceMixin(models.AbstractModel):
+class AccountConsolidationReferenceMixin(models.AbstractModel):
 
-    _name = 'consolidation.reference.mixin'
+    _name = 'account.consolidation.reference.mixin'
 
     consolidation_company_id = fields.Many2one(
         'res.company', store=True,

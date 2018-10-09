@@ -77,7 +77,7 @@ class AccountConsolidationConsolidate(models.TransientModel):
         required=True
     )
     consolidation_profile_ids = fields.Many2many(
-        comodel_name='company.consolidation.profile',
+        comodel_name='account.consolidation.profile',
         relation='consolidate_profile_rel',
         column1='consolidate_id',
         column2='profile_id',

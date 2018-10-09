@@ -14,7 +14,7 @@ class CompanyConsolidationProfile(models.Model):
     enable distinctions on intercompany partners and analytic accounts
     """
 
-    _name = 'company.consolidation.profile'
+    _name = 'account.consolidation.profile'
     _description = 'Subsidiary consolidation profile'
     _order = 'sub_company_id'
     _rec_name = 'sub_company_id'
@@ -92,7 +92,7 @@ class CompanyConsolidationProfile(models.Model):
         distinct_* ."""
         return [
             field_name for field_name in list(
-                self.env['company.consolidation.profile']._fields
+                self.env['account.consolidation.profile']._fields
             ) if field_name.startswith('distinct')]
 
     @api.multi

@@ -38,7 +38,7 @@ class TestConsolidationProfile(SavepointCase):
                 self.assertEqual((), dist)
 
     def test_consolidation_profile_company_relations(self):
-        profile = self.env['company.consolidation.profile'].create({
+        profile = self.env['account.consolidation.profile'].create({
             'company_id': self.conso_company.id,
             'sub_company_id': self.new_company.id,
         })
