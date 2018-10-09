@@ -19,6 +19,8 @@ class ResCompany(models.Model):
         string='Default consolidation journal',
         help="Default journal to generate consolidation entries"
     )
+    # This field is used to link which companies are subsidiaries to
+    # consolidate and is only populated if is_consolidation=True
     consolidation_profile_ids = fields.One2many(
         comodel_name='company.consolidation.profile',
         inverse_name='company_id'

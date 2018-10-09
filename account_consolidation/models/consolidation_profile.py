@@ -6,6 +6,13 @@ from odoo.exceptions import ValidationError
 
 
 class CompanyConsolidationProfile(models.Model):
+    """Consolidation profile is used to define consolidation rules.
+
+    It links ONE consolidation company to MULTIPLE subsidiaries you want to
+    consolidate.
+    It also allows to specify some options like consolidation percentage, and
+    enable distinctions on intercompany partners and analytic accounts
+    """
 
     _name = 'company.consolidation.profile'
     _description = 'Subsidiary consolidation profile'
@@ -16,21 +23,24 @@ class CompanyConsolidationProfile(models.Model):
     def _default_consolidation_percentage(self):
         return 100
 
+    # This is the consolidation company
     company_id = fields.Many2one(
         comodel_name='res.company',
         default=lambda self: self.env['res.company']._company_default_get(),
         required=True
     )
+    # This is the subsidiary (company to consolidate)
+    sub_company_id = fields.Many2one(
+        comodel_name='res.company',
+        required=True,
+        string='Subsidiary'
+    )
+
     consolidation_percentage = fields.Float(
         string='Consolidation percentage',
         help='Define a percentage to consolidate this company (in percents)',
         default=lambda self: self._default_consolidation_percentage(),
         required=True
-    )
-    sub_company_id = fields.Many2one(
-        comodel_name='res.company',
-        required=True,
-        string='Subsidiary'
     )
     distinct_interco_partners = fields.Boolean(
         string="Distinct inter-company partners",
