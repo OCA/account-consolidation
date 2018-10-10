@@ -8,6 +8,31 @@ from odoo import fields
 
 class TestAccountConsolidationOperatingUnit(TestAccountConsolidation):
 
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        subsidiary_a = cls.env.ref('account_consolidation.subsidiary_a')
+        subsidiary_b = cls.env.ref('account_consolidation.subsidiary_b')
+        cls.ou_business_sub_a = cls.env['operating.unit'].create({
+            'name': 'Business A',
+            'code': 'BA',
+            'company_id': subsidiary_a.id,
+            'partner_id': subsidiary_a.partner_id.id
+        })
+        cls.ou_private_sub_a = cls.env['operating.unit'].create({
+            'name': 'Private A',
+            'code': 'PA',
+            'company_id': subsidiary_a.id,
+            'partner_id': subsidiary_a.partner_id.id,
+        })
+        cls.ou_business_sub_b = cls.env['operating.unit'].create({
+            'name': 'Business B',
+            'code': 'BB',
+            'company_id': subsidiary_b.id,
+            'partner_id': subsidiary_b.partner_id.id
+        })
+
+
     def test_consolidation_jan_with_operating_unit(self):
         # Get operating units
         ou_b2b = self.env.ref('operating_unit.b2b_operating_unit')
@@ -27,14 +52,14 @@ class TestAccountConsolidationOperatingUnit(TestAccountConsolidation):
                     'company_id': self.subsidiary_a.id,
                     'debit': 100,
                     'credit': 0,
-                    'operating_unit_id': ou_b2b.id
+                    'operating_unit_id': self.ou_business_sub_a.id
                 }), (0, 0, {
                     'account_id': self.env.ref(
                         'account_consolidation.subA_rev1').id,
                     'company_id': self.subsidiary_a.id,
                     'debit': 0,
                     'credit': 100,
-                    'operating_unit_id': ou_b2c.id
+                    'operating_unit_id': self.ou_private_sub_a.id
                 })
             ]
         })
@@ -54,7 +79,7 @@ class TestAccountConsolidationOperatingUnit(TestAccountConsolidation):
                     'amount_currency': 100,
                     'debit': 180,
                     'credit': 0,
-                    'operating_unit_id': ou_b2b.id,
+                    'operating_unit_id': self.ou_business_sub_b.id,
                 }), (0, 0, {
                     'account_id': self.env.ref(
                         'account_consolidation.subB_pay1').id,
@@ -76,7 +101,7 @@ class TestAccountConsolidationOperatingUnit(TestAccountConsolidation):
         line_ids = res['domain'][0][2]
         conso_move_lines = self.env['account.move.line'].browse(line_ids)
 
-        operating_units = ou_b2b | ou_b2c
+        operating_units = self.ou_business_sub_a | self.ou_private_sub_a
 
         op_unit_conso_move_lines = conso_move_lines.filtered(
             lambda l: l.consol_operating_unit_id in operating_units)
@@ -92,7 +117,7 @@ class TestAccountConsolidationOperatingUnit(TestAccountConsolidation):
             self.assertEqual(line.consol_company_id, self.subsidiary_a)
             if line.account_id.code.lower() == 'rec1':
                 self.assertEqual(line.consol_operating_unit_id,
-                                 ou_b2b)
+                                 self.ou_business_sub_a)
             elif line.account_id.code.lower() == 'rev1':
                 self.assertEqual(line.consol_operating_unit_id,
-                                 ou_b2c)
+                                 self.ou_private_sub_a)
