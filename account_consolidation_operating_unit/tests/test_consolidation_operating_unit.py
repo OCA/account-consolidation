@@ -1,45 +1,44 @@
 # Copyright 2018 Camptocamp SA
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 import time
-from odoo.addons.account_consolidation.tests.\
-    test_account_consolidation import TestAccountConsolidation
+from odoo.addons.account_consolidation.tests.common import TestBaseAccountConsolidation
 from odoo import fields
 
 
-class TestAccountConsolidationOperatingUnit(TestAccountConsolidation):
+class TestAccountConsolidationOperatingUnit(TestBaseAccountConsolidation):
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        subsidiary_a = cls.env.ref('account_consolidation.subsidiary_a')
-        subsidiary_b = cls.env.ref('account_consolidation.subsidiary_b')
+        cls.conso_company = cls.env.ref(
+            'account_consolidation.consolidation_company')
+
+        cls.subsidiary_a = cls.env.ref('account_consolidation.subsidiary_a')
+        cls.subsidiary_b = cls.env.ref('account_consolidation.subsidiary_b')
         cls.ou_business_sub_a = cls.env['operating.unit'].create({
             'name': 'Business A',
             'code': 'BA',
-            'company_id': subsidiary_a.id,
-            'partner_id': subsidiary_a.partner_id.id
+            'company_id': cls.subsidiary_a.id,
+            'partner_id': cls.subsidiary_a.partner_id.id
         })
         cls.ou_private_sub_a = cls.env['operating.unit'].create({
             'name': 'Private A',
             'code': 'PA',
-            'company_id': subsidiary_a.id,
-            'partner_id': subsidiary_a.partner_id.id,
+            'company_id': cls.subsidiary_a.id,
+            'partner_id': cls.subsidiary_a.partner_id.id,
         })
         cls.ou_business_sub_b = cls.env['operating.unit'].create({
             'name': 'Business B',
             'code': 'BB',
-            'company_id': subsidiary_b.id,
-            'partner_id': subsidiary_b.partner_id.id
+            'company_id': cls.subsidiary_b.id,
+            'partner_id': cls.subsidiary_b.partner_id.id
         })
 
-
     def test_consolidation_jan_with_operating_unit(self):
-        # Get operating units
-        ou_b2b = self.env.ref('operating_unit.b2b_operating_unit')
-        ou_b2c = self.env.ref('operating_unit.b2c_operating_unit')
         # Activate operating unit distinction on subsidiary A
         subA_profile = self.env.ref('account_consolidation.conso_sub_a')
         subA_profile.distinct_operating_units = True
+        self.env.user.company_id = self.subsidiary_a
         self.env['account.move'].create({
             'journal_id': self.op_journal_subsidiary_a.id,
             'company_id': self.subsidiary_a.id,
@@ -63,7 +62,7 @@ class TestAccountConsolidationOperatingUnit(TestAccountConsolidation):
                 })
             ]
         })
-
+        self.env.user.company_id = self.subsidiary_b
         self.env['account.move'].create({
             'journal_id': self.op_journal_subsidiary_b.id,
             'company_id': self.subsidiary_b.id,
@@ -91,7 +90,7 @@ class TestAccountConsolidationOperatingUnit(TestAccountConsolidation):
                 })
             ]
         }).post()
-
+        self.env.user.company_id = self.conso_company
         # Run consolidation
         wizard = self.env['account.consolidation.consolidate'].create({
             'month': '01',

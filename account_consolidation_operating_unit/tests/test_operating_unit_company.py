@@ -7,7 +7,7 @@ class TestOperatingUnitCompany(SavepointCase):
 
     @classmethod
     def setUpClass(cls):
-
+        super().setUpClass()
         main_company = cls.env.ref('base.main_company')
         subsidiary_a = cls.env.ref('account_consolidation.subsidiary_a')
         subsidiary_b = cls.env.ref('account_consolidation.subsidiary_b')
