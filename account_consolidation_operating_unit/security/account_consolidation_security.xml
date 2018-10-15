@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Rules for operating.unit -->
+
+    <record id="operating_unit_multi_company_global" model="ir.rule">
+        <field name="name">Operating unit multi-company</field>
+        <field name="model_id" ref="operating_unit.model_operating_unit"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|',('company_id','=',False),'|',('company_id','child_of',[user.company_id.id]),('consolidation_company_id','=',user.company_id.id)]</field>
+    </record>
+    <record id="operating_unit_multi_company_users" model="ir.rule">
+        <field name="name">Operating unit multi-company employees portal</field>
+        <field name="model_id" ref="operating_unit.model_operating_unit"/>
+        <field name="global" eval="False"/>
+        <field name="domain_force">['|',('company_id','=',False),('company_id','child_of',[user.company_id.id])]</field>
+        <field name="groups" eval="[(4, ref('base.group_user')), (4, ref('base.group_portal'))]" />
+    </record>
+    <record id="operating_unit_multi_company_conso_manager" model="ir.rule">
+        <field name="name">Operating unit multi-company consolidation</field>
+        <field name="model_id" ref="operating_unit.model_operating_unit"/>
+        <field name="global" eval="False"/>
+        <field name="domain_force">[('consolidation_company_id','=',user.company_id.id)]</field>
+        <field name="groups" eval="[(4, ref('account_consolidation.group_consolidation_manager'))]" />
+    </record>
+
+</odoo>

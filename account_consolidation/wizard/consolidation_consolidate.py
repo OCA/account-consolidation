@@ -77,7 +77,7 @@ class AccountConsolidationConsolidate(models.TransientModel):
         required=True
     )
     consolidation_profile_ids = fields.Many2many(
-        comodel_name='company.consolidation.profile',
+        comodel_name='account.consolidation.profile',
         relation='consolidate_profile_rel',
         column1='consolidate_id',
         column2='profile_id',
@@ -164,7 +164,7 @@ class AccountConsolidationConsolidate(models.TransientModel):
 
         return move_to_reverse, reversal_move
 
-    def get_account_balance(self, account, partner=False):
+    def get_account_balance(self, account, base_domain=None):
         """
         Gets the accounting balance for the specified account according to
         Wizard settings.
@@ -173,7 +173,7 @@ class AccountConsolidationConsolidate(models.TransientModel):
         lines will not be processed two times in the same consolidation.
 
         :param account: Recordset of the account
-        :param partner: Recordset of partner to distinct
+        :param base_domain: Extra domain to apply
 
         :return: Balance of the account
         """
@@ -182,8 +182,8 @@ class AccountConsolidationConsolidate(models.TransientModel):
                   ('date', '<=', self._get_month_last_date()),
                   ('consolidated', '!=', True)]
 
-        if partner:
-            domain.append(('partner_id', '=', partner.id))
+        if base_domain is not None:
+            domain += base_domain
 
         move_lines = self.env['account.move.line'].sudo().search(domain)
 
@@ -197,7 +197,7 @@ class AccountConsolidationConsolidate(models.TransientModel):
         return sum([l.balance for l in move_lines])
 
     def _prepare_consolidate_account(self, holding_account, profile,
-                                     partner=False):
+                                     base_domain=None):
         """
         Prepare a dictionnary for each move lines to generate.
 
@@ -237,7 +237,8 @@ class AccountConsolidationConsolidate(models.TransientModel):
         }
         sub_balance = 0
         for account in subs_accounts:
-            balance = self.get_account_balance(account, partner)
+            balance = self.get_account_balance(
+                account, base_domain=base_domain)
             if not balance:
                 continue
             else:
@@ -250,9 +251,6 @@ class AccountConsolidationConsolidate(models.TransientModel):
                                                 profile.sub_company_id.name)
             )
             return False
-
-        if partner:
-            vals.update({'consol_partner_id': partner.id})
 
         conso_percentage = profile.consolidation_percentage / 100
         conso_balance = sub_balance * conso_percentage
@@ -300,6 +298,87 @@ class AccountConsolidationConsolidate(models.TransientModel):
             })
         return vals
 
+    def _prepare_ml_partner_analytic(self, account, profile):
+        mls_to_generate = []
+        intercompany_partners = self._get_intercompany_partners(
+            profile.sub_company_id)
+        analytic_accounts = self.env['account.analytic.account'].search([
+            ('company_id', '=', profile.sub_company_id.id)
+        ])
+        for partner in intercompany_partners:
+            for analytic in analytic_accounts:
+                domain = [('partner_id', '=', partner.id),
+                          ('analytic_account_id', '=', analytic.id)]
+                ml_vals = self._prepare_consolidate_account(account, profile,
+                                                            base_domain=domain)
+                if ml_vals:
+                    ml_vals.update({
+                        'consol_partner_id': partner.id,
+                        # FIXME define field and security rules
+                        'consol_analytic_account_id': analytic.id,
+                    })
+                    mls_to_generate.append(self._finish_ml_preparation(
+                        ml_vals))
+
+        return mls_to_generate
+
+    def _prepare_ml_partner(self, account, profile):
+        mls_to_generate = []
+        intercompany_partners = self._get_intercompany_partners(
+            profile.sub_company_id)
+        for partner in intercompany_partners:
+            domain = [('partner_id', '=', partner.id)]
+            ml_vals = self._prepare_consolidate_account(account, profile,
+                                                        base_domain=domain)
+            if ml_vals:
+                ml_vals.update({'consol_partner_id': partner.id})
+                mls_to_generate.append(self._finish_ml_preparation(ml_vals))
+        return mls_to_generate
+
+    def _prepare_ml_analytic(self, account, profile):
+        mls_to_generate = []
+        analytic_accounts = self.env['account.analytic.account'].search([
+            ('company_id', '=', profile.sub_company_id.id)
+        ])
+        for analytic in analytic_accounts:
+            domain = [('analytic_account_id', '=', analytic.id)]
+            ml_vals = self._prepare_consolidate_account(account, profile,
+                                                        base_domain=domain)
+            if ml_vals:
+                # FIXME define field and security rules
+                ml_vals.update({'consol_analytic_account_id': analytic.id})
+                mls_to_generate.append(self._finish_ml_preparation(ml_vals))
+
+        return mls_to_generate
+
+    def _prepare_ml_generic(self, account, profile):
+        mls_to_generate = []
+        ml_vals = self._prepare_consolidate_account(account, profile)
+        if ml_vals:
+            mls_to_generate.append(self._finish_ml_preparation(ml_vals))
+        return mls_to_generate
+
+    def _get_prepare_function(self, distinctions):
+        # TODO improve me ?
+        if 'distinct_interco_partners' in distinctions:
+            if 'distinct_analytic_accounts' in distinctions:
+                return self._prepare_ml_partner_analytic
+            else:
+                return self._prepare_ml_partner
+        else:
+            if 'distinct_analytic_accounts' in distinctions:
+                return self._prepare_ml_analytic
+            else:
+                return self._prepare_ml_generic
+
+    def _finish_ml_preparation(self, move_line_vals):
+        move_line_vals.update({
+            'journal_id': self.journal_id.id,
+            'company_id': self.company_id.id,
+            'date': self._get_month_last_date(),
+        })
+        return move_line_vals
+
     def consolidate_subsidiary(self, profile):
         """
         Consolidate one subsidiary on the Holding according to its profile.
@@ -326,39 +405,20 @@ class AccountConsolidationConsolidate(models.TransientModel):
             'date': self._get_month_last_date()
         }
 
-        intercompany_partners = self._get_intercompany_partners(
-            profile.sub_company_id)
+        distinctions = profile.get_distinctions()
 
         move_lines_to_generate = []
-        _logger.debug('Consolidating intercompany transactions on %s' %
-                      profile.sub_company_id.name)
-        for account in holding_accounts:
-            # prepare a move line per partner/account
-            for partner in intercompany_partners:
-                move_line_vals = self._prepare_consolidate_account(
-                    account, profile, partner)
-
-                if move_line_vals:
-                    move_line_vals.update({
-                        'journal_id': self.journal_id.id,
-                        'company_id': self.company_id.id,
-                        'date': self._get_month_last_date(),
-                    })
-                    move_lines_to_generate.append(move_line_vals)
         _logger.debug('Consolidating transactions on %s' %
                       profile.sub_company_id.name)
-        for account in holding_accounts:
-            # prepare a move line per account
-            move_line_vals = self._prepare_consolidate_account(
-                account, profile)
 
-            if move_line_vals:
-                move_line_vals.update({
-                    'journal_id': self.journal_id.id,
-                    'company_id': self.company_id.id,
-                    'date': self._get_month_last_date(),
-                })
-                move_lines_to_generate.append(move_line_vals)
+        for dist in distinctions:
+            conso_func = self._get_prepare_function(dist)
+
+            for account in holding_accounts:
+                # prepare a move line list per account
+                move_lines_list = conso_func(account, profile)
+                if move_lines_list:
+                    move_lines_to_generate += move_lines_list
 
         # Now that all move lines are processed we reset the flag of processed
         # accounts

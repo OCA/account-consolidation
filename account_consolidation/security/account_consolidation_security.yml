@@ -3,3 +3,8 @@
 -
   !python {model: ir.rule, id: account.account_comp_rule}:
       self.active = False
+-
+   Set the default ir.rule on account.analytic.account for multi-company to inactive
+-
+  !python {model: ir.rule, id: analytic.analytic_comp_rule}:
+      self.active = False

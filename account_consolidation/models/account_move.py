@@ -51,6 +51,11 @@ class AccountMoveLine(models.Model):
         string='Intercompany Partner',
         readonly=True
     )
+    consol_analytic_account_id = fields.Many2one(
+        comodel_name='account.analytic.account',
+        string='Consol Analytic account',
+        readonly=True,
+    )
     consolidated = fields.Boolean(default=False)
 
     @api.model

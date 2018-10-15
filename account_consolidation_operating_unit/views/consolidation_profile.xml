@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_account_consolidation_profile_form" model="ir.ui.view">
+        <field name="name">account.consolidation.profile.view.inherit</field>
+        <field name="inherit_id" ref="account_consolidation.view_account_consolidation_profile_form" />
+        <field name="model">account.consolidation.profile</field>
+        <field name="groups_id" eval="[(4,ref('operating_unit.group_multi_operating_unit'))]"/>
+        <field name="arch" type="xml">
+            <field name="distinct_analytic_accounts" position="after">
+                <field name="distinct_operating_units" />
+            </field>
+        </field>
+    </record>
+</odoo>

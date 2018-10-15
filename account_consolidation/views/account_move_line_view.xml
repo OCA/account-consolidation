@@ -9,6 +9,7 @@
             <xpath expr="//field[@name='line_ids']/tree/field[@name='account_id']" position="after">
                 <field name="consol_company_id" />
                 <field name="consol_partner_id" />
+                <field name="consol_analytic_account_id" />
             </xpath>
         </field>
     </record>
@@ -22,6 +23,7 @@
             <field name="account_id" position="after">
                 <field name="consol_company_id" />
                 <field name="consol_partner_id" />
+                <field name="consol_analytic_account_id" />
             </field>
         </field>
     </record>
