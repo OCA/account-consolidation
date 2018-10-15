@@ -112,7 +112,7 @@ class AccountConsolidationConsolidate(models.TransientModel):
     def _get_prepare_function(self, distinctions):
         # TODO improve me ?
         if 'operating_units' not in distinctions:
-            return super()._get_prepare_function()
+            return super()._get_prepare_function(distinctions)
         else:
             if 'interco_partners' in distinctions:
                 if 'analytic_accounts' in distinctions:
