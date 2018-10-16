@@ -299,6 +299,9 @@ class AccountConsolidationConsolidate(models.TransientModel):
         return vals
 
     def _prepare_ml_partner_analytic(self, account, profile):
+        """Prepare Consolidation move lines with distinction on partner and
+        analytic
+        """
         mls_to_generate = []
         intercompany_partners = self._get_intercompany_partners(
             profile.sub_company_id)
@@ -323,6 +326,7 @@ class AccountConsolidationConsolidate(models.TransientModel):
         return mls_to_generate
 
     def _prepare_ml_partner(self, account, profile):
+        """Prepare Consolidation move lines with distinction on partner"""
         mls_to_generate = []
         intercompany_partners = self._get_intercompany_partners(
             profile.sub_company_id)
@@ -336,6 +340,7 @@ class AccountConsolidationConsolidate(models.TransientModel):
         return mls_to_generate
 
     def _prepare_ml_analytic(self, account, profile):
+        """Prepare Consolidation move lines with distinction on analytic"""
         mls_to_generate = []
         analytic_accounts = self.env['account.analytic.account'].search([
             ('company_id', '=', profile.sub_company_id.id)
@@ -352,6 +357,7 @@ class AccountConsolidationConsolidate(models.TransientModel):
         return mls_to_generate
 
     def _prepare_ml_generic(self, account, profile):
+        """Prepare Consolidation move lines without distinction"""
         mls_to_generate = []
         ml_vals = self._prepare_consolidate_account(account, profile)
         if ml_vals:
@@ -359,7 +365,15 @@ class AccountConsolidationConsolidate(models.TransientModel):
         return mls_to_generate
 
     def _get_prepare_function(self, distinctions):
-        # TODO improve me ?
+        """Return the 'move line preparation function' to use according to the
+        distinctions on the consolidation move lines to generate.
+
+        E.g if distinctions are to be done on partners and analytic, the
+        returned function will have to loop over both partners and analytic
+        accounts to a prepare move line for each combination, whereas if the
+        are no distinctions to be done, it won't loop and prepare only one
+        consolidation move line.
+        """
         if 'distinct_interco_partners' in distinctions:
             if 'distinct_analytic_accounts' in distinctions:
                 return self._prepare_ml_partner_analytic
@@ -372,6 +386,7 @@ class AccountConsolidationConsolidate(models.TransientModel):
                 return self._prepare_ml_generic
 
     def _finish_ml_preparation(self, move_line_vals):
+        """Adds common consolidation values to move line dict preparation"""
         move_line_vals.update({
             'journal_id': self.journal_id.id,
             'company_id': self.company_id.id,
