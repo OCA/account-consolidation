@@ -1,4 +1,4 @@
-# Copyright 2011-2018 Camptocamp SA
+# Copyright 2011-2019 Camptocamp SA
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from odoo import models, fields, _
@@ -19,8 +19,7 @@ class AccountConsolidationCheck(models.TransientModel):
 
     def check_account_mapping(self):
         """Convert errors message to a HTML list of errors."""
-        invalid_items_per_company = super(AccountConsolidationCheck,
-                                          self).check_account_mapping()
+        invalid_items_per_company = super().check_account_mapping()
 
         err_lines = []
         for company, account_errors in invalid_items_per_company.items():
@@ -34,8 +33,7 @@ class AccountConsolidationCheck(models.TransientModel):
 
     def check_interco_partner(self):
         """Convert errors message to a HTML list of errors."""
-        invalid_partners = super(AccountConsolidationCheck,
-                                 self).check_interco_partner()
+        invalid_partners = super().check_interco_partner()
         err_lines = []
         if invalid_partners:
             err_lines.append('<div><ul>')
@@ -91,5 +89,10 @@ class AccountConsolidationCheck(models.TransientModel):
                 'You can now proceed with the consolidation.</h2>')
             self.state = 'ok'
         return {
-            "type": "ir.actions.do_nothing",
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            'view_type': 'form',
+            'res_id': self.id,
+            'res_model': self._name,
+            'target': 'new',
         }

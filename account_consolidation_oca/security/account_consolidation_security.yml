@@ -1,5 +1,0 @@
--
-   Set the default ir.rule on account.account for multi-company to inactive
--
-  !python {model: ir.rule, id: account.account_comp_rule}:
-      self.active = False

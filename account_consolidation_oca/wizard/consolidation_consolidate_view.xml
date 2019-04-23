@@ -4,10 +4,9 @@
     <record id="view_consolidation_consolidate_form" model="ir.ui.view">
         <field name="name">account.consolidation.consolidate.form</field>
         <field name="model">account.consolidation.consolidate</field>
-        <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Consolidation: Consolidate">
-                <label string="Run the Year-To-Date consolidation until the selected period for the defined subsidiaries."/>
+                <p string="Run the Year-To-Date consolidation until the selected period for the defined subsidiaries."/>
                 <p>Balance sheet accounts are consolidated using standard currency rates.</p>
                 <p>Profit and Loss accounts are consolidated using monthly currency rates.</p>
                 <group>
@@ -16,6 +15,7 @@
                     <field name="month" />
                     <field name="journal_id" domain="[('company_id', '=', company_id)]"/>
                     <field name="target_move"/>
+                    <field name="reverse_date"/>
                     <field name="consolidation_profile_ids" />
                 </group>
                 <footer>

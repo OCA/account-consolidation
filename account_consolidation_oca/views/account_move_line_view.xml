@@ -10,6 +10,15 @@
                 <field name="consol_company_id" />
                 <field name="consol_partner_id" />
             </xpath>
+
+            <field name="auto_reverse" position="after">
+                <field name="consol_company_id"  invisible="1"/>
+            </field>
+            <xpath expr="//field[@name='reverse_date']" position="attributes">
+                <!-- replace attributes to disable required on reversal moves in case of having consolidation company-->
+                <attribute name="attrs">{'invisible':[('auto_reverse', '=', False)], 'required':['|','&amp;',('auto_reverse', '=', True),('consol_company_id', '=', True),'&amp;',('auto_reverse', '=', True),('consol_company_id', '=', False)],
+                    'readonly':[('reverse_entry_id', '!=', False)]}</attribute>
+            </xpath>
         </field>
     </record>
 

@@ -14,7 +14,7 @@
                             <field name="is_consolidation" />
                         </div>
                         <div class="o_setting_right_pane">
-                            <label string="Consolidation company"/>
+                            <label for="is_consolidation" />
                             <span class="fa fa-lg fa-building-o" title="Values set here are company-specific." groups="base.group_multi_company"/>
                             <div class="text-muted">
                                 Use this company as consolidation company
@@ -24,7 +24,7 @@
                     <div class="col-xs-12 col-md-6 o_setting_box" attrs="{'invisible': [('is_consolidation', '=', False)]}">
                         <div class="o_setting_left_pane"/>
                         <div class="o_setting_right_pane">
-                            <label string="Consolidation journal"/>
+                            <label string="Consolidation journal" for="consolidation_default_journal_id"/>
                             <span class="fa fa-lg fa-building-o" title="Values set here are company-specific." groups="base.group_multi_company"/>
                             <div class="text-muted">
                                 Default consolidation journal
@@ -40,7 +40,7 @@
                     <div class="col-xs-12 col-md-6 o_setting_box" attrs="{'invisible': [('is_consolidation', '=', False)]}">
                         <div class="o_setting_left_pane"/>
                         <div class="o_setting_right_pane">
-                            <label string="Consolidation differences"/>
+                            <label for="consolidation_diff_account_id" string="Consolidation differences"/>
                             <span class="fa fa-lg fa-building-o" title="Values set here are company-specific." groups="base.group_multi_company"/>
                             <div class="text-muted">
                                 Default consolidation differences account
@@ -62,7 +62,13 @@
                                 Define the subsidiaries to consolidate
                             </div>
                             <div class="content-group">
-                                <field name="consolidation_profile_ids" style="width: 100%;" nolabel="1" />
+                                <field name="consolidation_profile_ids" style="width: 100%;" nolabel="1" >
+                                    <tree>
+                                        <field name="sub_company_id" />
+                                        <field name="company_id" />
+                                        <field name="consolidation_percentage" />
+                                    </tree>
+                                </field>
                             </div>
                         </div>
                     </div>
