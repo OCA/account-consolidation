@@ -12,11 +12,20 @@
                         <h1><field name="sub_company_id" /></h1>
                     </div>
                     <group>
-                        <field name="company_id" invisible="1"/>
                         <field name="consolidation_percentage" />
                     </group>
                 </sheet>
             </form>
         </field>
     </record>
+
+    <record id="action_consolidation_profile" model="ir.actions.act_window">
+        <field name="name">Consolidation: Profiles</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">company.consolidation.profile</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
 </odoo>
