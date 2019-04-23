@@ -1,4 +1,4 @@
-# Copyright 2011-2018 Camptocamp SA
+# Copyright 2011-2019 Camptocamp SA
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 from lxml import etree
 
@@ -20,7 +20,7 @@ class AccountMove(models.Model):
                          submenu=False):
         """Hide fields `consol_company_id` if the user is not connected to
         a consolidation company."""
-        res = super(AccountMove, self)._fields_view_get(
+        res = super()._fields_view_get(
             view_id, view_type, toolbar, submenu
         )
         if view_type == 'form':
@@ -58,7 +58,7 @@ class AccountMoveLine(models.Model):
                          submenu=False):
         """Hide fields `consol_company_id` and `consol_partner_id` if the
         user is not connected to a consolidation company."""
-        res = super(AccountMoveLine, self)._fields_view_get(
+        res = super()._fields_view_get(
             view_id, view_type, toolbar, submenu
         )
 

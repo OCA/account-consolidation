@@ -1,4 +1,4 @@
-# Copyright 2011-2018 Camptocamp SA
+# Copyright 2011-2019 Camptocamp SA
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 import logging
 from calendar import monthrange
@@ -84,6 +84,11 @@ class AccountConsolidationConsolidate(models.TransientModel):
         default=lambda self: self._get_consolidation_profiles(),
         readonly=True
     )
+    reverse_date = fields.Date(
+        string='Reversal Date',
+        help='If you want create reversal moves for consolidation entries '
+             'automatically set up reversal date',
+    )
 
     @api.multi
     def _get_intercompany_partners(self, subsidiary):
@@ -143,7 +148,7 @@ class AccountConsolidationConsolidate(models.TransientModel):
     def reverse_moves(self, subsidiary):
         """
         Reverse all consolidation account moves of a subsidiary which have
-        the "To be reversed" flag
+        the "Auto reversed" flag, and wasn't reversed before this date
 
         :param subsidiary: Recordset of the subsidiary
 
@@ -151,15 +156,18 @@ class AccountConsolidationConsolidate(models.TransientModel):
                               Recordset of the reversal moves
         """
         move_obj = self.env['account.move']
-        move_to_reverse = move_obj.search(
-            [('journal_id', '=', self.journal_id.id),
-             ('to_be_reversed', '=', True),
-             ('consol_company_id', '=', subsidiary.id)])
-        reversal_action = self.env['account.move.reverse'].with_context(
+        move_to_reverse = move_obj.search([
+            ('journal_id', '=', self.journal_id.id),
+            ('auto_reverse', '=', True),
+            ('consol_company_id', '=', subsidiary.id),
+            ('state', '=', 'posted'),
+            ('reverse_entry_id', '=', False),
+        ])
+        reversal_action = self.env['account.move.reversal'].with_context(
             active_ids=move_to_reverse.ids).create({
                 'date': self._get_month_first_date(),
                 'journal_id': self.journal_id.id
-            }).action_reverse()
+            }).reverse_moves()
         reversal_move = move_obj.browse(reversal_action.get('res_id'))
 
         return move_to_reverse, reversal_move
@@ -366,7 +374,7 @@ class AccountConsolidationConsolidate(models.TransientModel):
 
         if move_lines_to_generate:
 
-            # reverse previous entries with flag 'to_be_reversed' (YTD)
+            # reverse previous entries if it wasn't done before
             self.reverse_moves(profile.sub_company_id)
 
             # prepare a rate difference move line
@@ -396,7 +404,7 @@ class AccountConsolidationConsolidate(models.TransientModel):
 
         :return: dict to open an Items view filtered on the created move lines
         """
-        super(AccountConsolidationConsolidate, self).run_consolidation()
+        super().run_consolidation()
 
         created_moves = self.env['account.move']
 
@@ -411,7 +419,10 @@ class AccountConsolidationConsolidate(models.TransientModel):
         if created_moves:
 
             # Created moves have to be reversed on the next consolidation
-            created_moves.write({'to_be_reversed': True})
+            created_moves.write({
+                'auto_reverse': True,
+                'reverse_date': self.reverse_date,
+            })
 
             return {
                 'name': _('Consolidation Items'),

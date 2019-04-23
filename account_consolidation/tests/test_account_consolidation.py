@@ -1,4 +1,4 @@
-# Copyright 2018 Camptocamp SA
+# Copyright 2019 Camptocamp SA
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 import time
@@ -211,7 +211,7 @@ class TestAccountConsolidation(TransactionCase):
         january_moves = january_conso_lines.mapped('move_id')
         january_moves.post()
         for move in january_moves:
-            self.assertTrue(move.to_be_reversed)
+            self.assertTrue(move.auto_reverse)
 
         february_wizard = self.env['account.consolidation.consolidate'].create(
             {'month': '02', 'target_move': 'all'}
@@ -219,9 +219,9 @@ class TestAccountConsolidation(TransactionCase):
         february_res = february_wizard.run_consolidation()
 
         for move in january_moves:
-            reversed_move = move.reversal_id
+            reversed_move = move.reverse_entry_id
             self.assertEqual(reversed_move.amount, move.amount)
-            self.assertEqual(reversed_move.date,
+            self.assertEqual(fields.Date.to_string(reversed_move.date),
                              february_wizard._get_month_first_date())
 
         february_line_ids = february_res['domain'][0][2]
