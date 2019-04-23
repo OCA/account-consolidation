@@ -1,4 +1,4 @@
-# Copyright 2011-2018 Camptocamp SA
+# Copyright 2011-2019 Camptocamp SA
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from odoo import models, fields, _, api
@@ -23,7 +23,7 @@ class AccountConsolidationBase(models.AbstractModel):
         if not self.env.user.company_id.is_consolidation:
             raise UserError(_('Consolidation wizards can only be called from '
                               'a consolidation company.'))
-        return super(AccountConsolidationBase, self).default_get(fields)
+        return super().default_get(fields)
 
     company_id = fields.Many2one(
         comodel_name='res.company',
