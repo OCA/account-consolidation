@@ -62,11 +62,12 @@
                                 Define the subsidiaries to consolidate
                             </div>
                             <div class="content-group">
-                                <field name="consolidation_profile_ids" style="width: 100%;" nolabel="1" >
+                                <button name="%(account_consolidation.action_consolidation_profile)d" icon="fa-arrow-right" type="action" string="Consolidation Profiles" class="btn-link"
+                                />
+                                <field name="consolidation_profile_ids" style="width: 100%;" nolabel="1" readonly="1" options="{'clickable': '1'}">
                                     <tree>
-                                        <field name="sub_company_id" />
-                                        <field name="company_id" />
-                                        <field name="consolidation_percentage" />
+                                        <field name="sub_company_id"></field>
+                                        <field name="consolidation_percentage"></field>
                                     </tree>
                                 </field>
                             </div>
