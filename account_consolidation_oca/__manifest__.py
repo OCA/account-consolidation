@@ -17,12 +17,12 @@
         'security/account_consolidation_security.xml',
         'security/ir.model.access.csv',
         'views/account_move_line_view.xml',
-        'views/res_config_settings.xml',
         'views/account_view.xml',
         'views/company_consolidation_profile.xml',
         'wizard/consolidation_check_view.xml',
         'wizard/consolidation_consolidate_view.xml',
         'views/consolidation_menu.xml',
+        'views/res_config_settings.xml',
     ],
     "demo": [
         'demo/company_demo.xml',
