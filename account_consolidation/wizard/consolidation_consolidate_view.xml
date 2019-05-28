@@ -15,7 +15,6 @@
                     <field name="month" />
                     <field name="journal_id" domain="[('company_id', '=', company_id)]"/>
                     <field name="target_move"/>
-                    <field name="reverse_date"/>
                     <field name="consolidation_profile_ids" />
                 </group>
                 <footer>
