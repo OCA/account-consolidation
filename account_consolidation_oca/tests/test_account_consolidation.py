@@ -416,13 +416,13 @@ class TestAccountConsolidation(TransactionCase):
             self.consolidation_manager).create({
                 'month': '01',
                 'target_move': 'all',
-                'reverse_date': '%s-01-31' % time.strftime('%Y'),
             })
 
         res = wizard.sudo(self.consolidation_manager).run_consolidation()
         line_ids = res['domain'][0][2]
         jan_moves = self.env['account.move.line'].sudo(
             self.consolidation_manager).browse(line_ids).mapped('move_id')
+        jan_moves.write({'reverse_date': '%s-01-31' % time.strftime('%Y')})
         self.assertTrue(all(jan_moves.mapped('auto_reverse')))
         self.assertFalse(jan_moves.mapped('reverse_entry_id'))
         jan_moves.post()
@@ -454,4 +454,3 @@ class TestAccountConsolidation(TransactionCase):
             # only 2 records of consolidation where created
             final_moves_count = self.env['account.move'].search_count([])
             self.assertEqual(final_moves_count, init_moves_count + 6)
-
