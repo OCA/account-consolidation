@@ -84,11 +84,6 @@ class AccountConsolidationConsolidate(models.TransientModel):
         default=lambda self: self._get_consolidation_profiles(),
         readonly=True
     )
-    reverse_date = fields.Date(
-        string='Reversal Date',
-        help='If you want create reversal moves for consolidation entries '
-             'automatically set up reversal date',
-    )
 
     @api.multi
     def _get_intercompany_partners(self, subsidiary):
@@ -421,7 +416,6 @@ class AccountConsolidationConsolidate(models.TransientModel):
             # Created moves have to be reversed on the next consolidation
             created_moves.write({
                 'auto_reverse': True,
-                'reverse_date': self.reverse_date,
             })
 
             return {
