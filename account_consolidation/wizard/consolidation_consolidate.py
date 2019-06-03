@@ -155,11 +155,19 @@ class AccountConsolidationConsolidate(models.TransientModel):
             [('journal_id', '=', self.journal_id.id),
              ('to_be_reversed', '=', True),
              ('consol_company_id', '=', subsidiary.id)])
-        reversal_action = self.env['account.move.reverse'].with_context(
-            active_ids=move_to_reverse.ids).create({
-                'date': self._get_month_first_date(),
-                'journal_id': self.journal_id.id
-            }).action_reverse()
+        try:
+            reversal_action = self.env['account.move.reverse'].with_context(
+                active_ids=move_to_reverse.ids).create({
+                    'date': self._get_month_first_date(),
+                    'journal_id': self.journal_id.id
+                }).action_reverse()
+        except ValidationError as e:
+            raise ValidationError(_(
+                "The error below appeared while trying to reverse the "
+                "following moves: \n %s \n %s") % (
+                '\n'.join(['- %s' % m.name for m in move_to_reverse]),
+                e.name
+            ))
         reversal_move = move_obj.browse(reversal_action.get('res_id'))
 
         return move_to_reverse, reversal_move
