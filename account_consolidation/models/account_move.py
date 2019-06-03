@@ -34,6 +34,13 @@ class AccountMove(models.Model):
                 res['arch'] = etree.tostring(xml)
         return res
 
+    @api.multi
+    def post(self):
+        """Bypass move posting when reversing consolidation moves"""
+        if self.env.context.get('__conso_reversal_no_post'):
+            return True
+        return super().post()
+
 
 class AccountMoveLine(models.Model):
 
