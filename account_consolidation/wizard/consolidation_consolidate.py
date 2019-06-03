@@ -192,7 +192,9 @@ class AccountConsolidationConsolidate(models.TransientModel):
                                              l.move_id.state == 'posted')
         if move_lines:
             _logger.debug('Move lines processed : %s ' % move_lines.ids)
-            move_lines.write({'consolidated': True})
+            self.env.cr.execute(
+                'UPDATE account_move_line SET consolidated = True '
+                'WHERE id IN %s;', [tuple(move_lines.ids)])
 
         return sum([l.balance for l in move_lines])
 
@@ -362,7 +364,10 @@ class AccountConsolidationConsolidate(models.TransientModel):
 
         # Now that all move lines are processed we reset the flag of processed
         # accounts
-        self.env['account.move.line'].search([]).write({'consolidated': False})
+        self.env.cr.execute(
+            'UPDATE account_move_line SET consolidated = False '
+            'WHERE consolidated = True;'
+        )
 
         if move_lines_to_generate:
 
@@ -404,7 +409,8 @@ class AccountConsolidationConsolidate(models.TransientModel):
         # SQL is required here to ensure it's executed before searching each
         # AML balances
         self.env.cr.execute(
-            'UPDATE account_move_line SET consolidated = False;')
+            'UPDATE account_move_line SET consolidated = False '
+            'WHERE consolidated = True;')
         for profile in self.consolidation_profile_ids:
             created_moves |= self.consolidate_subsidiary(profile)
 
