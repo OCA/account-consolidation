@@ -415,3 +415,10 @@ class TestAccountConsolidation(TransactionCase):
             cron.method_direct_trigger()
             self.assertTrue(all(feb_moves.mapped('auto_reverse')))
             self.assertFalse(feb_moves.mapped('reverse_entry_id'))
+        # Deleting reversals of jan entries should restore the auto_reverse
+        # flag on jan entries
+        reversals = jan_moves.mapped('reverse_entry_id')
+        reversals.unlink()
+        self.assertTrue(all(jan_moves.mapped('auto_reverse')))
+        self.assertFalse(all(jan_moves.mapped('reverse_date')))
+        self.assertFalse(jan_moves.mapped('reverse_entry_id'))
