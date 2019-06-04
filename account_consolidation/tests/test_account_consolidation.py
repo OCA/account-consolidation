@@ -408,6 +408,9 @@ class TestAccountConsolidation(TransactionCase):
         with mock.patch(
                 MOCK_PATH + '.models.consolidation_profile.fields.Date.today'
         ) as fnct:
+            # Unposted entries are not selected by the ir.cron, so we post one
+            # and check that both entries stay 'unreversed'
+            feb_moves[0].post()
             fnct.return_value = '%s-06-30' % time.strftime('%Y'),
             cron.method_direct_trigger()
             self.assertTrue(all(feb_moves.mapped('auto_reverse')))
