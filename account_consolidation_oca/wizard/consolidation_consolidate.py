@@ -155,9 +155,10 @@ class AccountConsolidationConsolidate(models.TransientModel):
             ('journal_id', '=', self.journal_id.id),
             ('auto_reverse', '=', True),
             ('consol_company_id', '=', subsidiary.id),
-            ('state', '=', 'posted'),
             ('reverse_entry_id', '=', False),
         ])
+        if not moves_to_reverse:
+            return moves_to_reverse, False
         try:
             reversal_action = self.env['account.move.reversal'].with_context(
                 active_ids=moves_to_reverse.ids,
@@ -172,7 +173,8 @@ class AccountConsolidationConsolidate(models.TransientModel):
                 '\n'.join(['- %s' % m.name for m in moves_to_reverse]),
                 e.name
             ))
-        reversal_move = move_obj.browse(reversal_action.get('res_id'))
+        moves_to_reverse.write({'auto_reverse': False})
+        reversal_move = move_obj.browse(reversal_action.get('domain')[0][2])
 
         return moves_to_reverse, reversal_move
 
