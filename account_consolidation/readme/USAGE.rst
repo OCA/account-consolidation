@@ -6,8 +6,8 @@ and select if you want to consolidate all the moves or only posted ones.
 
 This will generate a journal entry in YTD (Year-To-Date) mode on your
 consolidation company for each subsidiary. Those entries are flagged as
-'to be reversed', so they will actually be reversed when you run the
+'auto_reverse', so they will actually be reversed when you run the
 consolidation the next time.
 
-The generated journal entry is unposted, allowing you to modify or delete it to
+The generated journal entries are unposted, allowing you to modify or delete it to
 run the consolidation again.

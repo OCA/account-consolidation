@@ -1,5 +1,5 @@
-To install this module, you need the modules `currency_monthly_rate` and
- to be available in your system.
+To install this module, you need the modules `currency_monthly_rate` to be
+available in your system.
 
 To configure this module, you need to flag a company as Consolidation in the
 Accounting settings.
@@ -19,12 +19,10 @@ ensure every active account of your subsidiaries are set, and company partners
 have no company defined.
 
 Make sure you also defined currency rates and monthly currency rates on the
-currencies used in your subsidiaries, as P&L accounts are consolidated using
-monthly rates and B.S accounts using standard 'spot' rates.
+consolidation company for the currencies of your subsidiaries, as P&L accounts
+are consolidated using monthly rates and B.S accounts using standard 'spot'
+rates.
 
-Created consolidation entries should be reversed to the next consolidation, you
-can set a date when reversal moves will be created, but if you running next
-consolidation reversal process will be forced on this date.
 
 Known issues
 ============
