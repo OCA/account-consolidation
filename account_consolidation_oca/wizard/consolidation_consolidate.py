@@ -302,9 +302,10 @@ class AccountConsolidationConsolidate(models.TransientModel):
                 rate_text = _('spot rate : %s') % (
                     subsidiary_currency.round(rate))
 
-            currency_value = subsidiary_currency.with_context(
-                date=self._get_month_last_date()).compute(
-                conso_balance, holding_currency)
+            currency_value = subsidiary_currency._convert(
+                conso_balance, holding_currency,
+                self.env.user.company_id, self._get_month_last_date()
+            )
 
             vals.update({
                 'currency_id': subsidiary_currency.id,
