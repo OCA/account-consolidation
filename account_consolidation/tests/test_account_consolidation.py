@@ -395,6 +395,69 @@ class TestAccountConsolidation(TransactionCase):
         self.assertFalse(feb_moves.mapped('reversal_id'))
         # january moves were reversed and stay unposted
         for jan_move in jan_moves:
-            self.assertFalse(jan_move.to_be_reversed)
             self.assertTrue(jan_move.reversal_id)
             self.assertEqual(jan_move.state, 'draft')
+        # If reversals of jan entries and feb entries are deleted, they must
+        # be generated again with the same values on the next run
+        jan_reversals = jan_moves.mapped('reversal_id')
+        entry_fields = [
+            'state', 'partner_id', 'consol_company_id', 'reversal_id',
+            'currency_id', 'to_be_reversed', 'journal_id',
+            'date', 'amount', 'company_id'
+        ]
+        line_fields = [
+            'credit', 'consol_company_id', 'consol_partner_id', 'reconciled',
+            'account_id', 'partner_id', 'balance', 'journal_id', 'company_id',
+            'amount_currency', 'currency_id', 'company_currency_id',
+            'debit', 'quantity', 'consolidated', 'date'
+        ]
+        jan_reversal_values = jan_reversals.read(entry_fields)
+        jan_reversal_lines_values = jan_reversals.mapped('line_ids').read(
+            line_fields)
+        feb_moves_values = feb_moves.read(entry_fields)
+        feb_moves_lines_values = feb_moves.mapped('line_ids').read(line_fields)
+        jan_reversals.unlink()
+        feb_moves.unlink()
+        wizard = self.env['account.consolidation.consolidate'].sudo(
+            self.consolidation_manager).create({
+                'month': '02',
+                'target_move': 'all'
+            })
+        res = wizard.sudo(self.consolidation_manager).run_consolidation()
+        line_ids = res['domain'][0][2]
+        new_feb_moves = self.env['account.move.line'].sudo(
+            self.consolidation_manager).browse(line_ids).mapped('move_id')
+        new_jan_reversals = jan_moves.mapped('reversal_id')
+        new_jan_reversal_values = new_jan_reversals.read(entry_fields)
+        new_jan_reversal_lines_values = new_jan_reversals.mapped(
+            'line_ids').read(line_fields)
+        new_feb_moves_values = new_feb_moves.read(entry_fields)
+        new_feb_moves_lines_values = new_feb_moves.mapped('line_ids').read(
+            line_fields)
+
+        def _compare_new_read_values(list1, list2, flist):
+            """ Ensure list1 and list2 are equal out of id fields
+
+            :param list1: Result of a read on a recordset
+            :param list2: Result of a read on a recordset
+            :param flist: Fields that must be equal
+            :return:
+            """
+            for item1, item2 in zip(list1, list2):
+                for fname in flist:
+                    self.assertEqual(item1.get(fname), item2.get(fname))
+                self.assertNotEqual(item1.get('id'), item2.get('id'))
+
+        _compare_new_read_values(
+            jan_reversal_values, new_jan_reversal_values, entry_fields
+        )
+        _compare_new_read_values(
+            jan_reversal_lines_values, new_jan_reversal_lines_values,
+            line_fields
+        )
+        _compare_new_read_values(
+            feb_moves_values, new_feb_moves_values, entry_fields
+        )
+        _compare_new_read_values(
+            feb_moves_lines_values, new_feb_moves_lines_values, line_fields
+        )

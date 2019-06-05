@@ -154,7 +154,10 @@ class AccountConsolidationConsolidate(models.TransientModel):
         moves_to_reverse = move_obj.search(
             [('journal_id', '=', self.journal_id.id),
              ('to_be_reversed', '=', True),
-             ('consol_company_id', '=', subsidiary.id)])
+             ('consol_company_id', '=', subsidiary.id),
+             ('reversal_id', '=', False)])
+        if not moves_to_reverse:
+            return moves_to_reverse, False
         try:
             reversal_action = self.env['account.move.reverse'].with_context(
                 active_ids=moves_to_reverse.ids,
@@ -169,6 +172,13 @@ class AccountConsolidationConsolidate(models.TransientModel):
                 '\n'.join(['- %s' % m.name for m in moves_to_reverse]),
                 e.name
             ))
+        # Restore flag to be reversed after it was removed by action_reverse
+        # We need this to make sure the move will be reversed again on the next
+        # run if the reversal move was deleted
+        # As reversed move have the reversal_id link, and we select only the
+        # moves not having it in the search above, we can be sure that only the
+        # last consolidation moves will be reversed
+        moves_to_reverse.write({'to_be_reversed': True})
         reversal_move = move_obj.browse(reversal_action.get('res_id'))
 
         return moves_to_reverse, reversal_move
