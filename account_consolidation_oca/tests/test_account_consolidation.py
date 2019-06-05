@@ -440,22 +440,30 @@ class TestAccountConsolidation(TransactionCase):
         new_feb_moves_lines_values = new_feb_moves.mapped('line_ids').read(
             line_fields)
 
-        def _compare_values(list1, list2, flist):
+        def _compare_new_read_values(list1, list2, flist):
+            """ Ensure list1 and list2 are equal out of id fields
+
+            :param list1: Result of a read on a recordset
+            :param list2: Result of a read on a recordset
+            :param flist: Fields that must be equal
+            :return:
+            """
             for item1, item2 in zip(list1, list2):
                 for fname in flist:
                     self.assertEqual(item1.get(fname), item2.get(fname))
+                self.assertNotEqual(item1.get('id'), item2.get('id'))
 
-        _compare_values(
+        _compare_new_read_values(
             jan_reversal_values, new_jan_reversal_values, entry_fields
         )
-        _compare_values(
+        _compare_new_read_values(
             jan_reversal_lines_values, new_jan_reversal_lines_values,
             line_fields
         )
-        _compare_values(
+        _compare_new_read_values(
             feb_moves_values, new_feb_moves_values, entry_fields
         )
-        _compare_values(
+        _compare_new_read_values(
             feb_moves_lines_values, new_feb_moves_lines_values, line_fields
         )
         # Check that reversal ir.cron will not reverse entries automatically
