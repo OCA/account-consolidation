@@ -41,20 +41,6 @@ class AccountMove(models.Model):
             return True
         return super().post()
 
-    @api.multi
-    def unlink(self):
-        """Restore auto_reverse on origin moves for reversals of conso moves"""
-        original_moves = False
-        consolidation_moves = self.filtered(lambda m: m.consol_company_id)
-        if consolidation_moves:
-            original_moves = self.search([
-                ('reverse_entry_id', 'in', consolidation_moves.ids)
-            ])
-        res = super().unlink()
-        if original_moves:
-            original_moves.write({'auto_reverse': True})
-        return res
-
 
 class AccountMoveLine(models.Model):
 
