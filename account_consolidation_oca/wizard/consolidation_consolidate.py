@@ -173,7 +173,6 @@ class AccountConsolidationConsolidate(models.TransientModel):
                 '\n'.join(['- %s' % m.name for m in moves_to_reverse]),
                 e.name
             ))
-        moves_to_reverse.write({'auto_reverse': False})
         reversal_move = move_obj.browse(reversal_action.get('domain')[0][2])
 
         return moves_to_reverse, reversal_move
