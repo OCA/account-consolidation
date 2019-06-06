@@ -374,7 +374,6 @@ class TestAccountConsolidation(TransactionCase):
     def test_multi_consolidation_(self):
         # run consolidation multiple times and check if accounting entries are
         # created correctly
-        init_moves_count = self.env['account.move'].search_count([])
         wizard = self.env['account.consolidation.consolidate'].sudo(
             self.consolidation_manager).create({
                 'month': '01',
@@ -385,11 +384,8 @@ class TestAccountConsolidation(TransactionCase):
         jan_moves = self.env['account.move.line'].sudo(
             self.consolidation_manager).browse(line_ids).mapped('move_id')
         self.assertTrue(all(jan_moves.mapped('auto_reverse')))
+        self.assertFalse(all(jan_moves.mapped('reverse_date')))
         self.assertFalse(jan_moves.mapped('reverse_entry_id'))
-        # post only one move
-        jan_moves[0].post()
-        final_moves_count = self.env['account.move'].search_count([])
-        self.assertEqual(final_moves_count, init_moves_count + 2)
         wizard = self.env['account.consolidation.consolidate'].sudo(
             self.consolidation_manager).create({
                 'month': '02',
@@ -400,57 +396,85 @@ class TestAccountConsolidation(TransactionCase):
         feb_moves = self.env['account.move.line'].sudo(
             self.consolidation_manager).browse(line_ids).mapped('move_id')
         self.assertTrue(all(feb_moves.mapped('auto_reverse')))
+        self.assertFalse(all(feb_moves.mapped('reverse_date')))
         self.assertFalse(feb_moves.mapped('reverse_entry_id'))
-        # posted move was reversed
-        self.assertTrue(jan_moves[0].reverse_entry_id)
-        self.assertFalse(jan_moves[1].reverse_entry_id)
-        # where created consolidation record and reversal record
-        final_moves_count = self.env['account.move'].search_count([])
-        self.assertEqual(final_moves_count, init_moves_count + 5)
-
-    def test_multi_cron_consolidation_(self):
-        # run consolidation multiple times and check if accounting entries are
-        # created correctly
-        init_moves_count = self.env['account.move'].search_count([])
+        # january moves were reversed and stay unposted
+        for jan_move in jan_moves:
+            self.assertTrue(jan_move.reverse_entry_id)
+            self.assertEqual(jan_move.state, 'draft')
+        # If reversals of jan entries and feb entries are deleted, they must
+        # be generated again with the same values on the next run
+        jan_reversals = jan_moves.mapped('reverse_entry_id')
+        entry_fields = [
+            'state', 'partner_id', 'consol_company_id', 'reverse_entry_id',
+            'currency_id', 'reverse_date', 'auto_reverse', 'journal_id',
+            'date', 'amount', 'company_id'
+        ]
+        line_fields = [
+            'credit', 'consol_company_id', 'consol_partner_id', 'reconciled',
+            'account_id', 'partner_id', 'balance', 'journal_id', 'company_id',
+            'amount_currency', 'currency_id', 'company_currency_id',
+            'debit', 'quantity', 'consolidated', 'date'
+        ]
+        jan_reversal_values = jan_reversals.read(entry_fields)
+        jan_reversal_lines_values = jan_reversals.mapped('line_ids').read(
+            line_fields)
+        feb_moves_values = feb_moves.read(entry_fields)
+        feb_moves_lines_values = feb_moves.mapped('line_ids').read(line_fields)
+        jan_reversals.unlink()
+        feb_moves.unlink()
         wizard = self.env['account.consolidation.consolidate'].sudo(
             self.consolidation_manager).create({
-                'month': '01',
-                'target_move': 'all',
-            })
-
+            'month': '02',
+            'target_move': 'all'
+        })
         res = wizard.sudo(self.consolidation_manager).run_consolidation()
         line_ids = res['domain'][0][2]
-        jan_moves = self.env['account.move.line'].sudo(
+        new_feb_moves = self.env['account.move.line'].sudo(
             self.consolidation_manager).browse(line_ids).mapped('move_id')
-        jan_moves.write({'reverse_date': '%s-01-31' % time.strftime('%Y')})
-        self.assertTrue(all(jan_moves.mapped('auto_reverse')))
-        self.assertFalse(jan_moves.mapped('reverse_entry_id'))
-        jan_moves.post()
-        final_moves_count = self.env['account.move'].search_count([])
-        self.assertEqual(final_moves_count, init_moves_count + 2)
+        new_jan_reversals = jan_moves.mapped('reverse_entry_id')
+        new_jan_reversal_values = new_jan_reversals.read(entry_fields)
+        new_jan_reversal_lines_values = new_jan_reversals.mapped(
+            'line_ids').read(line_fields)
+        new_feb_moves_values = new_feb_moves.read(entry_fields)
+        new_feb_moves_lines_values = new_feb_moves.mapped('line_ids').read(
+            line_fields)
+
+        def _compare_new_read_values(list1, list2, flist):
+            """ Ensure list1 and list2 are equal out of id fields
+
+            :param list1: Result of a read on a recordset
+            :param list2: Result of a read on a recordset
+            :param flist: Fields that must be equal
+            :return:
+            """
+            for item1, item2 in zip(list1, list2):
+                for fname in flist:
+                    self.assertEqual(item1.get(fname), item2.get(fname))
+                self.assertNotEqual(item1.get('id'), item2.get('id'))
+
+        _compare_new_read_values(
+            jan_reversal_values, new_jan_reversal_values, entry_fields
+        )
+        _compare_new_read_values(
+            jan_reversal_lines_values, new_jan_reversal_lines_values,
+            line_fields
+        )
+        _compare_new_read_values(
+            feb_moves_values, new_feb_moves_values, entry_fields
+        )
+        _compare_new_read_values(
+            feb_moves_lines_values, new_feb_moves_lines_values, line_fields
+        )
+        # Check that reversal ir.cron will not reverse entries automatically
         cron = self.env.ref('account.ir_cron_reverse_entry')
         with mock.patch(
                 MOCK_PATH + '.models.consolidation_profile.fields.Date.today'
         ) as fnct:
+            # Unposted entries are not selected by the ir.cron, so we post one
+            # and check that both entries stay 'unreversed'
+            new_feb_moves[0].post()
             fnct.return_value = '%s-06-30' % time.strftime('%Y'),
             cron.method_direct_trigger()
-            self.assertTrue(jan_moves.mapped('reverse_entry_id'))
-            final_moves_count = self.env['account.move'].search_count([])
-            self.assertEqual(final_moves_count, init_moves_count + 4)
-            wizard = self.env['account.consolidation.consolidate'].sudo(
-                self.consolidation_manager).create({
-                    'month': '02',
-                    'target_move': 'all'
-                })
-            res = wizard.sudo(self.consolidation_manager).run_consolidation()
-            line_ids = res['domain'][0][2]
-            feb_moves = self.env['account.move.line'].sudo(
-                self.consolidation_manager).browse(line_ids).mapped('move_id')
-
-            self.assertTrue(all(feb_moves.mapped('auto_reverse')))
-            self.assertFalse(feb_moves.mapped('reverse_entry_id'))
-            # posted move was reversed
-            self.assertTrue(all(jan_moves.mapped('reverse_entry_id')))
-            # only 2 records of consolidation where created
-            final_moves_count = self.env['account.move'].search_count([])
-            self.assertEqual(final_moves_count, init_moves_count + 6)
+            self.assertTrue(all(new_feb_moves.mapped('auto_reverse')))
+            self.assertFalse(new_feb_moves.mapped('reverse_entry_id'))
