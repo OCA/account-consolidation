@@ -425,9 +425,9 @@ class TestAccountConsolidation(TransactionCase):
         feb_moves.unlink()
         wizard = self.env['account.consolidation.consolidate'].sudo(
             self.consolidation_manager).create({
-            'month': '02',
-            'target_move': 'all'
-        })
+                'month': '02',
+                'target_move': 'all'
+            })
         res = wizard.sudo(self.consolidation_manager).run_consolidation()
         line_ids = res['domain'][0][2]
         new_feb_moves = self.env['account.move.line'].sudo(
