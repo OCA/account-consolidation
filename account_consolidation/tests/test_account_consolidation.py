@@ -47,8 +47,15 @@ class TestAccountConsolidation(TransactionCase):
                 ('exp1', 10), ('exp2', 55), ('exp3', 40), ('rev1', -120),
                 ('ass1', 80), ('lia1', -30), ('lia2', -35)]
         }
+        # P&L entries in previous fiscal year are not consolidated in the
+        # actual period
+        old_pl_entry = {
+            'date': '%s-12-15' % str(int(time.strftime('%Y')) - 1),
+            'label': 'OLD P&L',
+            'subA': [('exp1', 200), ('rev1', -200)]
+        }
 
-        entries = [opening_entries, p1_entries, p2_entries]
+        entries = [opening_entries, p1_entries, p2_entries, old_pl_entry]
 
         for sub in subsidiaries:
             company = self.env.ref('account_consolidation.%s' % sub[0])
@@ -67,7 +74,7 @@ class TestAccountConsolidation(TransactionCase):
 
             for entry in entries:
                 lines_list = []
-                for move_tuple in entry[sub[1]]:
+                for move_tuple in entry.get(sub[1], []):
                     account = self.env.ref('account_consolidation.%s_%s' %
                                            (sub[1], move_tuple[0]))
                     line_vals = {
@@ -131,6 +138,33 @@ class TestAccountConsolidation(TransactionCase):
         self.assertEqual(wizard.consolidation_profile_ids.mapped(
             'sub_company_id'), self.subsidiary_a | self.subsidiary_b)
         self.assertEqual(wizard.target_move, 'posted')
+
+    def test_fiscal_year_first_date(self):
+        self.holding.fiscalyear_last_day = 31
+        self.holding.fiscalyear_last_month = 12
+        wizard = self.env['account.consolidation.consolidate'].sudo(
+            self.consolidation_manager).create({
+                'month': '12',
+                'year': 2019,
+                'target_move': 'all'
+            })
+        self.assertEqual(wizard.fiscal_year_start_date, '2019-01-01')
+        wizard = self.env['account.consolidation.consolidate'].sudo(
+            self.consolidation_manager).create({
+                'month': '01',
+                'year': 2019,
+                'target_move': 'all'
+            })
+        self.assertEqual(wizard.fiscal_year_start_date, '2019-01-01')
+        self.holding.fiscalyear_last_day = 30
+        self.holding.fiscalyear_last_month = 6
+        wizard = self.env['account.consolidation.consolidate'].sudo(
+            self.consolidation_manager).create({
+                'month': '01',
+                'year': 2019,
+                'target_move': 'all'
+            })
+        self.assertEqual(wizard.fiscal_year_start_date, '2018-07-01')
 
     def test_consolidation_checks_ok(self):
         wizard = self.env['account.consolidation.check'].create({})

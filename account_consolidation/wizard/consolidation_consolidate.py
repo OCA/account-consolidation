@@ -84,6 +84,17 @@ class AccountConsolidationConsolidate(models.TransientModel):
         default=lambda self: self._get_consolidation_profiles(),
         readonly=True
     )
+    fiscal_year_start_date = fields.Date(
+        compute='_compute_fiscal_year_start_date',
+        readonly=True,
+        help='Moves on P&L accounts are consolidated from this date'
+    )
+
+    @api.depends('year', 'month')
+    def _compute_fiscal_year_start_date(self):
+        """Compute first date of current fiscal year"""
+        for wiz in self:
+            wiz.fiscal_year_start_date = wiz._get_fiscal_year_first_day()
 
     @api.multi
     def _get_intercompany_partners(self, subsidiary):
@@ -183,6 +194,21 @@ class AccountConsolidationConsolidate(models.TransientModel):
 
         return moves_to_reverse, reversal_move
 
+    def _get_fiscal_year_first_day(self):
+        """Calculate first day of fiscal year before consolidation"""
+        fiscal_year_last_day = self.company_id.fiscalyear_last_day
+        fiscal_year_last_month = self.company_id.fiscalyear_last_month
+        conso_date = fields.Date.from_string(self._get_month_last_date())
+        last_fy_day = fields.Date.from_string('%s-%s-%s' % (
+            self.year, fiscal_year_last_month, fiscal_year_last_day))
+        if last_fy_day >= conso_date:
+            last_fy_day = fields.Date.from_string('%s-%s-%s' % (
+                int(self.year) - 1,
+                fiscal_year_last_month,
+                fiscal_year_last_day))
+        first_day = last_fy_day + relativedelta(days=1)
+        return fields.Date.to_string(first_day)
+
     def get_account_balance(self, account, partner=False):
         """
         Gets the accounting balance for the specified account according to
@@ -200,7 +226,9 @@ class AccountConsolidationConsolidate(models.TransientModel):
                   ('account_id', '=', account.id),
                   ('date', '<=', self._get_month_last_date()),
                   ('consolidated', '!=', True)]
-
+        # P&L accounts are consolidated using a start date
+        if not account.user_type_id.include_initial_balance:
+            domain.append(('date', '>=', self._get_fiscal_year_first_day()))
         if partner:
             domain.append(('partner_id', '=', partner.id))
 

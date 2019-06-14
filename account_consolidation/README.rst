@@ -73,6 +73,7 @@ Roadmap
 =======
 
 * Implement a distinction on analytic accounts
+* Add a check on accounts mapping between P&L and BS accounts
 
 Bug Tracker
 ===========

@@ -8,12 +8,13 @@
         <field name="arch" type="xml">
             <form string="Consolidation: Consolidate">
                 <label string="Run the Year-To-Date consolidation until the selected period for the defined subsidiaries."/>
-                <p>Balance sheet accounts are consolidated using standard currency rates.</p>
-                <p>Profit and Loss accounts are consolidated using monthly currency rates.</p>
+                <p>Balance sheet accounts are consolidated using all entries and standard currency rates.</p>
+                <p>Profit and Loss accounts are consolidated using entries from the current fiscal year and monthly currency rates.</p>
                 <group>
                     <field name="company_id" />
                     <field name="year" />
                     <field name="month" />
+                    <field name="fiscal_year_start_date" />
                     <field name="journal_id" domain="[('company_id', '=', company_id)]"/>
                     <field name="target_move"/>
                     <field name="consolidation_profile_ids" />
