@@ -4,4 +4,4 @@
 
   * the Due From Account
   * the Due To Account
-  * the Dur From/To Journal
+  * the Due From/Due To Journal
