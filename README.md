@@ -5,5 +5,3 @@ Account Consolidation
 =====================
 
 Consolidate chart of accounts on subsidiaries in a virtual chart of accounts of the holding.
-
-
