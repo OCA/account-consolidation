@@ -10,6 +10,7 @@ class AccountInvoice(models.Model):
     @api.multi
     def invoice_validate(self):
         res = super(AccountInvoice, self).invoice_validate()
+        if self.invoice_line_ids
         # Due From
         account_move = self.env['account.move']
         df_vals = {
@@ -60,8 +61,9 @@ class AccountInvoice(models.Model):
                             company_id.partner_id.id}))
         
         # Create Journal Entry
-        df_vals['line_ids'] = lines
-        account_move.sudo().create(df_vals)
+        if lines:
+            df_vals['line_ids'] = lines
+            account_move.sudo().create(df_vals)
 
         # Due To's
         for company_id in companies:
@@ -97,6 +99,7 @@ class AccountInvoice(models.Model):
                                 property_account_expense_id.id,
                                 'partner_id': self.partner_id.id }))
                 # Create Journal Entry
-                dt_vals['line_ids'] = lines
-                account_move.sudo().create(dt_vals)
+                if lines:
+                    dt_vals['line_ids'] = lines
+                    account_move.sudo().create(dt_vals)
         return res
