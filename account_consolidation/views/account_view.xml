@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <record id="view_account_consolidation_form" model="ir.ui.view">
+        <field name="name">account.account.consolidation.form</field>
+        <field name="model">account.account</field>
+        <field name="groups_id" eval="[(4,ref('account_consolidation.group_consolidation_manager'))]"/>
+        <field name="inherit_id" ref="account.view_account_form"/>
+        <field name="arch" type="xml">
+            <field name="company_id" position="after">
+                <field name="consolidation_company_id" invisible="1"/>
+                <field name="consolidation_account_id" />
+            </field>
+        </field>
+    </record>
+
+</odoo>
