@@ -8,7 +8,7 @@ setuptools.setup(
     description="Meta package for oca-account-consolidation Odoo addons",
     version=version,
     install_requires=[
-        'odoo12-addon-account_invoice_consolidated',
+        'odoo12-addon-account_consolidation',
     ],
     classifiers=[
         'Programming Language :: Python',
