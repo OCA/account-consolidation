@@ -6,7 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: Automatically generated\n"
+"PO-Revision-Date: 2020-03-05 12:13+0000\n"
+"Last-Translator: Bole <bole@dajmi5.com>\n"
 "Language-Team: none\n"
 "Language: hr\n"
 "MIME-Version: 1.0\n"
@@ -14,41 +15,46 @@ msgstr ""
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<="
 "4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 3.10\n"
 
 #. module: account_consolidation
 #: code:addons/account_consolidation/wizard/consolidation_check.py:82
 #, python-format
 msgid "<h2>Consolidation configuration errors</h2>"
-msgstr ""
+msgstr "<h2>Greške u postavkama konsolidacije</h2>"
 
 #. module: account_consolidation
 #: code:addons/account_consolidation/wizard/consolidation_check.py:87
 #, python-format
 msgid "<h2>No configuration error detected ! You can now proceed with the consolidation.</h2>"
 msgstr ""
+"<h2>Nema grešaka u postavkama konsolidacije! Možete nastaviti sa "
+"konsolidacijom.</h2>"
 
 #. module: account_consolidation
 #: code:addons/account_consolidation/wizard/consolidation_check.py:77
 #, python-format
 msgid "<h3>Company access not allowed</h3>"
-msgstr ""
+msgstr "<h3>Pristup trvtci nije dozvoljen</h3>"
 
 #. module: account_consolidation
 #: code:addons/account_consolidation/wizard/consolidation_check.py:73
 #, python-format
 msgid "<h3>Company defined on intercompany partners</h3>"
-msgstr ""
+msgstr "<h3>Tvrtka definirana na intercompany partnerima</h3>"
 
 #. module: account_consolidation
 #: code:addons/account_consolidation/wizard/consolidation_check.py:70
 #, python-format
 msgid "<h3>Invalid account mapping</h3>"
-msgstr ""
+msgstr "<h3>Pogrešno mapiranje konta</h3>"
 
 #. module: account_consolidation
 #: model_terms:ir.ui.view,arch_db:account_consolidation.res_config_settings_view_form
 msgid "<span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-specific.\" groups=\"base.group_multi_company\"/>"
 msgstr ""
+"<span class=\"fa fa-lg fa-building-o\" title=\"Ove postavke su specifične za "
+"svaku tvrtku\" groups=\"base.group_multi_company\"/>"
 
 #. module: account_consolidation
 #: model_terms:ir.ui.view,arch_db:account_consolidation.view_consolidation_check_form
@@ -68,22 +74,22 @@ msgstr ""
 #. module: account_consolidation
 #: model:ir.model,name:account_consolidation.model_account_account
 msgid "Account"
-msgstr ""
+msgstr "Konto"
 
 #. module: account_consolidation
 #: selection:account.consolidation.consolidate,target_move:0
 msgid "All Entries"
-msgstr ""
+msgstr "Sve stavke"
 
 #. module: account_consolidation
 #: selection:account.consolidation.consolidate,target_move:0
 msgid "All Posted Entries"
-msgstr ""
+msgstr "Sve proknjižene stavke"
 
 #. module: account_consolidation
 #: selection:account.consolidation.consolidate,month:0
 msgid "April"
-msgstr ""
+msgstr "Travanj"
 
 #. module: account_consolidation
 #: selection:account.consolidation.consolidate,month:0
