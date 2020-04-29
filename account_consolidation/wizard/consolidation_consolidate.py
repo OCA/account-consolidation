@@ -177,10 +177,27 @@ class AccountConsolidationConsolidate(models.TransientModel):
 
         :return: Balance of the account
         """
-        domain = [('company_id', '=', account.company_id.id),
-                  ('account_id', '=', account.id),
-                  ('date', '<=', self._get_month_last_date()),
-                  ('consolidated', '!=', True)]
+        domain = []
+        # For PNL accounts, consider the journal items since beginning of financial year.
+        if not account.user_type_id.include_initial_balance:
+            fy_day = account.company_id.fiscalyear_last_day
+            fy_month = account.company_id.fiscalyear_last_month
+            fy_year = int(self.year)
+            last_fy_date = date(fy_year, fy_month, fy_day)
+
+            if last_fy_date >= fields.Date.from_string(self._get_month_last_date()):
+                last_fy_date = date(fy_year - 1, fy_month, fy_day)
+
+            domain = [('company_id', '=', account.company_id.id),
+                      ('account_id', '=', account.id),
+                      ('date', '<=', self._get_month_last_date()),
+                      ('date', '>', str(last_fy_date)),
+                      ('consolidated', '!=', True)]
+        else:
+            domain = [('company_id', '=', account.company_id.id),
+                      ('account_id', '=', account.id),
+                      ('date', '<=', self._get_month_last_date()),
+                      ('consolidated', '!=', True)]
 
         if partner:
             domain.append(('partner_id', '=', partner.id))
