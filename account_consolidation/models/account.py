@@ -6,20 +6,9 @@ from odoo import models, fields, api
 
 class AccountAccount(models.Model):
 
-    _inherit = 'account.account'
+    _name = 'account.account'
+    _inherit = ['account.account', 'account.consolidation.reference.mixin']
 
-    def _compute_conso_company(self):
-        """Computes the consolidation company of the account's company."""
-        for acc in self:
-            profile = self.env['company.consolidation.profile'].search(
-                [('sub_company_id', '=', acc.company_id.id)])
-            if profile:
-                acc.consolidation_company_id = profile.company_id
-
-    consolidation_company_id = fields.Many2one(
-        comodel_name='res.company',
-        compute=lambda self: self._compute_conso_company()
-    )
     consolidation_account_id = fields.Many2one(
         comodel_name='account.account',
         string='Consolidation account',

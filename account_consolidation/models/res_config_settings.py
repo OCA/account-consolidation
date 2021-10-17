@@ -26,7 +26,7 @@ class ResConfigSettings(models.TransientModel):
         help='Check this box if you want to consolidate in this company.'
     )
     consolidation_profile_ids = fields.One2many(
-        comodel_name='company.consolidation.profile',
+        comodel_name='account.consolidation.profile',
         related='company_id.consolidation_profile_ids',
         string='Consolidation profiles'
     )
