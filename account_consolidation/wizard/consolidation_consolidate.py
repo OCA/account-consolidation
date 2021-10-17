@@ -84,6 +84,17 @@ class AccountConsolidationConsolidate(models.TransientModel):
         default=lambda self: self._get_consolidation_profiles(),
         readonly=True
     )
+    fiscal_year_start_date = fields.Date(
+        compute='_compute_fiscal_year_start_date',
+        readonly=True,
+        help='Moves on P&L accounts are consolidated from this date'
+    )
+
+    @api.depends('year', 'month')
+    def _compute_fiscal_year_start_date(self):
+        """Compute first date of current fiscal year"""
+        for wiz in self:
+            wiz.fiscal_year_start_date = wiz._get_fiscal_year_first_day()
 
     @api.multi
     def _get_intercompany_partners(self, subsidiary):
@@ -151,18 +162,52 @@ class AccountConsolidationConsolidate(models.TransientModel):
                               Recordset of the reversal moves
         """
         move_obj = self.env['account.move']
-        move_to_reverse = move_obj.search(
+        moves_to_reverse = move_obj.search(
             [('journal_id', '=', self.journal_id.id),
              ('to_be_reversed', '=', True),
-             ('consol_company_id', '=', subsidiary.id)])
-        reversal_action = self.env['account.move.reverse'].with_context(
-            active_ids=move_to_reverse.ids).create({
-                'date': self._get_month_first_date(),
-                'journal_id': self.journal_id.id
-            }).action_reverse()
+             ('consol_company_id', '=', subsidiary.id),
+             ('reversal_id', '=', False)])
+        if not moves_to_reverse:
+            return moves_to_reverse, False
+        try:
+            reversal_action = self.env['account.move.reverse'].with_context(
+                active_ids=moves_to_reverse.ids,
+                __conso_reversal_no_post=True).create({
+                    'date': self._get_month_first_date(),
+                    'journal_id': self.journal_id.id
+                }).action_reverse()
+        except ValidationError as e:
+            raise ValidationError(_(
+                "The error below appeared while trying to reverse the "
+                "following moves: \n %s \n %s") % (
+                '\n'.join(['- %s' % m.name for m in moves_to_reverse]),
+                e.name
+            ))
+        # Restore flag to be reversed after it was removed by action_reverse
+        # We need this to make sure the move will be reversed again on the next
+        # run if the reversal move was deleted
+        # As reversed move have the reversal_id link, and we select only the
+        # moves not having it in the search above, we can be sure that only the
+        # last consolidation moves will be reversed
+        moves_to_reverse.write({'to_be_reversed': True})
         reversal_move = move_obj.browse(reversal_action.get('res_id'))
 
-        return move_to_reverse, reversal_move
+        return moves_to_reverse, reversal_move
+
+    def _get_fiscal_year_first_day(self):
+        """Calculate first day of fiscal year before consolidation"""
+        fiscal_year_last_day = self.company_id.fiscalyear_last_day
+        fiscal_year_last_month = self.company_id.fiscalyear_last_month
+        conso_date = fields.Date.from_string(self._get_month_last_date())
+        last_fy_day = fields.Date.from_string('%s-%s-%s' % (
+            self.year, fiscal_year_last_month, fiscal_year_last_day))
+        if last_fy_day >= conso_date:
+            last_fy_day = fields.Date.from_string('%s-%s-%s' % (
+                int(self.year) - 1,
+                fiscal_year_last_month,
+                fiscal_year_last_day))
+        first_day = last_fy_day + relativedelta(days=1)
+        return fields.Date.to_string(first_day)
 
     def get_account_balance(self, account, partner=False):
         """
@@ -181,7 +226,9 @@ class AccountConsolidationConsolidate(models.TransientModel):
                   ('account_id', '=', account.id),
                   ('date', '<=', self._get_month_last_date()),
                   ('consolidated', '!=', True)]
-
+        # P&L accounts are consolidated using a start date
+        if not account.user_type_id.include_initial_balance:
+            domain.append(('date', '>=', self._get_fiscal_year_first_day()))
         if partner:
             domain.append(('partner_id', '=', partner.id))
 
@@ -192,7 +239,9 @@ class AccountConsolidationConsolidate(models.TransientModel):
                                              l.move_id.state == 'posted')
         if move_lines:
             _logger.debug('Move lines processed : %s ' % move_lines.ids)
-            move_lines.write({'consolidated': True})
+            self.env.cr.execute(
+                'UPDATE account_move_line SET consolidated = True '
+                'WHERE id IN %s;', [tuple(move_lines.ids)])
 
         return sum([l.balance for l in move_lines])
 
@@ -362,7 +411,10 @@ class AccountConsolidationConsolidate(models.TransientModel):
 
         # Now that all move lines are processed we reset the flag of processed
         # accounts
-        self.env['account.move.line'].search([]).write({'consolidated': False})
+        self.env.cr.execute(
+            'UPDATE account_move_line SET consolidated = False '
+            'WHERE consolidated = True;'
+        )
 
         if move_lines_to_generate:
 
@@ -404,7 +456,8 @@ class AccountConsolidationConsolidate(models.TransientModel):
         # SQL is required here to ensure it's executed before searching each
         # AML balances
         self.env.cr.execute(
-            'UPDATE account_move_line SET consolidated = False;')
+            'UPDATE account_move_line SET consolidated = False '
+            'WHERE consolidated = True;')
         for profile in self.consolidation_profile_ids:
             created_moves |= self.consolidate_subsidiary(profile)
 

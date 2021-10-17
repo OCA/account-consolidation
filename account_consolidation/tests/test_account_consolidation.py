@@ -47,8 +47,15 @@ class TestAccountConsolidation(TransactionCase):
                 ('exp1', 10), ('exp2', 55), ('exp3', 40), ('rev1', -120),
                 ('ass1', 80), ('lia1', -30), ('lia2', -35)]
         }
+        # P&L entries in previous fiscal year are not consolidated in the
+        # actual period
+        old_pl_entry = {
+            'date': '%s-12-15' % str(int(time.strftime('%Y')) - 1),
+            'label': 'OLD P&L',
+            'subA': [('exp1', 200), ('rev1', -200)]
+        }
 
-        entries = [opening_entries, p1_entries, p2_entries]
+        entries = [opening_entries, p1_entries, p2_entries, old_pl_entry]
 
         for sub in subsidiaries:
             company = self.env.ref('account_consolidation.%s' % sub[0])
@@ -67,7 +74,7 @@ class TestAccountConsolidation(TransactionCase):
 
             for entry in entries:
                 lines_list = []
-                for move_tuple in entry[sub[1]]:
+                for move_tuple in entry.get(sub[1], []):
                     account = self.env.ref('account_consolidation.%s_%s' %
                                            (sub[1], move_tuple[0]))
                     line_vals = {
@@ -131,6 +138,33 @@ class TestAccountConsolidation(TransactionCase):
         self.assertEqual(wizard.consolidation_profile_ids.mapped(
             'sub_company_id'), self.subsidiary_a | self.subsidiary_b)
         self.assertEqual(wizard.target_move, 'posted')
+
+    def test_fiscal_year_first_date(self):
+        self.holding.fiscalyear_last_day = 31
+        self.holding.fiscalyear_last_month = 12
+        wizard = self.env['account.consolidation.consolidate'].sudo(
+            self.consolidation_manager).create({
+                'month': '12',
+                'year': 2019,
+                'target_move': 'all'
+            })
+        self.assertEqual(wizard.fiscal_year_start_date, '2019-01-01')
+        wizard = self.env['account.consolidation.consolidate'].sudo(
+            self.consolidation_manager).create({
+                'month': '01',
+                'year': 2019,
+                'target_move': 'all'
+            })
+        self.assertEqual(wizard.fiscal_year_start_date, '2019-01-01')
+        self.holding.fiscalyear_last_day = 30
+        self.holding.fiscalyear_last_month = 6
+        wizard = self.env['account.consolidation.consolidate'].sudo(
+            self.consolidation_manager).create({
+                'month': '01',
+                'year': 2019,
+                'target_move': 'all'
+            })
+        self.assertEqual(wizard.fiscal_year_start_date, '2018-07-01')
 
     def test_consolidation_checks_ok(self):
         wizard = self.env['account.consolidation.check'].create({})
@@ -367,3 +401,97 @@ class TestAccountConsolidation(TransactionCase):
             acc = line.account_id.code.lower()
 
             self.assertEqual(line.balance, conso_results[conso_comp][acc])
+
+    def test_multi_consolidation_(self):
+        # run consolidation multiple times and check if accounting entries are
+        # created correctly
+        wizard = self.env['account.consolidation.consolidate'].sudo(
+            self.consolidation_manager).create({
+                'month': '01',
+                'target_move': 'all'
+            })
+        res = wizard.sudo(self.consolidation_manager).run_consolidation()
+        line_ids = res['domain'][0][2]
+        jan_moves = self.env['account.move.line'].sudo(
+            self.consolidation_manager).browse(line_ids).mapped('move_id')
+        self.assertTrue(all(jan_moves.mapped('to_be_reversed')))
+        self.assertFalse(jan_moves.mapped('reversal_id'))
+        wizard = self.env['account.consolidation.consolidate'].sudo(
+            self.consolidation_manager).create({
+                'month': '02',
+                'target_move': 'all'
+            })
+        res = wizard.sudo(self.consolidation_manager).run_consolidation()
+        line_ids = res['domain'][0][2]
+        feb_moves = self.env['account.move.line'].sudo(
+            self.consolidation_manager).browse(line_ids).mapped('move_id')
+        self.assertTrue(all(feb_moves.mapped('to_be_reversed')))
+        self.assertFalse(feb_moves.mapped('reversal_id'))
+        # january moves were reversed and stay unposted
+        for jan_move in jan_moves:
+            self.assertTrue(jan_move.reversal_id)
+            self.assertEqual(jan_move.state, 'draft')
+        # If reversals of jan entries and feb entries are deleted, they must
+        # be generated again with the same values on the next run
+        jan_reversals = jan_moves.mapped('reversal_id')
+        entry_fields = [
+            'state', 'partner_id', 'consol_company_id', 'reversal_id',
+            'currency_id', 'to_be_reversed', 'journal_id',
+            'date', 'amount', 'company_id'
+        ]
+        line_fields = [
+            'credit', 'consol_company_id', 'consol_partner_id', 'reconciled',
+            'account_id', 'partner_id', 'balance', 'journal_id', 'company_id',
+            'amount_currency', 'currency_id', 'company_currency_id',
+            'debit', 'quantity', 'consolidated', 'date'
+        ]
+        jan_reversal_values = jan_reversals.read(entry_fields)
+        jan_reversal_lines_values = jan_reversals.mapped('line_ids').read(
+            line_fields)
+        feb_moves_values = feb_moves.read(entry_fields)
+        feb_moves_lines_values = feb_moves.mapped('line_ids').read(line_fields)
+        jan_reversals.unlink()
+        feb_moves.unlink()
+        wizard = self.env['account.consolidation.consolidate'].sudo(
+            self.consolidation_manager).create({
+                'month': '02',
+                'target_move': 'all'
+            })
+        res = wizard.sudo(self.consolidation_manager).run_consolidation()
+        line_ids = res['domain'][0][2]
+        new_feb_moves = self.env['account.move.line'].sudo(
+            self.consolidation_manager).browse(line_ids).mapped('move_id')
+        new_jan_reversals = jan_moves.mapped('reversal_id')
+        new_jan_reversal_values = new_jan_reversals.read(entry_fields)
+        new_jan_reversal_lines_values = new_jan_reversals.mapped(
+            'line_ids').read(line_fields)
+        new_feb_moves_values = new_feb_moves.read(entry_fields)
+        new_feb_moves_lines_values = new_feb_moves.mapped('line_ids').read(
+            line_fields)
+
+        def _compare_new_read_values(list1, list2, flist):
+            """ Ensure list1 and list2 are equal out of id fields
+
+            :param list1: Result of a read on a recordset
+            :param list2: Result of a read on a recordset
+            :param flist: Fields that must be equal
+            :return:
+            """
+            for item1, item2 in zip(list1, list2):
+                for fname in flist:
+                    self.assertEqual(item1.get(fname), item2.get(fname))
+                self.assertNotEqual(item1.get('id'), item2.get('id'))
+
+        _compare_new_read_values(
+            jan_reversal_values, new_jan_reversal_values, entry_fields
+        )
+        _compare_new_read_values(
+            jan_reversal_lines_values, new_jan_reversal_lines_values,
+            line_fields
+        )
+        _compare_new_read_values(
+            feb_moves_values, new_feb_moves_values, entry_fields
+        )
+        _compare_new_read_values(
+            feb_moves_lines_values, new_feb_moves_lines_values, line_fields
+        )
