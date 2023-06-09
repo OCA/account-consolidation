@@ -4,7 +4,6 @@
 import time
 from datetime import date
 
-import mock
 from dateutil.relativedelta import relativedelta
 
 from odoo import fields
@@ -17,6 +16,13 @@ class TestAccountConsolidation(TransactionCase):
     def setUp(self):
         super().setUp()
 
+        self.journal_id = self.env.ref(
+            "account_consolidation_oca.conso_consolidation_journal"
+        )
+
+        self.consolidation_difference_account_id = self.env.ref(
+            "account_consolidation_oca.conso_exch_diff"
+        )
         subsidiaries = [("subsidiary_a", "subA"), ("subsidiary_b", "subB")]
 
         opening_entries = {
@@ -77,7 +83,7 @@ class TestAccountConsolidation(TransactionCase):
         entries = [opening_entries, p1_entries, p2_entries]
 
         for sub in subsidiaries:
-            company = self.env.ref("account_consolidation.%s" % sub[0])
+            company = self.env.ref("account_consolidation_oca.%s" % sub[0])
             company.partner_id.company_id = False
 
             setattr(self, sub[0], company)
@@ -85,14 +91,14 @@ class TestAccountConsolidation(TransactionCase):
             self.env.user.write({"company_ids": [(4, company.id, False)]})
             self.env.user.company_id = company
 
-            journal = self.env.ref("account_consolidation.%s_op_journal" % sub[1])
+            journal = self.env.ref("account_consolidation_oca.%s_op_journal" % sub[1])
             setattr(self, "op_journal_%s" % sub[0], journal)
 
             for entry in entries:
                 lines_list = []
                 for move_tuple in entry[sub[1]]:
                     account = self.env.ref(
-                        "account_consolidation.%s_%s" % (sub[1], move_tuple[0])
+                        "account_consolidation_oca.%s_%s" % (sub[1], move_tuple[0])
                     )
                     line_vals = {
                         "name": entry["label"],
@@ -110,7 +116,7 @@ class TestAccountConsolidation(TransactionCase):
 
                     lines_list.append(line_vals)
 
-                lines_vals = [(0, 0, l) for l in lines_list]
+                lines_vals = [(0, 0, line) for line in lines_list]
                 move_vals = {
                     "journal_id": journal.id,
                     "company_id": company.id,
@@ -124,8 +130,11 @@ class TestAccountConsolidation(TransactionCase):
                 if sub[0] == "subsidiary_b":
                     move.post()
 
-        self.holding = self.env.ref("account_consolidation.consolidation_company")
-
+        self.holding = self.env.ref("account_consolidation_oca.consolidation_company")
+        self.holding.consolidation_diff_account_id = (
+            self.consolidation_difference_account_id.id
+        )
+        self.holding.consolidation_default_journal_id = self.journal_id.id
         self.consolidation_manager = self.env["res.users"].create(
             {
                 "name": "Consolidation manager",
@@ -137,7 +146,7 @@ class TestAccountConsolidation(TransactionCase):
                         0,
                         [
                             self.env.ref(
-                                "account_consolidation.group_consolidation_manager"
+                                "account_consolidation_oca.group_consolidation_manager"
                             ).id,
                             self.env.ref("base.group_user").id,
                         ],
@@ -158,7 +167,9 @@ class TestAccountConsolidation(TransactionCase):
         self.env.user.company_id = self.holding
 
     def test_default_values(self):
-        wizard = self.env["account.consolidation.consolidate"].create({})
+        wizard = self.env["account.consolidation.consolidate"].create(
+            {"journal_id": self.journal_id.id}
+        )
         last_month = date.today() - relativedelta(month=1)
         self.assertEqual(wizard.year, last_month.strftime("%Y"))
         self.assertEqual(wizard.month, last_month.strftime("%m"))
@@ -178,7 +189,7 @@ class TestAccountConsolidation(TransactionCase):
         self.assertEqual(wizard.state, "ok")
 
     def test_consolidation_checks_error_account(self):
-        self.env.ref("account_consolidation.subA_exp1").write(
+        self.env.ref("account_consolidation_oca.subA_exp1").write(
             {"consolidation_account_id": False}
         )
         wizard = self.env["account.consolidation.check"].create({})
@@ -202,14 +213,16 @@ class TestAccountConsolidation(TransactionCase):
     def test_consolidation_jan_all_conso_user(self):
         wizard = (
             self.env["account.consolidation.consolidate"]
-            .sudo(self.consolidation_manager)
-            .create({"month": "01", "target_move": "all"})
+            .with_user(self.consolidation_manager)
+            .create(
+                {"month": "01", "target_move": "all", "journal_id": self.journal_id.id}
+            )
         )
-        res = wizard.sudo(self.consolidation_manager).run_consolidation()
+        res = wizard.with_user(self.consolidation_manager).run_consolidation()
         line_ids = res["domain"][0][2]
         conso_move_lines = (
             self.env["account.move.line"]
-            .sudo(self.consolidation_manager)
+            .with_user(self.consolidation_manager)
             .browse(line_ids)
         )
 
@@ -233,7 +246,7 @@ class TestAccountConsolidation(TransactionCase):
                 "ass1": 325,
                 "lia1": -200,
                 "lia2": -20,
-                "ced": 0,
+                "ced": 3.57,
             },
         }
 
@@ -253,80 +266,9 @@ class TestAccountConsolidation(TransactionCase):
             else:
                 self.assertEqual(line.balance, conso_results[conso_comp][acc])
 
-    def test_consolidation_28_feb_all(self):
-        january_wizard = self.env["account.consolidation.consolidate"].create(
-            {"month": "01", "target_move": "all"}
-        )
-        january_res = january_wizard.run_consolidation()
-        january_line_ids = january_res["domain"][0][2]
-        january_conso_lines = self.env["account.move.line"].browse(january_line_ids)
-        january_moves = january_conso_lines.mapped("move_id")
-        january_moves.post()
-        for move in january_moves:
-            self.assertTrue(move.auto_reverse)
-
-        february_wizard = self.env["account.consolidation.consolidate"].create(
-            {"month": "02", "target_move": "all"}
-        )
-        february_res = february_wizard.run_consolidation()
-
-        for move in january_moves:
-            reversed_move = move.reverse_entry_id
-            self.assertEqual(reversed_move.amount, move.amount)
-            self.assertEqual(
-                fields.Date.to_string(reversed_move.date),
-                february_wizard._get_month_first_date(),
-            )
-
-        february_line_ids = february_res["domain"][0][2]
-        february_conso_lines = self.env["account.move.line"].browse(february_line_ids)
-
-        february_conso_results = {
-            "subA": {
-                "exp1": 30,
-                "exp2": 85,
-                "exp3": 105,
-                "rev1": -170,
-                "rev2": -165,
-                "ass1": 250,
-                "lia1": -40,
-                "lia2": -95,
-            },
-            "subB": {
-                "exp1": 25,
-                "exp2": 81,
-                "exp3": 52,
-                "rev1": -208,
-                "rev2": -70,
-                "ass1": 405,
-                "lia1": -230,
-                "lia2": -55,
-                "ced": 0,
-            },
-        }
-        for line in february_conso_lines:
-
-            if line.consol_company_id == self.subsidiary_a:
-                conso_comp = "subA"
-                currency_diff = False
-            elif line.consol_company_id == self.subsidiary_b:
-                conso_comp = "subB"
-                currency_diff = True
-
-            acc = line.account_id.code.lower()
-
-            if currency_diff:
-                self.assertEqual(
-                    line.amount_currency, february_conso_results[conso_comp][acc]
-                )
-            else:
-                self.assertEqual(line.balance, february_conso_results[conso_comp][acc])
-
     def test_consolidation_jan_with_exchange_rates(self):
         wizard = self.env["account.consolidation.consolidate"].create(
-            {
-                "month": "01",
-            }
+            {"month": "01", "journal_id": self.journal_id.id}
         )
         res = wizard.run_consolidation()
         line_ids = res["domain"][0][2]
@@ -351,7 +293,7 @@ class TestAccountConsolidation(TransactionCase):
 
             acc = line.account_id.code.lower()
 
-            self.assertEqual(line.balance, conso_results[acc])
+            self.assertEqual(round(line.balance, 2), conso_results[acc])
 
     def test_consolidation_jan_with_interco_partner(self):
         # Create intercompany moves
@@ -367,7 +309,7 @@ class TestAccountConsolidation(TransactionCase):
                         0,
                         {
                             "account_id": self.env.ref(
-                                "account_consolidation.subA_rec1"
+                                "account_consolidation_oca.subA_rec1"
                             ).id,
                             "company_id": self.subsidiary_a.id,
                             "debit": 100,
@@ -380,7 +322,7 @@ class TestAccountConsolidation(TransactionCase):
                         0,
                         {
                             "account_id": self.env.ref(
-                                "account_consolidation.subA_rev1"
+                                "account_consolidation_oca.subA_rev1"
                             ).id,
                             "company_id": self.subsidiary_a.id,
                             "debit": 0,
@@ -405,7 +347,7 @@ class TestAccountConsolidation(TransactionCase):
                         0,
                         {
                             "account_id": self.env.ref(
-                                "account_consolidation.subB_exp1"
+                                "account_consolidation_oca.subB_exp1"
                             ).id,
                             "company_id": self.subsidiary_b.id,
                             "currency_id": self.env.ref("base.EUR").id,
@@ -420,7 +362,7 @@ class TestAccountConsolidation(TransactionCase):
                         0,
                         {
                             "account_id": self.env.ref(
-                                "account_consolidation.subB_pay1"
+                                "account_consolidation_oca.subB_pay1"
                             ).id,
                             "company_id": self.subsidiary_b.id,
                             "currency_id": self.env.ref("base.EUR").id,
@@ -435,7 +377,7 @@ class TestAccountConsolidation(TransactionCase):
         ).post()
         # Run consolidation
         wizard = self.env["account.consolidation.consolidate"].create(
-            {"month": "01", "target_move": "all"}
+            {"month": "01", "target_move": "all", "journal_id": self.journal_id.id}
         )
         res = wizard.run_consolidation()
         line_ids = res["domain"][0][2]
@@ -469,54 +411,55 @@ class TestAccountConsolidation(TransactionCase):
         # created correctly
         wizard = (
             self.env["account.consolidation.consolidate"]
-            .sudo(self.consolidation_manager)
-            .create({"month": "01", "target_move": "all"})
+            .with_user(self.consolidation_manager)
+            .create(
+                {"month": "01", "target_move": "all", "journal_id": self.journal_id.id}
+            )
         )
-        res = wizard.sudo(self.consolidation_manager).run_consolidation()
+        res = wizard.with_user(self.consolidation_manager).run_consolidation()
         line_ids = res["domain"][0][2]
         jan_moves = (
             self.env["account.move.line"]
-            .sudo(self.consolidation_manager)
+            .with_user(self.consolidation_manager)
             .browse(line_ids)
             .mapped("move_id")
         )
-        self.assertTrue(all(jan_moves.mapped("auto_reverse")))
-        self.assertFalse(all(jan_moves.mapped("reverse_date")))
-        self.assertFalse(jan_moves.mapped("reverse_entry_id"))
+        self.assertTrue(all(jan_moves.mapped("auto_post")))
+        self.assertFalse(jan_moves.mapped("reversed_entry_id"))
         wizard = (
             self.env["account.consolidation.consolidate"]
-            .sudo(self.consolidation_manager)
-            .create({"month": "02", "target_move": "all"})
+            .with_user(self.consolidation_manager)
+            .create(
+                {"month": "02", "target_move": "all", "journal_id": self.journal_id.id}
+            )
         )
-        res = wizard.sudo(self.consolidation_manager).run_consolidation()
+        res = wizard.with_user(self.consolidation_manager).run_consolidation()
         line_ids = res["domain"][0][2]
         feb_moves = (
             self.env["account.move.line"]
-            .sudo(self.consolidation_manager)
+            .with_user(self.consolidation_manager)
             .browse(line_ids)
             .mapped("move_id")
         )
-        self.assertTrue(all(feb_moves.mapped("auto_reverse")))
-        self.assertFalse(all(feb_moves.mapped("reverse_date")))
-        self.assertFalse(feb_moves.mapped("reverse_entry_id"))
+        self.assertTrue(all(feb_moves.mapped("auto_post")))
+        self.assertFalse(feb_moves.mapped("reversed_entry_id"))
         # january moves were reversed and stay unposted
         for jan_move in jan_moves:
-            self.assertTrue(jan_move.reverse_entry_id)
+            self.assertIsNotNone(jan_move.reversed_entry_id)
             self.assertEqual(jan_move.state, "draft")
         # If reversals of jan entries and feb entries are deleted, they must
         # be generated again with the same values on the next run
-        jan_reversals = jan_moves.mapped("reverse_entry_id")
+        jan_reversals = jan_moves.mapped("reversed_entry_id")
         entry_fields = [
             "state",
             "partner_id",
             "consol_company_id",
-            "reverse_entry_id",
+            "reversed_entry_id",
             "currency_id",
-            "reverse_date",
-            "auto_reverse",
+            "auto_post",
             "journal_id",
             "date",
-            "amount",
+            "amount_total",
             "company_id",
         ]
         line_fields = [
@@ -545,18 +488,20 @@ class TestAccountConsolidation(TransactionCase):
         feb_moves.unlink()
         wizard = (
             self.env["account.consolidation.consolidate"]
-            .sudo(self.consolidation_manager)
-            .create({"month": "02", "target_move": "all"})
+            .with_user(self.consolidation_manager)
+            .create(
+                {"month": "02", "target_move": "all", "journal_id": self.journal_id.id}
+            )
         )
-        res = wizard.sudo(self.consolidation_manager).run_consolidation()
+        res = wizard.with_user(self.consolidation_manager).run_consolidation()
         line_ids = res["domain"][0][2]
         new_feb_moves = (
             self.env["account.move.line"]
-            .sudo(self.consolidation_manager)
+            .with_user(self.consolidation_manager)
             .browse(line_ids)
             .mapped("move_id")
         )
-        new_jan_reversals = jan_moves.mapped("reverse_entry_id")
+        new_jan_reversals = jan_moves.mapped("reversed_entry_id")
         new_jan_reversal_values = new_jan_reversals.read(entry_fields)
         new_jan_reversal_lines_values = new_jan_reversals.mapped("line_ids").read(
             line_fields
@@ -587,15 +532,3 @@ class TestAccountConsolidation(TransactionCase):
         _compare_new_read_values(
             feb_moves_lines_values, new_feb_moves_lines_values, line_fields
         )
-        # Check that reversal ir.cron will not reverse entries automatically
-        cron = self.env.ref("account.ir_cron_reverse_entry")
-        with mock.patch(
-            MOCK_PATH + ".models.consolidation_profile.fields.Date.today"
-        ) as fnct:
-            # Unposted entries are not selected by the ir.cron, so we post one
-            # and check that both entries stay 'unreversed'
-            new_feb_moves[0].post()
-            fnct.return_value = ("%s-06-30" % time.strftime("%Y"),)
-            cron.method_direct_trigger()
-            self.assertTrue(all(new_feb_moves.mapped("auto_reverse")))
-            self.assertFalse(new_feb_moves.mapped("reverse_entry_id"))

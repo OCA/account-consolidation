@@ -92,7 +92,6 @@ class AccountConsolidationCheck(models.TransientModel):
         return {
             "type": "ir.actions.act_window",
             "view_mode": "form",
-            "view_type": "form",
             "res_id": self.id,
             "res_model": self._name,
             "target": "new",

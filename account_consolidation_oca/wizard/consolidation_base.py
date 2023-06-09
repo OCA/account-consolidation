@@ -11,7 +11,7 @@ class AccountConsolidationBase(models.AbstractModel):
 
     @api.model
     def _default_company(self):
-        return self.env["res.company"]._company_default_get()
+        return self.env.company
 
     @api.model
     def _get_consolidation_profiles(self):
@@ -131,7 +131,6 @@ class AccountConsolidationBase(models.AbstractModel):
 
         return subsidiaries - self.env.user.company_ids
 
-    @api.multi
     def run_consolidation(self):
         """Consolidate.
 

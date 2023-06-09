@@ -18,10 +18,10 @@ class TestAccountCompanyRules(SavepointCase):
 
         cls.main_company = cls.env.ref("base.main_company")
         cls.consolidation_company = cls.env.ref(
-            "account_consolidation.consolidation_company"
+            "account_consolidation_oca.consolidation_company"
         )
-        cls.subsidiary_a = cls.env.ref("account_consolidation.subsidiary_a")
-        cls.subsidiary_b = cls.env.ref("account_consolidation.subsidiary_b")
+        cls.subsidiary_a = cls.env.ref("account_consolidation_oca.subsidiary_a")
+        cls.subsidiary_b = cls.env.ref("account_consolidation_oca.subsidiary_b")
 
         cls.account_user = cls.user_model.create(
             {
@@ -81,7 +81,7 @@ class TestAccountCompanyRules(SavepointCase):
                         0,
                         [
                             cls.env.ref(
-                                "account_consolidation.group_consolidation_manager"
+                                "account_consolidation_oca.group_consolidation_manager"
                             ).id,
                             cls.env.ref("base.group_user").id,
                         ],
@@ -123,20 +123,22 @@ class TestAccountCompanyRules(SavepointCase):
         if company:
             vals["company_id"] = company.id
 
-        return self.account_model.sudo(user.id).create(vals)
+        return self.account_model.with_user(user).create(vals)
 
     def _test_account_main_company_crud(self, user):
         # Create
         create_account = self._create_account(user, "TEST")
         self.assertEqual(len(create_account), 1)
         # Read
-        read_account = self.account_model.sudo(user.id).search([("name", "=", "TEST")])
+        read_account = self.account_model.with_user(user).search(
+            [("name", "=", "TEST")]
+        )
         self.assertEqual(create_account, read_account)
         # Write
-        read_account.sudo(user.id).write({"name": "TEST modified"})
+        read_account.with_user(user).write({"name": "TEST modified"})
         self.assertEqual(read_account.name, "TEST modified")
         # Delete
-        read_account.sudo(user.id).unlink()
+        read_account.with_user(user).unlink()
         with self.assertRaises(exceptions.MissingError):
             name = read_account.name  # noqa
 
@@ -145,29 +147,33 @@ class TestAccountCompanyRules(SavepointCase):
         with self.assertRaises(exceptions.AccessError):
             self._create_account(user, "TEST")
         # Read
-        read_account = self.account_model.sudo(user.id).search([("name", "=", "DUMMY")])
+        read_account = self.account_model.with_user(user).search(
+            [("name", "=", "DUMMY")]
+        )
         self.assertEqual(len(read_account), 1)
         self.assertEqual(read_account.name, "DUMMY")
         # Write
         with self.assertRaises(exceptions.AccessError):
-            read_account.sudo(user.id).write({"name": "DUMMY modified"})
+            read_account.with_user(user).write({"name": "DUMMY modified"})
         # Delete
         with self.assertRaises(exceptions.AccessError):
-            read_account.sudo(user.id).unlink()
+            read_account.with_user(user).unlink()
 
     def _test_account_multicompany_no_crud(self, user):
         # Create
         with self.assertRaises(exceptions.AccessError):
             self._create_account(user, "TEST", company=self.consolidation_company)
         # Read
-        read_account = self.account_model.sudo(user.id).search([("name", "=", "CONSO")])
+        read_account = self.account_model.with_user(user).search(
+            [("name", "=", "CONSO")]
+        )
         self.assertEqual(len(read_account), 0)
         # Write
         with self.assertRaises(exceptions.AccessError):
-            self.conso_account.sudo(user.id).write({"name": "CONSO modified"})
+            self.conso_account.with_user(user).write({"name": "CONSO modified"})
         # Delete
         with self.assertRaises(exceptions.AccessError):
-            self.conso_account.sudo(user.id).unlink()
+            self.conso_account.with_user(user).unlink()
 
     def _test_account_multicompany_crud(self, user):
         # Create
@@ -178,14 +184,16 @@ class TestAccountCompanyRules(SavepointCase):
         )
         self.assertEqual(len(create_account), 1)
         # Read
-        read_account = self.account_model.sudo(user.id).search([("name", "=", "CONSO")])
+        read_account = self.account_model.with_user(user).search(
+            [("name", "=", "CONSO")]
+        )
         self.assertEqual(len(read_account), 1)
         self.assertEqual(read_account.name, "CONSO")
         # Write
-        read_account.sudo(user.id).write({"name": "CONSO modified"})
+        read_account.with_user(user).write({"name": "CONSO modified"})
         self.assertEqual(read_account.name, "CONSO modified")
         # Delete
-        read_account.sudo(user.id).unlink()
+        read_account.with_user(user).unlink()
         with self.assertRaises(exceptions.MissingError):
             name = read_account.name  # noqa
 

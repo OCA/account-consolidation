@@ -8,7 +8,7 @@
         <field name="inherit_id" ref="account.res_config_settings_view_form" />
         <field
             name="groups_id"
-            eval="[(4,ref('account_consolidation.group_consolidation_manager'))]"
+            eval="[(4,ref('account_consolidation_oca.group_consolidation_manager'))]"
         />
         <field name="arch" type="xml">
             <div id="invoicing_settings" position="after">
@@ -111,7 +111,7 @@
                             </div>
                             <div class="content-group">
                                 <button
-                                    name="%(account_consolidation.action_consolidation_profile)d"
+                                    name="%(account_consolidation_oca.action_consolidation_profile)d"
                                     icon="fa-arrow-right"
                                     type="action"
                                     string="Consolidation Profiles"

@@ -29,6 +29,7 @@ MONTHS = [
 class AccountConsolidationConsolidate(models.TransientModel):
     _name = "account.consolidation.consolidate"
     _inherit = "account.consolidation.base"
+    _description = "Consolidation Consolidate"
 
     @api.model
     def _default_journal(self):
@@ -83,7 +84,6 @@ class AccountConsolidationConsolidate(models.TransientModel):
         readonly=True,
     )
 
-    @api.multi
     def _get_intercompany_partners(self, subsidiary):
         """
         Return partners linked to subsidiaries which are consolidated, without
@@ -155,9 +155,9 @@ class AccountConsolidationConsolidate(models.TransientModel):
         moves_to_reverse = move_obj.search(
             [
                 ("journal_id", "=", self.journal_id.id),
-                ("auto_reverse", "=", True),
+                ("auto_post", "=", True),
                 ("consol_company_id", "=", subsidiary.id),
-                ("reverse_entry_id", "=", False),
+                ("reversed_entry_id", "=", False),
             ]
         )
         if not moves_to_reverse:
@@ -222,7 +222,7 @@ class AccountConsolidationConsolidate(models.TransientModel):
                 [tuple(move_lines.ids)],
             )
 
-        return sum([l.balance for l in move_lines])
+        return sum([line.balance for line in move_lines])
 
     def _prepare_consolidate_account(self, holding_account, profile, partner=False):
         """
@@ -460,14 +460,13 @@ class AccountConsolidationConsolidate(models.TransientModel):
             # Created moves have to be reversed on the next consolidation
             created_moves.write(
                 {
-                    "auto_reverse": True,
+                    "auto_post": True,
                 }
             )
 
             return {
                 "name": _("Consolidation Items"),
                 "type": "ir.actions.act_window",
-                "view_type": "form",
                 "view_mode": "tree,form",
                 "res_model": "account.move.line",
                 "domain": [("id", "in", created_moves.mapped("line_ids").ids)],

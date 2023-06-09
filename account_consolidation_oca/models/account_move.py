@@ -10,7 +10,9 @@ class AccountMove(models.Model):
     _inherit = "account.move"
 
     consol_company_id = fields.Many2one(
-        comodel_name="res.company", string="Consolidated from Company", readonly=True
+        comodel_name="res.company",
+        string="Consolidated from Company",
+        readonly=True,
     )
 
     @api.model
@@ -35,12 +37,11 @@ class AccountMove(models.Model):
                 res["arch"] = etree.tostring(xml)
         return res
 
-    @api.multi
     def post(self):
         """Bypass move posting when reversing consolidation moves"""
         if self.env.context.get("__conso_reversal_no_post"):
             return True
-        return super().post()
+        return super().action_post()
 
 
 class AccountMoveLine(models.Model):

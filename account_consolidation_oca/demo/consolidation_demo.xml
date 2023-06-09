@@ -89,6 +89,8 @@
         <field name="type">general</field>
         <field name="company_id" ref="consolidation_company" />
     </record>
+    <!--
+    Pylint detected id duplicate
     <record id="consolidation_company" model="res.company">
         <field name="consolidation_diff_account_id" ref="conso_exch_diff" />
         <field
@@ -96,10 +98,10 @@
             ref="conso_consolidation_journal"
         />
     </record>
+     -->
     <record id="consolidation_manager_partner" model="res.partner">
         <field name="name">Consolidation Manager</field>
         <field name="company_id" ref="consolidation_company" />
-        <field name="customer" eval="False" />
     </record>
     <record id="consolidation_manager_user" model="res.users">
         <field name="partner_id" ref="consolidation_manager_partner" />
@@ -108,11 +110,11 @@
         <field name="company_id" ref="consolidation_company" />
         <field
             name="company_ids"
-            eval="[(6,0,[ref('account_consolidation.consolidation_company'), ref('account_consolidation.subsidiary_a'), ref('account_consolidation.subsidiary_b')])]"
+            eval="[(6,0,[ref('account_consolidation_oca.consolidation_company'), ref('account_consolidation_oca.subsidiary_a'), ref('account_consolidation_oca.subsidiary_b')])]"
         />
         <field
             name="groups_id"
-            eval="[(6,0,[ref('base.group_user'), ref('account_consolidation.group_consolidation_manager'), ref('base.group_system')])]"
+            eval="[(6,0,[ref('base.group_user'), ref('account_consolidation_oca.group_consolidation_manager'), ref('base.group_system')])]"
         />
     </record>
 </odoo>
