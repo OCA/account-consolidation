@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="view_company_consolidation_profile_form" model="ir.ui.view">
         <field name="name">company.consolidation.profile.view</field>
@@ -8,7 +8,7 @@
             <form>
                 <sheet>
                     <div class="oe_title">
-                        <label for="sub_company_id"/>
+                        <label for="sub_company_id" />
                         <h1><field name="sub_company_id" /></h1>
                     </div>
                     <group>
@@ -16,8 +16,19 @@
                     </group>
                 </sheet>
                 <footer>
-                    <button name="save" type="object" string="Save" class="btn-primary" special="save"/>
-                    <button string="Discard" name="cancel" class="btn-secondary" special="cancel"/>
+                    <button
+                        name="save"
+                        type="object"
+                        string="Save"
+                        class="btn-primary"
+                        special="save"
+                    />
+                    <button
+                        string="Discard"
+                        name="cancel"
+                        class="btn-secondary"
+                        special="cancel"
+                    />
                 </footer>
             </form>
         </field>
@@ -30,7 +41,7 @@
         <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="Profiles" editable="bottom">
-                <field name="company_id" invisible="1"/>
+                <field name="company_id" invisible="1" />
                 <field name="sub_company_id" />
                 <field name="consolidation_percentage" />
             </tree>
@@ -48,14 +59,17 @@
     <record id="view_company_consolidation_company_profile" model="ir.ui.view">
         <field name="name">company.consolidation.profile</field>
         <field name="model">res.company</field>
-        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="inherit_id" ref="base.view_company_form" />
         <field name="arch" type="xml">
             <xpath expr="//page" position="after">
-                <page string="Consolidation Profile" groups="account_consolidation.group_consolidation_manager">
+                <page
+                    string="Consolidation Profile"
+                    groups="account_consolidation.group_consolidation_manager"
+                >
                     <field name="consolidation_profile_ids">
                         <tree editable="bottom">
-                            <field name="sub_company_id"></field>
-                            <field name="consolidation_percentage"></field>
+                            <field name="sub_company_id" />
+                            <field name="consolidation_percentage" />
                         </tree>
                     </field>
                 </page>

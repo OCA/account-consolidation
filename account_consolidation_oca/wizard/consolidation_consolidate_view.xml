@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
 
     <record id="view_consolidation_consolidate_form" model="ir.ui.view">
@@ -6,23 +6,32 @@
         <field name="model">account.consolidation.consolidate</field>
         <field name="arch" type="xml">
             <form string="Consolidation: Consolidate">
-                <p string="Run the Year-To-Date consolidation until the selected period for the defined subsidiaries."/>
-                <p>Balance sheet accounts are consolidated using standard currency rates.</p>
-                <p>Profit and Loss accounts are consolidated using monthly currency rates.</p>
+                <p
+                    string="Run the Year-To-Date consolidation until the selected period for the defined subsidiaries."
+                />
+                <p
+                >Balance sheet accounts are consolidated using standard currency rates.</p>
+                <p
+                >Profit and Loss accounts are consolidated using monthly currency rates.</p>
                 <group>
                     <field name="company_id" />
                     <field name="year" />
                     <field name="month" />
-                    <field name="journal_id" domain="[('company_id', '=', company_id)]"/>
-                    <field name="target_move"/>
+                    <field
+                        name="journal_id"
+                        domain="[('company_id', '=', company_id)]"
+                    />
+                    <field name="target_move" />
                     <field name="consolidation_profile_ids" />
                 </group>
                 <footer>
-                    <button name="run_consolidation"
+                    <button
+                        name="run_consolidation"
                         string="Consolidate"
                         type="object"
-                        class="oe_highlight"/>
-                    <button string="Cancel" class="oe_link" special="cancel"/>
+                        class="oe_highlight"
+                    />
+                    <button string="Cancel" class="oe_link" special="cancel" />
                 </footer>
             </form>
         </field>

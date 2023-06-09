@@ -1,33 +1,33 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="usd_01_01" model="res.currency.rate">
         <field name="rate">1.8</field>
-        <field name="currency_id" ref="base.USD"/>
-        <field eval="time.strftime('%Y-01-01')" name="name"/>
+        <field name="currency_id" ref="base.USD" />
+        <field eval="time.strftime('%Y-01-01')" name="name" />
         <field name="company_id" eval="False" />
     </record>
     <record id="usd_01_31" model="res.currency.rate">
         <field name="rate">1.36</field>
-        <field name="currency_id" ref="base.USD"/>
-        <field eval="time.strftime('%Y-01-31')" name="name"/>
+        <field name="currency_id" ref="base.USD" />
+        <field eval="time.strftime('%Y-01-31')" name="name" />
         <field name="company_id" eval="False" />
     </record>
     <record id="usd_02_28" model="res.currency.rate">
         <field name="rate">1.23</field>
-        <field name="currency_id" ref="base.USD"/>
-        <field eval="time.strftime('%Y-02-28')" name="name"/>
+        <field name="currency_id" ref="base.USD" />
+        <field eval="time.strftime('%Y-02-28')" name="name" />
         <field name="company_id" eval="False" />
     </record>
     <record id="usd_01" model="res.currency.rate.monthly">
         <field name="rate">1.3</field>
-        <field name="currency_id" ref="base.USD"/>
+        <field name="currency_id" ref="base.USD" />
         <field name="year" eval="time.strftime('%Y')" />
         <field name="month">01</field>
         <field name="company_id" eval="False" />
     </record>
     <record id="usd_02" model="res.currency.rate.monthly">
         <field name="rate">1.05</field>
-        <field name="currency_id" ref="base.USD"/>
+        <field name="currency_id" ref="base.USD" />
         <field name="year" eval="time.strftime('%Y')" />
         <field name="month">02</field>
         <field name="company_id" eval="False" />

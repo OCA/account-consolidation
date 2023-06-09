@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
 
     <record id="view_consolidation_check_form" model="ir.ui.view">
@@ -8,28 +8,60 @@
             <form string="Consolidation: Checks">
                 <field name="state" invisible="True" />
                 <div states="open">
-                    <label for="company_id" string="Prepare your consolidation and make sure that your consolidation will be correct by proceeding with the checks." />
+                    <label
+                        for="company_id"
+                        string="Prepare your consolidation and make sure that your consolidation will be correct by proceeding with the checks."
+                    />
                     <group name="company">
                         <field name="company_id" />
                     </group>
                     <group name="checks">
                         <ul class="list-unstyled">
-                            <li><strong>Accounts:</strong> Check consistency between subsidiaries accounts and Holding company consolidation accounts.</li>
-                            <li><strong>Partners:</strong> Check that partners linked to subsidiaries have no company defined.</li>
-                            <li><strong>Companies allowed:</strong> Check that user has access to subsidiaries.</li>
+                            <li><strong
+                                >Accounts:</strong> Check consistency between subsidiaries accounts and Holding company consolidation accounts.</li>
+                            <li><strong
+                                >Partners:</strong> Check that partners linked to subsidiaries have no company defined.</li>
+                            <li><strong
+                                >Companies allowed:</strong> Check that user has access to subsidiaries.</li>
                         </ul>
                     </group>
                 </div>
                 <div states="error,ok">
-                    <field name="message" nolabel="1" class="alert alert-danger" states="error" role="alert"/>
-                    <field name="message" nolabel="1" class="alert alert-success" states="ok" role="alert"/>
+                    <field
+                        name="message"
+                        nolabel="1"
+                        class="alert alert-danger"
+                        states="error"
+                        role="alert"
+                    />
+                    <field
+                        name="message"
+                        nolabel="1"
+                        class="alert alert-success"
+                        states="ok"
+                        role="alert"
+                    />
                 </div>
                 <footer>
-                    <button name="check_configuration"
-                            string="Check configuration " type="object"
-                            class="oe_highlight" states="open"/>
-                    <button string="OK" class="oe_link" special="cancel" states="error,ok"/>
-                    <button string="Cancel" class="oe_link" special="cancel" states="open"/>
+                    <button
+                        name="check_configuration"
+                        string="Check configuration "
+                        type="object"
+                        class="oe_highlight"
+                        states="open"
+                    />
+                    <button
+                        string="OK"
+                        class="oe_link"
+                        special="cancel"
+                        states="error,ok"
+                    />
+                    <button
+                        string="Cancel"
+                        class="oe_link"
+                        special="cancel"
+                        states="open"
+                    />
                 </footer>
             </form>
         </field>
