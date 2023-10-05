@@ -1,73 +1,82 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="subA_exp1" model="account.account">
         <field name="code">EXP1</field>
         <field name="name">Expenses 1</field>
         <field name="user_type_id" ref="account.data_account_type_expenses" />
-        <field name="company_id" ref="subsidiary_a"/>
+        <field name="company_id" ref="subsidiary_a" />
         <field name="consolidation_account_id" ref="conso_exp1" />
     </record>
     <record id="subA_exp2" model="account.account">
         <field name="code">EXP2</field>
         <field name="name">Expenses 2</field>
         <field name="user_type_id" ref="account.data_account_type_expenses" />
-        <field name="company_id" ref="subsidiary_a"/>
+        <field name="company_id" ref="subsidiary_a" />
         <field name="consolidation_account_id" ref="conso_exp2" />
     </record>
     <record id="subA_exp3" model="account.account">
         <field name="code">EXP3</field>
         <field name="name">Expenses 3</field>
         <field name="user_type_id" ref="account.data_account_type_expenses" />
-        <field name="company_id" ref="subsidiary_a"/>
+        <field name="company_id" ref="subsidiary_a" />
         <field name="consolidation_account_id" ref="conso_exp3" />
     </record>
     <record id="subA_rev1" model="account.account">
         <field name="code">REV1</field>
         <field name="name">Revenue 1</field>
         <field name="user_type_id" ref="account.data_account_type_revenue" />
-        <field name="company_id" ref="subsidiary_a"/>
+        <field name="company_id" ref="subsidiary_a" />
         <field name="consolidation_account_id" ref="conso_rev1" />
     </record>
     <record id="subA_rev2" model="account.account">
         <field name="code">REV2</field>
         <field name="name">Revenue 2</field>
         <field name="user_type_id" ref="account.data_account_type_revenue" />
-        <field name="company_id" ref="subsidiary_a"/>
+        <field name="company_id" ref="subsidiary_a" />
         <field name="consolidation_account_id" ref="conso_rev2" />
     </record>
     <record id="subA_ass1" model="account.account">
         <field name="code">ASS1</field>
         <field name="name">Assets 1</field>
         <field name="user_type_id" ref="account.data_account_type_current_assets" />
-        <field name="company_id" ref="subsidiary_a"/>
+        <field name="company_id" ref="subsidiary_a" />
         <field name="consolidation_account_id" ref="conso_ass1" />
     </record>
     <record id="subA_lia1" model="account.account">
         <field name="code">LIA1</field>
         <field name="name">Liabilities 1</field>
-        <field name="user_type_id" ref="account.data_account_type_current_liabilities" />
-        <field name="company_id" ref="subsidiary_a"/>
+        <field
+            name="user_type_id"
+            ref="account.data_account_type_current_liabilities"
+        />
+        <field name="company_id" ref="subsidiary_a" />
         <field name="consolidation_account_id" ref="conso_lia1" />
     </record>
     <record id="subA_lia2" model="account.account">
         <field name="code">LIA2</field>
         <field name="name">Liabilities 2</field>
-        <field name="user_type_id" ref="account.data_account_type_current_liabilities" />
-        <field name="company_id" ref="subsidiary_a"/>
+        <field
+            name="user_type_id"
+            ref="account.data_account_type_current_liabilities"
+        />
+        <field name="company_id" ref="subsidiary_a" />
         <field name="consolidation_account_id" ref="conso_lia2" />
     </record>
     <record id="subA_lia3" model="account.account">
         <field name="code">LIA3</field>
         <field name="name">Liabilities 3</field>
-        <field name="user_type_id" ref="account.data_account_type_current_liabilities" />
-        <field name="company_id" ref="subsidiary_a"/>
+        <field
+            name="user_type_id"
+            ref="account.data_account_type_current_liabilities"
+        />
+        <field name="company_id" ref="subsidiary_a" />
         <field name="consolidation_account_id" ref="conso_lia3" />
     </record>
     <record id="subA_rec1" model="account.account">
         <field name="code">REC1</field>
         <field name="name">Receivable 1</field>
         <field name="user_type_id" ref="account.data_account_type_receivable" />
-        <field name="company_id" ref="subsidiary_a"/>
+        <field name="company_id" ref="subsidiary_a" />
         <field name="consolidation_account_id" ref="conso_rec1" />
         <field name="reconcile" eval="True" />
     </record>
@@ -75,7 +84,7 @@
         <field name="code">PAY1</field>
         <field name="name">Payable 1</field>
         <field name="user_type_id" ref="account.data_account_type_payable" />
-        <field name="company_id" ref="subsidiary_a"/>
+        <field name="company_id" ref="subsidiary_a" />
         <field name="consolidation_account_id" ref="conso_pay1" />
         <field name="reconcile" eval="True" />
     </record>
@@ -83,6 +92,6 @@
         <field name="name">Operations journal</field>
         <field name="code">OP</field>
         <field name="type">general</field>
-        <field name="company_id" ref="subsidiary_a"/>
+        <field name="company_id" ref="subsidiary_a" />
     </record>
 </odoo>

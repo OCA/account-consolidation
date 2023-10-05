@@ -1,24 +1,27 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-    
-     <menuitem
-            name="Consolidation"
-            parent="account.menu_finance_entries"
-            groups="account_consolidation.group_consolidation_manager"
-            id="menu_consolidation"/>
 
      <menuitem
-            name="Consolidation: Checks"
-            parent="menu_consolidation"
-            action="action_consolidation_checks"
-            groups="account_consolidation.group_consolidation_manager"
-            id="menu_consolidation_checks"/>
+        name="Consolidation"
+        parent="account.menu_finance_entries"
+        groups="account_consolidation_oca.group_consolidation_manager"
+        id="menu_consolidation"
+    />
 
      <menuitem
-            name="Consolidation: Consolidate"
-            parent="menu_consolidation"
-            action="action_consolidation_consolidate"
-            groups="account_consolidation.group_consolidation_manager"
-            id="menu_consolidation_consolidate"/>
+        name="Consolidation: Checks"
+        parent="menu_consolidation"
+        action="action_consolidation_checks"
+        groups="account_consolidation_oca.group_consolidation_manager"
+        id="menu_consolidation_checks"
+    />
+
+     <menuitem
+        name="Consolidation: Consolidate"
+        parent="menu_consolidation"
+        action="action_consolidation_consolidate"
+        groups="account_consolidation_oca.group_consolidation_manager"
+        id="menu_consolidation_consolidate"
+    />
 
 </odoo>
