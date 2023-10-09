@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* account_consolidation
+# 	* account_consolidation
 #
 msgid ""
 msgstr ""
@@ -25,7 +25,9 @@ msgstr "<h2>Erros de configuração de consolidação</h2>"
 #. module: account_consolidation
 #: code:addons/account_consolidation/wizard/consolidation_check.py:87
 #, python-format
-msgid "<h2>No configuration error detected ! You can now proceed with the consolidation.</h2>"
+msgid ""
+"<h2>No configuration error detected ! You can now proceed with the "
+"consolidation.</h2>"
 msgstr ""
 "<h2>Nenhum erro de configuração detectado! Pode prosseguir com a "
 "consolidação.</h2>"
@@ -50,28 +52,36 @@ msgstr "<h3>Mapeamento de contas inválido</h3>"
 
 #. module: account_consolidation
 #: model_terms:ir.ui.view,arch_db:account_consolidation.res_config_settings_view_form
-msgid "<span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-specific.\" groups=\"base.group_multi_company\"/>"
+msgid ""
+"<span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-"
+"specific.\" groups=\"base.group_multi_company\"/>"
 msgstr ""
 "<span class=\"fa fa-lg fa-building-o\" title=\"Estes valores são específicos "
 "por empresa.\" groups=\"base.group_multi_company\"/>"
 
 #. module: account_consolidation
 #: model_terms:ir.ui.view,arch_db:account_consolidation.view_consolidation_check_form
-msgid "<strong>Accounts:</strong> Check consistency between subsidiaries accounts and Holding company consolidation accounts."
+msgid ""
+"<strong>Accounts:</strong> Check consistency between subsidiaries accounts "
+"and Holding company consolidation accounts."
 msgstr ""
 "<strong>Contas:</strong> Verifique a consistência entre as contas das "
 "subsidiárias e as contas de consolidação da Holding."
 
 #. module: account_consolidation
 #: model_terms:ir.ui.view,arch_db:account_consolidation.view_consolidation_check_form
-msgid "<strong>Companies allowed:</strong> Check that user has access to subsidiaries."
+msgid ""
+"<strong>Companies allowed:</strong> Check that user has access to "
+"subsidiaries."
 msgstr ""
 "<strong>Empresas permitidas:</strong> Verifique se o utilizador tem acesso a "
 "subsidiárias."
 
 #. module: account_consolidation
 #: model_terms:ir.ui.view,arch_db:account_consolidation.view_consolidation_check_form
-msgid "<strong>Partners:</strong> Check that partners linked to subsidiaries have no company defined."
+msgid ""
+"<strong>Partners:</strong> Check that partners linked to subsidiaries have "
+"no company defined."
 msgstr ""
 "<strong>Parceiros:</strong> Verifique se os parceiros vinculados a "
 "subsidiárias não têm empresa definida."
@@ -274,7 +284,8 @@ msgstr "Percentagem de consolidação"
 #. module: account_consolidation
 #: code:addons/account_consolidation/models/consolidation_profile.py:43
 #, python-format
-msgid "Consolidation percentage can only be defined in the rangebetween 0 and 100."
+msgid ""
+"Consolidation percentage can only be defined in the rangebetween 0 and 100."
 msgstr "A percentagem de consolidação só pode ser definida entre 0 e 100."
 
 #. module: account_consolidation
@@ -333,10 +344,13 @@ msgstr "Criado em"
 #: model:res.company,overdue_msg:account_consolidation.consolidation_company
 #: model:res.company,overdue_msg:account_consolidation.subsidiary_a
 #: model:res.company,overdue_msg:account_consolidation.subsidiary_b
-msgid "Dear Sir/Madam,\n"
+msgid ""
+"Dear Sir/Madam,\n"
 "\n"
-"Our records indicate that some payments on your account are still due. Please find details below.\n"
-"If the amount has already been paid, please disregard this notice. Otherwise, please forward us the total amount stated below.\n"
+"Our records indicate that some payments on your account are still due. "
+"Please find details below.\n"
+"If the amount has already been paid, please disregard this notice. "
+"Otherwise, please forward us the total amount stated below.\n"
 "If you have any queries regarding your account, Please contact us.\n"
 "\n"
 "Thank you in advance for your cooperation.\n"
@@ -426,7 +440,8 @@ msgstr "Parceiro Interempresa"
 #. module: account_consolidation
 #: code:addons/account_consolidation/wizard/consolidation_base.py:137
 #, python-format
-msgid "Invalid configuration, please launch the \"Consolidation: Checks\" wizard"
+msgid ""
+"Invalid configuration, please launch the \"Consolidation: Checks\" wizard"
 msgstr ""
 "Configuração inválida, por favor execute o assistente \"Consolidação: "
 "Verificações\""
@@ -538,14 +553,18 @@ msgstr "Aberto"
 #. module: account_consolidation
 #: code:addons/account_consolidation/wizard/consolidation_consolidate.py:114
 #, python-format
-msgid "Please set the Consolidation difference account for company %s in accounting settings."
+msgid ""
+"Please set the Consolidation difference account for company %s in accounting "
+"settings."
 msgstr ""
 "Defina a conta de diferenças de consolidação para a empresa %s em "
 "configuração de contas."
 
 #. module: account_consolidation
 #: model_terms:ir.ui.view,arch_db:account_consolidation.view_consolidation_check_form
-msgid "Prepare your consolidation and make sure that your consolidation will be correct by proceeding with the checks."
+msgid ""
+"Prepare your consolidation and make sure that your consolidation will be "
+"correct by proceeding with the checks."
 msgstr ""
 "Prepare a sua consolidação e garanta que está correta procedendo às "
 "verificações."
@@ -564,7 +583,9 @@ msgstr ""
 
 #. module: account_consolidation
 #: model_terms:ir.ui.view,arch_db:account_consolidation.view_consolidation_consolidate_form
-msgid "Run the Year-To-Date consolidation until the selected period for the defined subsidiaries."
+msgid ""
+"Run the Year-To-Date consolidation until the selected period for the defined "
+"subsidiaries."
 msgstr ""
 "Executar a consolidação acumulada até ao período definido nas subsidiárias."
 
@@ -607,13 +628,15 @@ msgstr "A empresa %s já é usada num perfil de consolidação."
 #. module: account_consolidation
 #: code:addons/account_consolidation/wizard/consolidation_base.py:67
 #, python-format
-msgid "The consolidation account defined for this account should be on company %s."
+msgid ""
+"The consolidation account defined for this account should be on company %s."
 msgstr "A conta de consolidação definida nesta conta deve estra na empresa %s."
 
 #. module: account_consolidation
 #: code:addons/account_consolidation/wizard/consolidation_consolidate.py:170
 #, python-format
-msgid "The error below appeared while trying to reverse the following moves: \n"
+msgid ""
+"The error below appeared while trying to reverse the following moves: \n"
 " %s \n"
 " %s"
 msgstr ""
