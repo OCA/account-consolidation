@@ -35,11 +35,11 @@ class AccountMove(models.Model):
         return res
 
     @api.multi
-    def post(self):
+    def post(self, invoice=False):
         """Bypass move posting when reversing consolidation moves"""
         if self.env.context.get('__conso_reversal_no_post'):
             return True
-        return super().post()
+        return super().post(invoice=invoice)
 
 
 class AccountMoveLine(models.Model):
