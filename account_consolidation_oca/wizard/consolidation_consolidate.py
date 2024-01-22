@@ -210,7 +210,7 @@ class AccountConsolidationConsolidate(models.TransientModel):
             _logger.debug("Move lines processed : %s " % move_lines.ids)
             move_lines.write({"consolidated": True})
 
-        return sum([line.balance for line in move_lines])
+        return sum(line.balance for line in move_lines)
 
     def _prepare_consolidate_account(self, holding_account, profile, partner=False):
         """
