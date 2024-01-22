@@ -159,7 +159,7 @@ class TestAccountConsolidation(TransactionCase):
 
     def test_default_values(self):
         wizard = self.env["account.consolidation.consolidate"].create({})
-        last_month = date.today() - relativedelta(month=1)
+        last_month = date.today() - relativedelta(months=1)
         self.assertEqual(wizard.year, last_month.strftime("%Y"))
         self.assertEqual(wizard.month, last_month.strftime("%m"))
         self.assertEqual(wizard.company_id, self.holding)

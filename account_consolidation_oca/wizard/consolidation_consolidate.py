@@ -37,16 +37,16 @@ class AccountConsolidationConsolidate(models.TransientModel):
 
     @api.model
     def _default_get_month(self):
-        today = fields.Date.from_string(fields.Date.context_today(self))
-        return (today - relativedelta(month=1)).strftime("%m")
+        today = fields.Date.context_today(self)
+        return (today - relativedelta(months=1)).strftime("%m")
 
     @api.model
     def _default_get_year(self):
-        today = fields.Date.from_string(fields.Date.context_today(self))
+        today = fields.Date.context_today(self)
         if today.strftime("%m") != "01":
             return today.strftime("%Y")
         else:
-            return (today - relativedelta(year=1)).strftime("%Y")
+            return (today - relativedelta(years=1)).strftime("%Y")
 
     @api.model
     def _get_month_last_date(self):
