@@ -1,0 +1,693 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* account_consolidation_oca
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 12.0\n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2020-03-04 00:14+0000\n"
+"Last-Translator: Nelson Ramírez Sánchez <info@konos.cl>\n"
+"Language-Team: none\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.10\n"
+
+#. module: account_consolidation_oca
+#: code:addons/account_consolidation_oca/wizard/consolidation_check.py:0
+#, python-format
+msgid "<h2>Consolidation configuration errors</h2>"
+msgstr "<h2>Errores de configuración de consolidación</h2>"
+
+#. module: account_consolidation_oca
+#: code:addons/account_consolidation_oca/wizard/consolidation_check.py:0
+#, python-format
+msgid ""
+"<h2>No configuration error detected ! You can now proceed with the "
+"consolidation.</h2>"
+msgstr ""
+"<h2>No se detectó ningún error de configuración! Ahora puede continuar con "
+"la consolidación.</h2>"
+
+#. module: account_consolidation_oca
+#: code:addons/account_consolidation_oca/wizard/consolidation_check.py:0
+#, python-format
+msgid "<h3>Company access not allowed</h3>"
+msgstr "<h3>Acceso a la empresa no permitido</h3>"
+
+#. module: account_consolidation_oca
+#: code:addons/account_consolidation_oca/wizard/consolidation_check.py:0
+#, python-format
+msgid "<h3>Company defined on intercompany partners</h3>"
+msgstr "<h3>Empresa definida en socios intercompañía</h3>"
+
+#. module: account_consolidation_oca
+#: code:addons/account_consolidation_oca/wizard/consolidation_check.py:0
+#, python-format
+msgid "<h3>Invalid account mapping</h3>"
+msgstr "<h3>Mapeo de cuenta inválido</h3>"
+
+#. module: account_consolidation_oca
+#: model_terms:ir.ui.view,arch_db:account_consolidation_oca.res_config_settings_view_form
+msgid ""
+"<span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-"
+"specific.\" groups=\"base.group_multi_company\"/>"
+msgstr ""
+
+#. module: account_consolidation_oca
+#: model_terms:ir.ui.view,arch_db:account_consolidation_oca.view_consolidation_check_form
+msgid ""
+"<strong>Accounts:</strong> Check consistency between subsidiaries accounts "
+"and Holding company consolidation accounts."
+msgstr ""
+"<strong>Cuentas:</strong> Verifique la consistencia entre las cuentas de "
+"subsidiarias y las cuentas de consolidación de la compañía holding."
+
+#. module: account_consolidation_oca
+#: model_terms:ir.ui.view,arch_db:account_consolidation_oca.view_consolidation_check_form
+msgid ""
+"<strong>Companies allowed:</strong> Check that user has access to "
+"subsidiaries."
+msgstr ""
+"<strong>Empresas Permitidas:</strong> Verifique que el usuario tenga acceso "
+"a las subsidiarias."
+
+#. module: account_consolidation_oca
+#: model_terms:ir.ui.view,arch_db:account_consolidation_oca.view_consolidation_check_form
+msgid ""
+"<strong>Partners:</strong> Check that partners linked to subsidiaries have "
+"no company defined."
+msgstr ""
+"<strong>Contactos:</strong> Verifique que los contactos vinculados a "
+"subsidiarias no tengan una compañía definida."
+
+#. module: account_consolidation_oca
+#: model:ir.model,name:account_consolidation_oca.model_account_account
+msgid "Account"
+msgstr "Cuenta"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields.selection,name:account_consolidation_oca.selection__account_consolidation_consolidate__target_move__all
+msgid "All Entries"
+msgstr "Todas las Entradas"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields.selection,name:account_consolidation_oca.selection__account_consolidation_consolidate__target_move__posted
+msgid "All Posted Entries"
+msgstr "Todas las entradas publicadas"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields.selection,name:account_consolidation_oca.selection__account_consolidation_consolidate__month__04
+msgid "April"
+msgstr "Abril"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields.selection,name:account_consolidation_oca.selection__account_consolidation_consolidate__month__08
+msgid "August"
+msgstr "Agosto"
+
+#. module: account_consolidation_oca
+#: model_terms:ir.ui.view,arch_db:account_consolidation_oca.view_consolidation_consolidate_form
+msgid "Balance sheet accounts are consolidated using standard currency rates."
+msgstr ""
+"Las cuentas del balance general se consolidan utilizando tasas de cambio "
+"estándar."
+
+#. module: account_consolidation_oca
+#: model_terms:ir.ui.view,arch_db:account_consolidation_oca.view_consolidation_check_form
+#: model_terms:ir.ui.view,arch_db:account_consolidation_oca.view_consolidation_consolidate_form
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: account_consolidation_oca
+#: model_terms:ir.ui.view,arch_db:account_consolidation_oca.view_consolidation_check_form
+msgid "Check configuration"
+msgstr "Comprobar configuración"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields,help:account_consolidation_oca.field_res_config_settings__is_consolidation
+msgid "Check this box if you want to consolidate in this company."
+msgstr "Marque esta casilla si desea consolidarse en esta empresa."
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields.selection,name:account_consolidation_oca.selection__account_consolidation_check__state__ok
+msgid "Checks ok"
+msgstr ""
+
+#. module: account_consolidation_oca
+#: model:ir.model,name:account_consolidation_oca.model_account_consolidation_base
+msgid "Common consolidation wizard. Intended to be inherited"
+msgstr "Asistente de consolidación común. Destinado a ser heredado"
+
+#. module: account_consolidation_oca
+#: model:ir.model,name:account_consolidation_oca.model_res_company
+msgid "Companies"
+msgstr "Empresas"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_consolidation_base__company_id
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_consolidation_check__company_id
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_consolidation_consolidate__company_id
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_company_consolidation_profile__company_id
+msgid "Company"
+msgstr "Empresa"
+
+#. module: account_consolidation_oca
+#: model:ir.model,name:account_consolidation_oca.model_res_config_settings
+msgid "Config Settings"
+msgstr "Configuración"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields,help:account_consolidation_oca.field_res_company__consolidation_diff_account_id
+#: model:ir.model.fields,help:account_consolidation_oca.field_res_config_settings__consolidation_diff_account_id
+msgid "Conso. differences will be affected to this account"
+msgstr "Conso las diferencias se verán afectadas en esta cuenta"
+
+#. module: account_consolidation_oca
+#: model_terms:ir.ui.view,arch_db:account_consolidation_oca.view_consolidation_consolidate_form
+msgid "Consolidate"
+msgstr "Consolidar"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_move_line__consolidated
+msgid "Consolidated"
+msgstr "Consolidada"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_move_line__consol_company_id
+msgid "Consolidated from"
+msgstr "Consolidada desde"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_bank_statement_line__consol_company_id
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_move__consol_company_id
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_payment__consol_company_id
+msgid "Consolidated from Company"
+msgstr "Consolidada desde Empresa"
+
+#. module: account_consolidation_oca
+#: code:addons/account_consolidation_oca/wizard/consolidation_consolidate.py:0
+#: model:ir.ui.menu,name:account_consolidation_oca.menu_consolidation
+#: model_terms:ir.ui.view,arch_db:account_consolidation_oca.res_config_settings_view_form
+#, python-format
+msgid "Consolidation"
+msgstr "Consolidación"
+
+#. module: account_consolidation_oca
+#: code:addons/account_consolidation_oca/wizard/consolidation_consolidate.py:0
+#, python-format
+msgid "Consolidation (%s %s)"
+msgstr "Consolidación (%s %s)"
+
+#. module: account_consolidation_oca
+#: model:ir.model,name:account_consolidation_oca.model_account_consolidation_check
+msgid "Consolidation Checks. Model used for views"
+msgstr ""
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_account__consolidation_company_id
+msgid "Consolidation Company"
+msgstr "Empresa de Consolidación"
+
+#. module: account_consolidation_oca
+#: model:ir.model,name:account_consolidation_oca.model_account_consolidation_consolidate
+msgid "Consolidation Consolidate"
+msgstr ""
+
+#. module: account_consolidation_oca
+#: code:addons/account_consolidation_oca/wizard/consolidation_consolidate.py:0
+#, python-format
+msgid "Consolidation Items"
+msgstr "Items de Consolidación"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_res_company__consolidation_percentage
+msgid "Consolidation Percentage"
+msgstr "Porcentaje de Consolidación"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_consolidation_consolidate__consolidation_profile_ids
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_res_company__consolidation_profile_ids
+#: model_terms:ir.ui.view,arch_db:account_consolidation_oca.view_company_consolidation_company_profile
+msgid "Consolidation Profile"
+msgstr "Perfil de Consolidación"
+
+#. module: account_consolidation_oca
+#: model_terms:ir.ui.view,arch_db:account_consolidation_oca.res_config_settings_view_form
+msgid "Consolidation Profiles"
+msgstr "Perfiles de Consolidación"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_account__consolidation_account_id
+msgid "Consolidation account"
+msgstr "Cuenta de Consolidación"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_res_company__is_consolidation
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_res_config_settings__is_consolidation
+msgid "Consolidation company"
+msgstr "Empresa de Consolidación"
+
+#. module: account_consolidation_oca
+#: code:addons/account_consolidation_oca/wizard/consolidation_consolidate.py:0
+#, python-format
+msgid "Consolidation difference (%s %s)"
+msgstr "Diferencia de Consolidación (%s %s)"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_res_company__consolidation_diff_account_id
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_res_config_settings__consolidation_diff_account_id
+msgid "Consolidation difference account"
+msgstr "Cuenta Diferencia de Consolidación"
+
+#. module: account_consolidation_oca
+#: model_terms:ir.ui.view,arch_db:account_consolidation_oca.res_config_settings_view_form
+msgid "Consolidation differences"
+msgstr "Diferencias de Consolidación"
+
+#. module: account_consolidation_oca
+#: model_terms:ir.ui.view,arch_db:account_consolidation_oca.res_config_settings_view_form
+msgid "Consolidation journal"
+msgstr "Diario de Consolidación"
+
+#. module: account_consolidation_oca
+#: model:res.groups,name:account_consolidation_oca.group_consolidation_manager
+msgid "Consolidation manager"
+msgstr "Gerente de Consolidación"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields,help:account_consolidation_oca.field_account_account__consolidation_account_id
+msgid "Consolidation moves will be generated on this account"
+msgstr "Movimientos de consolidación serán generados en esta cuenta"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_company_consolidation_profile__consolidation_percentage
+msgid "Consolidation percentage"
+msgstr "Porcentaje de Consolidación"
+
+#. module: account_consolidation_oca
+#: code:addons/account_consolidation_oca/models/consolidation_profile.py:0
+#, python-format
+msgid ""
+"Consolidation percentage can only be defined in the rangebetween 0 and 100."
+msgstr ""
+"Porcentaje de Consolidación solo puede ser definido en un rango entre 0 y "
+"100."
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_res_config_settings__consolidation_profile_ids
+msgid "Consolidation profiles"
+msgstr "Perfiles de Consolidación"
+
+#. module: account_consolidation_oca
+#: code:addons/account_consolidation_oca/wizard/consolidation_base.py:0
+#, python-format
+msgid "Consolidation wizards can only be called from a consolidation company."
+msgstr ""
+
+#. module: account_consolidation_oca
+#: model:ir.actions.act_window,name:account_consolidation_oca.action_consolidation_checks
+#: model:ir.ui.menu,name:account_consolidation_oca.menu_consolidation_checks
+#: model_terms:ir.ui.view,arch_db:account_consolidation_oca.view_consolidation_check_form
+msgid "Consolidation: Checks"
+msgstr ""
+
+#. module: account_consolidation_oca
+#: model:ir.actions.act_window,name:account_consolidation_oca.action_consolidation_consolidate
+#: model:ir.ui.menu,name:account_consolidation_oca.menu_consolidation_consolidate
+#: model_terms:ir.ui.view,arch_db:account_consolidation_oca.view_consolidation_consolidate_form
+msgid "Consolidation: Consolidate"
+msgstr ""
+
+#. module: account_consolidation_oca
+#: model:ir.actions.act_window,name:account_consolidation_oca.action_consolidation_profile
+msgid "Consolidation: Profiles"
+msgstr ""
+
+#. module: account_consolidation_oca
+#: code:addons/account_consolidation_oca/wizard/consolidation_consolidate.py:0
+#, python-format
+msgid "Could not generate any consolidation entries."
+msgstr "No se pudieron generar entradas de consolidación."
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_consolidation_check__create_uid
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_consolidation_consolidate__create_uid
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_company_consolidation_profile__create_uid
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_consolidation_check__create_date
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_consolidation_consolidate__create_date
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_company_consolidation_profile__create_date
+msgid "Created on"
+msgstr "Creado en"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields.selection,name:account_consolidation_oca.selection__account_consolidation_consolidate__month__12
+msgid "December"
+msgstr "Diciembre"
+
+#. module: account_consolidation_oca
+#: model_terms:ir.ui.view,arch_db:account_consolidation_oca.res_config_settings_view_form
+msgid "Default consolidation differences account"
+msgstr "Cuenta de diferencias de consolidación predeterminada"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_res_company__consolidation_default_journal_id
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_res_config_settings__consolidation_default_journal_id
+#: model_terms:ir.ui.view,arch_db:account_consolidation_oca.res_config_settings_view_form
+msgid "Default consolidation journal"
+msgstr "Diario de consolidación predeterminado"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields,help:account_consolidation_oca.field_res_company__consolidation_default_journal_id
+#: model:ir.model.fields,help:account_consolidation_oca.field_res_config_settings__consolidation_default_journal_id
+msgid "Default journal to generate consolidation entries"
+msgstr "Diario predeterminado para generar entradas de consolidación"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields,help:account_consolidation_oca.field_company_consolidation_profile__consolidation_percentage
+msgid "Define a percentage to consolidate this company (in percents)"
+msgstr "Definir un porcentaje para consolidar esta empresa (en porcentajes)"
+
+#. module: account_consolidation_oca
+#: model_terms:ir.ui.view,arch_db:account_consolidation_oca.res_config_settings_view_form
+msgid "Define the subsidiaries to consolidate"
+msgstr "Definir las filiales para consolidar"
+
+#. module: account_consolidation_oca
+#: model_terms:ir.ui.view,arch_db:account_consolidation_oca.view_company_consolidation_profile_form
+msgid "Discard"
+msgstr "Descartar"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_account__display_name
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_consolidation_base__display_name
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_consolidation_check__display_name
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_consolidation_consolidate__display_name
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_move__display_name
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_move_line__display_name
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_company_consolidation_profile__display_name
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_res_company__display_name
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_res_config_settings__display_name
+msgid "Display Name"
+msgstr "Nombre a Mostrar"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields.selection,name:account_consolidation_oca.selection__account_consolidation_check__state__error
+msgid "Error"
+msgstr ""
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields.selection,name:account_consolidation_oca.selection__account_consolidation_consolidate__month__02
+msgid "February"
+msgstr "Febrero"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_account__id
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_consolidation_base__id
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_consolidation_check__id
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_consolidation_consolidate__id
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_move__id
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_move_line__id
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_company_consolidation_profile__id
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_res_company__id
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_res_config_settings__id
+msgid "ID"
+msgstr ""
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_move_line__consol_partner_id
+msgid "Intercompany Partner"
+msgstr "Empresa Intercompañía"
+
+#. module: account_consolidation_oca
+#: code:addons/account_consolidation_oca/wizard/consolidation_base.py:0
+#, python-format
+msgid ""
+"Invalid configuration, please launch the \"Consolidation: Checks\" wizard"
+msgstr ""
+"Configuración no válida, inicie el asistente \"Consolidación: Verificaciones"
+"\""
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields.selection,name:account_consolidation_oca.selection__account_consolidation_consolidate__month__01
+msgid "January"
+msgstr "Enero"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_consolidation_consolidate__journal_id
+msgid "Journal"
+msgstr "Diario"
+
+#. module: account_consolidation_oca
+#: model:ir.model,name:account_consolidation_oca.model_account_move
+msgid "Journal Entry"
+msgstr ""
+
+#. module: account_consolidation_oca
+#: model:ir.model,name:account_consolidation_oca.model_account_move_line
+msgid "Journal Item"
+msgstr "Artículo de Diario"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields.selection,name:account_consolidation_oca.selection__account_consolidation_consolidate__month__07
+msgid "July"
+msgstr "Julio"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields.selection,name:account_consolidation_oca.selection__account_consolidation_consolidate__month__06
+msgid "June"
+msgstr "Junio"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_account____last_update
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_consolidation_base____last_update
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_consolidation_check____last_update
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_consolidation_consolidate____last_update
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_move____last_update
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_move_line____last_update
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_company_consolidation_profile____last_update
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_res_company____last_update
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_res_config_settings____last_update
+msgid "Last Modified on"
+msgstr "Última modificación el"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_consolidation_check__write_uid
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_consolidation_consolidate__write_uid
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_company_consolidation_profile__write_uid
+msgid "Last Updated by"
+msgstr "Última actualización por"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_consolidation_check__write_date
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_consolidation_consolidate__write_date
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_company_consolidation_profile__write_date
+msgid "Last Updated on"
+msgstr "Ultima actualización en"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields.selection,name:account_consolidation_oca.selection__account_consolidation_consolidate__month__03
+msgid "March"
+msgstr "Marzo"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields.selection,name:account_consolidation_oca.selection__account_consolidation_consolidate__month__05
+msgid "May"
+msgstr "Mayo"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_consolidation_check__message
+msgid "Message"
+msgstr "Mensaje"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_consolidation_consolidate__month
+msgid "Month"
+msgstr "Mes"
+
+#. module: account_consolidation_oca
+#: code:addons/account_consolidation_oca/wizard/consolidation_base.py:0
+#, python-format
+msgid "No consolidation account defined for this account"
+msgstr "No hay una cuenta de consolidación definida para esta cuenta"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields.selection,name:account_consolidation_oca.selection__account_consolidation_consolidate__month__11
+msgid "November"
+msgstr "Noviembre"
+
+#. module: account_consolidation_oca
+#: model_terms:ir.ui.view,arch_db:account_consolidation_oca.view_consolidation_check_form
+msgid "OK"
+msgstr ""
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields.selection,name:account_consolidation_oca.selection__account_consolidation_consolidate__month__10
+msgid "October"
+msgstr "Octubre"
+
+#. module: account_consolidation_oca
+#: code:addons/account_consolidation_oca/models/company.py:0
+#, python-format
+msgid "Only one company can be defined as consolidation company."
+msgstr "Solo una empresa puede definirse como empresa de consolidación."
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields.selection,name:account_consolidation_oca.selection__account_consolidation_check__state__open
+msgid "Open"
+msgstr "Abierto"
+
+#. module: account_consolidation_oca
+#: code:addons/account_consolidation_oca/wizard/consolidation_consolidate.py:0
+#, python-format
+msgid ""
+"Please set the Consolidation difference account for company %s in accounting "
+"settings."
+msgstr ""
+"Establezca la cuenta de diferencia de consolidación para la empresa %s en la "
+"configuración de contabilidad."
+
+#. module: account_consolidation_oca
+#: model_terms:ir.ui.view,arch_db:account_consolidation_oca.view_consolidation_check_form
+msgid ""
+"Prepare your consolidation and make sure that your consolidation will be "
+"correct by proceeding with the checks."
+msgstr ""
+"Prepare su consolidación y asegúrese de que su consolidación sea correcta al "
+"proceder con los controles."
+
+#. module: account_consolidation_oca
+#: model_terms:ir.ui.view,arch_db:account_consolidation_oca.view_consolidation_consolidate_form
+msgid "Profit and Loss accounts are consolidated using monthly currency rates."
+msgstr ""
+"Las cuentas de pérdidas y ganancias se consolidan utilizando las tasas de "
+"cambio mensuales."
+
+#. module: account_consolidation_oca
+#: code:addons/account_consolidation_oca/wizard/consolidation_consolidate.py:0
+#, python-format
+msgid "Reversal of %s"
+msgstr ""
+
+#. module: account_consolidation_oca
+#: model_terms:ir.ui.view,arch_db:account_consolidation_oca.view_consolidation_consolidate_form
+msgid ""
+"Run the Year-To-Date consolidation until the selected period for the defined "
+"subsidiaries."
+msgstr ""
+"Ejecute la consolidación del año hasta la fecha hasta el período "
+"seleccionado para las filiales definidas."
+
+#. module: account_consolidation_oca
+#: model_terms:ir.ui.view,arch_db:account_consolidation_oca.view_company_consolidation_profile_form
+msgid "Save"
+msgstr "Salvar"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields.selection,name:account_consolidation_oca.selection__account_consolidation_consolidate__month__09
+msgid "September"
+msgstr "Septiembre"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_consolidation_check__state
+msgid "State"
+msgstr "Estado"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_company_consolidation_profile__sub_company_id
+msgid "Subsidiary"
+msgstr "Subsidiaria"
+
+#. module: account_consolidation_oca
+#: model:ir.model,name:account_consolidation_oca.model_company_consolidation_profile
+msgid "Subsidiary consolidation profile"
+msgstr "Perfil de consolidación subsidiaria"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_consolidation_consolidate__target_move
+msgid "Target Moves"
+msgstr "Movimientos Objetivo"
+
+#. module: account_consolidation_oca
+#: code:addons/account_consolidation_oca/models/consolidation_profile.py:0
+#, python-format
+msgid "The company %s is already used in a consolidation profile."
+msgstr "La empresa %s ya se utiliza en un perfil de consolidación."
+
+#. module: account_consolidation_oca
+#: code:addons/account_consolidation_oca/wizard/consolidation_base.py:0
+#, python-format
+msgid ""
+"The consolidation account defined for this account should be on company %s."
+msgstr ""
+"La cuenta de consolidación definida para esta cuenta debe estar en la "
+"empresa %s."
+
+#. module: account_consolidation_oca
+#: model_terms:ir.ui.view,arch_db:account_consolidation_oca.res_config_settings_view_form
+msgid "Use this company as consolidation company"
+msgstr "Utilice esta empresa como empresa de consolidación"
+
+#. module: account_consolidation_oca
+#: model:ir.model.fields,field_description:account_consolidation_oca.field_account_consolidation_consolidate__year
+msgid "Year"
+msgstr "Año"
+
+#. module: account_consolidation_oca
+#: code:addons/account_consolidation_oca/wizard/consolidation_consolidate.py:0
+#, python-format
+msgid "monthly rate : %s"
+msgstr "tasa mensual : %s"
+
+#. module: account_consolidation_oca
+#: code:addons/account_consolidation_oca/wizard/consolidation_consolidate.py:0
+#, python-format
+msgid "spot rate : %s"
+msgstr "tasa al contado: %s"
+
+#~ msgid ""
+#~ "Dear Sir/Madam,\n"
+#~ "\n"
+#~ "Our records indicate that some payments on your account are still due. "
+#~ "Please find details below.\n"
+#~ "If the amount has already been paid, please disregard this notice. "
+#~ "Otherwise, please forward us the total amount stated below.\n"
+#~ "If you have any queries regarding your account, Please contact us.\n"
+#~ "\n"
+#~ "Thank you in advance for your cooperation.\n"
+#~ "Best Regards,"
+#~ msgstr ""
+#~ "Estimado Señor/Señora,\n"
+#~ "\n"
+#~ "Nuestros registros indican que algunos pagos en su cuenta aún se deben. "
+#~ "Por favor encuentre los detalles a continuación.\n"
+#~ "Si el monto ya ha sido pagado, ignore este aviso. De lo contrario, "
+#~ "envíenos el importe total que se indica a continuación.\n"
+#~ "Si tiene alguna consulta con respecto a su cuenta, contáctenos.\n"
+#~ "\n"
+#~ "Gracias de antemano por su cooperación.\n"
+#~ "Atentamente,"
+
+#~ msgid "Journal Entries"
+#~ msgstr "Entradas de Diario"
+
+#~ msgid "Profiles"
+#~ msgstr "Perfiles"
+
+#, python-format
+#~ msgid ""
+#~ "The error below appeared while trying to reverse the following moves: \n"
+#~ " %s \n"
+#~ " %s"
+#~ msgstr ""
+#~ "El error a continuación apareció al intentar revertir los siguientes "
+#~ "movimientos:\n"
+#~ " %s \n"
+#~ " %s"
