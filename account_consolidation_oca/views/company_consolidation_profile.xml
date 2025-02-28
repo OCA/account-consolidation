@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_company_consolidation_profile_form" model="ir.ui.view">
+        <field name="name">company.consolidation.profile.view</field>
+        <field name="model">company.consolidation.profile</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="sub_company_id" />
+                        <h1><field name="sub_company_id" /></h1>
+                    </div>
+                    <group>
+                        <field name="consolidation_percentage" />
+                    </group>
+                </sheet>
+                <footer>
+                    <button
+                        name="save"
+                        type="object"
+                        string="Save"
+                        class="btn-primary"
+                        special="save"
+                    />
+                    <button
+                        string="Discard"
+                        name="cancel"
+                        class="btn-secondary"
+                        special="cancel"
+                    />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="view_company_consolidation_profile_tree" model="ir.ui.view">
+        <field name="name">company.consolidation.profile.view</field>
+        <field name="model">company.consolidation.profile</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="company_id" />
+                <field name="sub_company_id" />
+                <field name="consolidation_percentage" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_consolidation_profile" model="ir.actions.act_window">
+        <field name="name">Consolidation: Profiles</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">company.consolidation.profile</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="view_company_consolidation_company_profile" model="ir.ui.view">
+        <field name="name">company.consolidation.profile</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//page" position="after">
+                <page
+                    string="Consolidation Profile"
+                    groups="account_consolidation_oca.group_consolidation_manager"
+                >
+                    <field name="consolidation_profile_ids">
+                        <tree editable="bottom">
+                            <field name="sub_company_id" />
+                            <field name="consolidation_percentage" />
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
